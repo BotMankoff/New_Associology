@@ -1,0 +1,1910 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+<title>Associology</title>
+<style>
+  :root {
+    --size: min(90vw, 420px);
+    --dark: #1a1a2e;
+    --light: #F5F6FA;
+    --success: #22c55e;
+    --accent: #6366F1;
+  }
+  
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+  
+  body {
+    margin: 0;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    min-height: 100vh;
+    color: var(--dark);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 12px;
+    user-select: none;
+  }
+  
+  header {
+    width: 100%;
+    max-width: 440px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  
+  h1 { margin: 0; font-size: 16px; font-weight: 700; color: white; }
+  
+  .header-right { display: flex; align-items: center; gap: 8px; }
+  
+  .help-btn, .gallery-btn {
+    padding: 6px 12px;
+    border-radius: 16px;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.3);
+    color: white;
+    font-weight: 600;
+    font-size: 12px;
+    cursor: pointer;
+  }
+  
+  .moves {
+    background: rgba(255,255,255,0.15);
+    color: white;
+    padding: 6px 12px;
+    border-radius: 16px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  
+  .puzzle-nav {
+    width: 100%;
+    max-width: 440px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    color: white;
+  }
+  
+  .nav-btn {
+    padding: 8px 14px;
+    border-radius: 16px;
+    background: rgba(255,255,255,0.15);
+    border: none;
+    color: white;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+  }
+  
+  .nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+  
+  .puzzle-counter { font-size: 13px; opacity: 0.8; }
+  
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.7);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  
+  .modal-overlay.show { display: flex; }
+  
+  .modal {
+    background: white;
+    border-radius: 16px;
+    max-width: 500px;
+    width: 100%;
+    max-height: 85vh;
+    overflow-y: auto;
+  }
+  
+  .modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 18px;
+    border-bottom: 1px solid #eee;
+    position: sticky;
+    top: 0;
+    background: white;
+  }
+  
+  .modal-header h2 { margin: 0; font-size: 16px; }
+  
+  .modal-close {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: none;
+    background: #f0f0f0;
+    font-size: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .modal-body { padding: 16px; }
+  .modal-body p { margin: 0 0 12px 0; font-size: 13px; line-height: 1.5; color: #444; }
+  
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 10px;
+  }
+  
+  .gallery-item {
+    background: #f5f5f5;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    padding: 12px 8px;
+    cursor: pointer;
+    text-align: center;
+    position: relative;
+  }
+  
+  .gallery-item:hover { border-color: var(--accent); }
+  .gallery-item.current { border-color: var(--accent); background: #eef2ff; }
+  .gallery-item.solved { border-color: var(--success); background: #f0fdf4; }
+  
+  .gallery-title { font-size: 11px; font-weight: 600; color: var(--dark); }
+  .gallery-number { font-size: 10px; color: #888; margin-top: 3px; }
+  
+  .solved-check {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    width: 16px;
+    height: 16px;
+    background: var(--success);
+    border-radius: 50%;
+    color: white;
+    font-size: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .solved-banner {
+    width: 100%;
+    max-width: 440px;
+    background: var(--success);
+    color: white;
+    text-align: center;
+    padding: 10px;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 16px;
+    margin-bottom: 8px;
+    display: none;
+  }
+  
+  .solved-banner.show {
+    display: block;
+    animation: celebrate 0.4s ease-in-out 3;
+  }
+  
+  @keyframes celebrate {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.02); }
+  }
+  
+  .board {
+    position: relative;
+    width: var(--size);
+    height: var(--size);
+    background: rgba(255,255,255,0.95);
+    border-radius: 50%;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+  }
+  
+  svg.board-svg {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+  
+  .slice {
+    stroke: rgba(255,255,255,0.8);
+    stroke-width: 2;
+    fill-opacity: 0.25;
+    transition: fill-opacity 0.3s;
+  }
+  
+  .slice.correct { fill-opacity: 0.45; }
+  
+  .theme-label {
+    font: 700 12px sans-serif;
+    fill: var(--dark);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    opacity: 0.8;
+  }
+  
+  @media (max-width: 480px) {
+    .theme-label {
+      font-size: 14px;
+      font-weight: 800;
+    }
+  }
+  
+  .drop {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    cursor: pointer;
+  }
+  
+  .drop.anchor { width: 76px; height: 76px; border-radius: 50%; }
+  .drop.bridge { width: 84px; height: 42px; border-radius: 21px; }
+  .drop.selected { background: rgba(99, 102, 241, 0.15); }
+  
+  .token {
+    padding: 10px 14px;
+    background: white;
+    border: 2px solid var(--dark);
+    border-radius: 18px;
+    font-weight: 700;
+    font-size: 11px;
+    color: var(--dark);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  }
+  
+  .token:hover { transform: scale(1.05); }
+  
+  .token.selected {
+    background: #6366F1 !important;
+    color: white !important;
+    border-color: #6366F1 !important;
+    transform: scale(1.08);
+  }
+  
+  .token.correct {
+    background: var(--success);
+    color: white;
+    border-color: var(--success);
+  }
+
+  .buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 16px;
+    width: 100%;
+    max-width: 440px;
+  }
+  
+  .btn {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  
+  .btn-shuffle { background: var(--accent); color: white; }
+  .btn-solve { background: rgba(255,255,255,0.2); color: white; }
+  
+  .explanations {
+    width: 100%;
+    max-width: 440px;
+    background: rgba(255,255,255,0.95);
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-top: 12px;
+    display: none;
+  }
+  
+  .explanations.show { display: block; }
+  
+  .explanations h3 {
+    margin: 0 0 10px 0;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  
+  .bridge-item {
+    display: flex;
+    align-items: baseline;
+    padding: 6px 0;
+    border-bottom: 1px solid #eee;
+  }
+  
+  .bridge-item:last-child { border-bottom: none; }
+  .bridge-word { font-weight: 700; font-size: 12px; min-width: 90px; }
+  .bridge-meanings { font-size: 11px; color: #555; }
+  .bridge-meanings span { color: var(--accent); font-weight: 600; }
+
+  /* Center circle */
+  .center-circle {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background: white;
+    border: 3px solid var(--dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    font-weight: 700;
+    color: #aaa;
+    cursor: default;
+    z-index: 20;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    transition: transform 0.3s ease, color 0.3s ease;
+  }
+  
+  .center-circle.show {
+    color: var(--accent);
+    cursor: pointer;
+    animation: pulse 2s ease-in-out infinite;
+  }
+  
+  .center-circle.guessed {
+    background: var(--success);
+    border-color: var(--success);
+    color: white;
+    animation: none;
+    cursor: default;
+    font-size: 14px;
+  }
+  
+  .center-circle.show:hover:not(.guessed) {
+    transform: translate(-50%, -50%) scale(1.1);
+    animation: pulse 2s ease-in-out infinite;
+  }
+  
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 4px 15px rgba(0,0,0,0.2), 0 0 0 0 rgba(99, 102, 241, 0.4); }
+    50% { box-shadow: 0 4px 15px rgba(0,0,0,0.2), 0 0 0 12px rgba(99, 102, 241, 0); }
+  }
+  
+  @keyframes celebrate-pop {
+    0% { transform: translate(-50%, -50%) scale(1); }
+    50% { transform: translate(-50%, -50%) scale(1.3); }
+    100% { transform: translate(-50%, -50%) scale(1); }
+  }
+  
+  .center-circle.celebrate {
+    animation: celebrate-pop 0.5s ease-out;
+  }
+
+  /* Welcome screen */
+  .welcome-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    z-index: 300;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 20px;
+    overflow-y: auto;
+  }
+  
+  .welcome-overlay.hidden { display: none; }
+  
+  .welcome-content {
+    max-width: 500px;
+    width: 100%;
+    text-align: center;
+    color: white;
+  }
+  
+  .welcome-title {
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: 3px;
+    margin: 0 0 4px 0;
+    background: linear-gradient(135deg, #6366F1, #8B5CF6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  
+  .welcome-tagline {
+    font-size: 13px;
+    opacity: 0.7;
+    margin: 0 0 20px 0;
+    letter-spacing: 1px;
+  }
+  
+  .welcome-board {
+    position: relative;
+    width: 100%;
+    max-width: 420px;
+    aspect-ratio: 1;
+    margin: 0 auto 24px;
+  }
+  
+  .welcome-board svg {
+    width: 100%;
+    height: 100%;
+  }
+  
+  .welcome-board .slice {
+    stroke: rgba(255,255,255,0.8);
+    stroke-width: 2;
+    fill-opacity: 0.5;
+  }
+  
+  .welcome-board .theme-label {
+    fill: rgba(255,255,255,0.7);
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 2px;
+  }
+  
+  .welcome-board .welcome-drop {
+    position: absolute;
+    background: white;
+    border-radius: 14px;
+    padding: 5px 12px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #1a1a2e;
+    transform: translate(-50%, -50%);
+    white-space: nowrap;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    z-index: 10;
+  }
+  
+  .welcome-board .center-word {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    color: #6366F1;
+    font-size: 36px;
+    font-weight: 800;
+    width: 64px;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.25);
+  }
+  
+  .welcome-instructions {
+    text-align: left;
+    background: rgba(255,255,255,0.08);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 24px;
+  }
+  
+  .welcome-instructions h2 {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    text-align: center;
+  }
+  
+  .instruction-item {
+    margin-bottom: 16px;
+    line-height: 1.5;
+  }
+  
+  .instruction-item:last-child {
+    margin-bottom: 0;
+  }
+  
+  .instruction-item strong {
+    color: #a5b4fc;
+  }
+  
+  .instruction-label {
+    font-weight: 700;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    opacity: 0.6;
+    margin-bottom: 4px;
+  }
+  
+  .bridge-demo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 8px;
+    background: rgba(0,0,0,0.2);
+    padding: 10px 14px;
+    border-radius: 8px;
+  }
+  
+  .bridge-word-chip {
+    background: white;
+    color: #1a1a2e;
+    font-weight: 700;
+    padding: 6px 14px;
+    border-radius: 16px;
+    font-size: 12px;
+  }
+  
+  .bridge-meanings {
+    font-size: 13px;
+    line-height: 1.5;
+  }
+  
+  .meaning-line {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  
+  .meaning-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  
+  .welcome-btn {
+    width: 100%;
+    padding: 16px 20px;
+    border-radius: 12px;
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+    border: none;
+    background: linear-gradient(135deg, #6366F1, #8B5CF6);
+    color: white;
+    margin-bottom: 16px;
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  
+  .welcome-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+  }
+  
+  .welcome-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    opacity: 0.5;
+  }
+  
+  .welcome-skip {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+  }
+  
+  .welcome-skip:hover {
+    opacity: 0.8;
+  }
+  
+  .welcome-skip input {
+    cursor: pointer;
+  }
+
+  /* Guess modal */
+  .guess-modal {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 200;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 0;
+    padding-top: calc(var(--size) + 140px);
+  }
+  
+  .guess-modal.show { display: flex; }
+  
+  .guess-modal:focus { outline: none; }
+  
+  .guess-content {
+    background: white;
+    border-radius: 16px;
+    padding: 20px 24px 24px;
+    max-width: 440px;
+    width: calc(100% - 24px);
+    margin: 0 12px;
+    text-align: center;
+    max-height: calc(100vh - var(--size) - 160px);
+    overflow-y: auto;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  }
+  
+  .guess-content h3 {
+    margin: 0 0 8px 0;
+    font-size: 18px;
+    color: var(--dark);
+  }
+  
+  .guess-content p {
+    margin: 0 0 16px 0;
+    font-size: 13px;
+    color: #666;
+  }
+  
+  .guess-btn.submit { background: var(--accent); color: white; }
+  .guess-btn.cancel { background: #eee; color: #666; }
+  
+  .guess-buttons {
+    display: flex;
+    gap: 10px;
+  }
+  
+  .guess-btn {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-8px); }
+    75% { transform: translateX(8px); }
+  }
+  
+  .letter-boxes.shake {
+    animation: shake 0.4s ease;
+  }
+  
+  /* Wordle-style guessing */
+  .theme-chips {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px;
+    margin-bottom: 14px;
+  }
+  
+  .theme-chip {
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: white;
+    opacity: 0.9;
+  }
+  
+  .attempt-dots {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  
+  .attempt-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--accent);
+    transition: all 0.3s ease;
+  }
+  
+  .attempt-dot.used {
+    background: #ddd;
+    transform: scale(0.8);
+  }
+
+  .letter-boxes {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  
+  .letter-box {
+    width: 48px;
+    height: 54px;
+    border: 3px solid #ddd;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    font-weight: 700;
+    text-transform: uppercase;
+    background: white;
+    cursor: pointer;
+    transition: border-color 0.15s, transform 0.15s, box-shadow 0.15s;
+  }
+  
+  .letter-box:hover {
+    border-color: #bbb;
+  }
+  
+  .letter-box.selected {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
+    transform: scale(1.05);
+  }
+  
+  .letter-box.filled {
+    border-color: var(--dark);
+    background: #f9f9f9;
+  }
+  
+  .guess-history {
+    margin-bottom: 12px;
+  }
+  
+  .guess-row {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    margin-bottom: 6px;
+  }
+  
+  .guess-letter {
+    width: 32px;
+    height: 36px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: white;
+  }
+  
+  .guess-letter.correct { background: var(--success); }
+  .guess-letter.present { background: #F59E0B; }
+  .guess-letter.absent { background: #6B7280; }
+  
+  .theme-hints {
+    margin-top: 16px;
+    text-align: left;
+  }
+  
+  .theme-hint {
+    background: #f5f5f5;
+    border-left: 3px solid var(--accent);
+    padding: 8px 12px;
+    margin-bottom: 8px;
+    border-radius: 0 6px 6px 0;
+    font-size: 12px;
+  }
+  
+  .theme-hint-label {
+    font-weight: 700;
+    color: var(--accent);
+    text-transform: uppercase;
+    font-size: 10px;
+    letter-spacing: 0.5px;
+  }
+  
+  .theme-hint-meaning {
+    color: var(--dark);
+    margin-top: 2px;
+  }
+  
+  .guess-result {
+    text-align: center;
+    padding: 12px;
+    border-radius: 8px;
+    margin-top: 12px;
+    font-weight: 700;
+  }
+  
+  .guess-result.success {
+    background: #dcfce7;
+    color: #166534;
+  }
+  
+  .guess-result.failure {
+    background: #fef2f2;
+    color: #991b1b;
+  }
+
+  /* Center word panel */
+  .center-panel {
+    width: 100%;
+    max-width: 440px;
+    background: rgba(255,255,255,0.95);
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-top: 12px;
+    display: none;
+    border: 2px solid var(--success);
+  }
+  
+  .center-panel.show { display: block; }
+  
+  .center-panel h3 {
+    margin: 0 0 10px 0;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--success);
+  }
+  
+  .center-word-display {
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--dark);
+    text-align: center;
+    margin-bottom: 12px;
+    padding: 8px;
+    background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+    border-radius: 8px;
+  }
+  
+  .center-panel-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 0;
+    border-bottom: 1px solid #eee;
+    font-size: 12px;
+  }
+  
+  .center-panel-item:last-child { border-bottom: none; }
+  .center-panel-theme { color: #666; }
+  .center-panel-meaning { color: var(--dark); font-weight: 600; }
+  
+  .center-guess-info {
+    text-align: center;
+    padding: 10px;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 14px;
+    margin-bottom: 12px;
+  }
+  
+  .center-guess-info.success {
+    background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+    color: #166534;
+  }
+  
+  .center-guess-info.failure {
+    background: #fef2f2;
+    color: #991b1b;
+  }
+</style>
+</head>
+<body>
+
+<!-- Welcome Screen -->
+<div class="welcome-overlay" id="welcome-overlay">
+  <div class="welcome-content">
+    <h1 class="welcome-title">ASSOCIOLOGY</h1>
+    <p class="welcome-tagline">The Word Association Game</p>
+    
+    <!-- Ring matching actual game layout -->
+    <div class="welcome-board" id="welcome-board">
+      <svg class="board-svg" id="welcome-svg" viewBox="0 0 500 500">
+        <defs id="welcome-defs"></defs>
+        <g id="welcome-slices"></g>
+        <g id="welcome-labels"></g>
+      </svg>
+      <div class="center-word">?</div>
+    </div>
+    
+    <!-- Clear instructions -->
+    <div class="welcome-instructions">
+      <h2>How to Play</h2>
+      
+      <div class="instruction-item">
+        <div class="instruction-label">The Ring</div>
+        The ring has <strong>4 themed quadrants</strong>. Each quadrant has 2 words that belong to it.
+      </div>
+      
+      <div class="instruction-item">
+        <div class="instruction-label">Anchors vs Bridges</div>
+        <strong>4 words are "anchors"</strong> — they belong to just ONE theme.<br>
+        <strong>4 words are "bridges"</strong> — they connect TWO adjacent themes.
+        
+        <div class="bridge-demo">
+          <div class="bridge-word-chip">LINE</div>
+          <div class="bridge-meanings">
+            <div class="meaning-line">
+              <span class="meaning-dot" style="background: #3B82F6;"></span>
+              <span>Fishing string</span>
+            </div>
+            <div class="meaning-line">
+              <span class="meaning-dot" style="background: #EC4899;"></span>
+              <span>Spoken dialogue</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="instruction-item">
+        <div class="instruction-label">Your Goal</div>
+        <strong>Tap two words to swap them.</strong> Arrange all 8 words correctly, then guess the mystery center word — one word that connects to all 4 themes.
+      </div>
+    </div>
+    
+    <button class="welcome-btn" onclick="startPlaying()">Play</button>
+    
+    <div class="welcome-footer">
+      <label class="welcome-skip">
+        <input type="checkbox" id="skip-welcome-checkbox" />
+        <span>Don't show this again</span>
+      </label>
+      <span>28 puzzles</span>
+    </div>
+  </div>
+</div>
+
+<header>
+  <h1 id="puzzle-title">Break a Leg</h1>
+  <div class="header-right">
+    <button class="gallery-btn" onclick="openGallery()">Gallery</button>
+    <button class="help-btn" onclick="openHelp()">How to Play</button>
+    <div class="moves">Moves: <span id="move-count">0</span></div>
+  </div>
+</header>
+
+<nav class="puzzle-nav">
+  <button class="nav-btn" id="prev-btn" onclick="prevPuzzle()">← Prev</button>
+  <span class="puzzle-counter"><span id="current-num">1</span> / <span id="total-num">25</span></span>
+  <button class="nav-btn" id="next-btn" onclick="nextPuzzle()">Next →</button>
+</nav>
+
+<div class="solved-banner" id="solved-banner">
+  🎉 Stage 1 solved in <span id="final-moves">0</span> moves! Now find the center word...
+</div>
+
+<div class="board" id="board">
+  <svg class="board-svg" id="svg" viewBox="0 0 500 500">
+    <g id="slices"></g>
+    <g id="labels"></g>
+  </svg>
+  <div class="center-circle" id="center-circle" onclick="openGuessModal()">?</div>
+</div>
+
+<div class="buttons">
+  <button class="btn btn-shuffle" onclick="shuffle()">Shuffle</button>
+  <button class="btn btn-solve" onclick="solve()">Solve</button>
+</div>
+
+<div class="explanations" id="explanations">
+  <h3>Bridge Words</h3>
+  <div id="bridge-list"></div>
+</div>
+
+<div class="center-panel" id="center-panel">
+  <h3>✨ Center Word</h3>
+  <div class="center-word-display" id="center-word-display"></div>
+  <div id="center-panel-list"></div>
+</div>
+
+<div class="guess-modal" id="guess-modal" tabindex="-1">
+  <div class="guess-content">
+    <h3>Mystery Center Word</h3>
+    <p>What single word connects all 4 themes?</p>
+    <div class="theme-chips" id="theme-chips"></div>
+    <div class="attempt-dots" id="attempt-dots">
+      <span class="attempt-dot"></span>
+      <span class="attempt-dot"></span>
+      <span class="attempt-dot"></span>
+      <span class="attempt-dot"></span>
+    </div>
+    <div class="guess-history" id="guess-history"></div>
+    <div class="letter-boxes" id="letter-boxes"></div>
+    <div class="guess-buttons">
+      <button class="guess-btn cancel" onclick="closeGuessModal()">Cancel</button>
+      <button class="guess-btn submit" onclick="submitGuess()">Submit</button>
+    </div>
+    <div class="theme-hints" id="theme-hints"></div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="help-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>How to Play</h2>
+      <button class="modal-close" onclick="closeHelp()">×</button>
+    </div>
+    <div class="modal-body">
+      <p><strong>Stage 1 — Arrange the Ring</strong></p>
+      <p>Place 8 words around the ring so each belongs to its correct theme(s). <strong>Anchors</strong> (inside quadrants) belong to ONE theme. <strong>Bridges</strong> (on boundaries) belong to TWO adjacent themes.</p>
+      <p>Tap two words to swap them. Bridges show split coloring as you solve — only the half inside a completed quadrant turns green.</p>
+      <p><strong>Stage 2 — Find the Center Word</strong></p>
+      <p>Once all words are placed, a "?" appears at the center. This mystery word connects ALL 4 themes through different meanings of the same word.</p>
+      <p>For example, if the themes were THEATER, FISHING, MEDICINE, and METALWORK, the center word might be CAST (cast of actors / cast a line / arm cast / cast molten metal).</p>
+      <p><strong>How to guess:</strong> Tap the "?" to open the guessing panel. Type your guess using the letter boxes, then hit Submit.</p>
+      <p><strong>Feedback:</strong></p>
+      <p>🟩 <strong>Green</strong> = Correct letter, correct position<br/>
+      🟨 <strong>Yellow</strong> = Letter is in the word, but wrong position<br/>
+      ⬜ <strong>Gray</strong> = Letter is not in the word</p>
+      <p>You have <strong>4 attempts</strong>. After each wrong guess, one theme hint is revealed to help you. Solve it in fewer guesses to prove your word mastery!</p>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="gallery-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>Puzzle Gallery</h2>
+      <button class="modal-close" onclick="closeGallery()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="gallery-grid" id="gallery-grid"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const PUZZLES = [
+  { id: 1, title: "Break a Leg", themes: ["THEATER", "MEDICINE", "METALWORK", "FISHING"], colors: ["#EC4899", "#EF4444", "#6B7280", "#3B82F6"], solution: { 0: "STAGE", 1: "SUTURE", 2: "BRACE", 3: "ANVIL", 4: "HOOK", 5: "REEL", 6: "LINE", 7: "CURTAIN" }, bridges: { "STAGE": ["Performance platform", "Illness progression"], "BRACE": ["Orthopedic support", "Structural support"], "HOOK": ["Curved metal tool", "Fishing barb"], "LINE": ["Fishing string", "Spoken dialogue"] }, centerWord: "CAST", centerExplanations: { "THEATER": "Actors", "MEDICINE": "Plaster casing", "FISHING": "Throw line", "METALWORK": "Mold metal" } },
+  { id: 2, title: "Eye of the Needle", themes: ["MECHANICAL", "SUDDEN MOVEMENT", "STORM", "SEWING"], colors: ["#6B7280", "#F59E0B", "#3B82F6", "#EC4899"], solution: { 0: "SPRING", 1: "DASH", 2: "SURGE", 3: "HAIL", 4: "EYE", 5: "SEAM", 6: "PIN", 7: "AXLE" }, bridges: { "SPRING": ["Mechanical coil", "Jump suddenly"], "SURGE": ["Rush forward", "Storm surge"], "EYE": ["Calm center of storm", "Hole in needle"], "PIN": ["Sewing tool", "Fastener"] }, centerWord: "BOLT", centerExplanations: { "MECHANICAL": "Fastener", "SUDDEN MOVEMENT": "Move suddenly", "SEWING": "Fabric roll", "STORM": "Lightning" } },
+  { id: 3, title: "Quarry Query", themes: ["SPORTS", "MASONRY", "COLORS", "KITCHEN"], colors: ["#22C55E", "#78716C", "#8B5CF6", "#F97316"], solution: { 0: "MARBLE", 1: "GRANITE", 2: "SLATE", 3: "TAUPE", 4: "BROWN", 5: "PIT", 6: "SEED", 7: "BIRDIE" }, bridges: { "MARBLE": ["Game piece", "Type of stone"], "SLATE": ["Building stone", "A color"], "BROWN": ["A color", "Cook until brown"], "SEED": ["Remove seeds", "Tournament ranking"] }, centerWord: "STONE", centerExplanations: { "SPORTS": "Curling game piece", "MASONRY": "Natural building material", "KITCHEN": "Remove pit from fruit", "COLORS": "Neutral earthy gray" } },
+  { id: 4, title: "Start the Presses", themes: ["MEDIA", "PRINTING", "WEIGHTS", "LAUNDRY"], colors: ["#6366F1", "#1F2937", "#EF4444", "#06B6D4"], solution: { 0: "COPY", 1: "SERIF", 2: "PLATE", 3: "SQUAT", 4: "IRON", 5: "STARCH", 6: "SPIN", 7: "SCOOP" }, bridges: { "COPY": ["Written material", "Text for printing"], "PLATE": ["Metal printing sheet", "Weighted disc"], "IRON": ["Pump iron", "Pressing tool"], "SPIN": ["Washing cycle", "Present with bias"] }, centerWord: "PRESS", centerExplanations: { "MEDIA": "News media", "PRINTING": "Printing machine", "LAUNDRY": "Iron clothes", "WEIGHTS": "Lift weights" } },
+  { id: 5, title: "Bits and Pieces", themes: ["FIGHTING", "COMEDY", "TOOLS", "COCKTAILS"], colors: ["#EF4444", "#FBBF24", "#78716C", "#EC4899"], solution: { 0: "RIPOSTE", 1: "SKIT", 2: "BIT", 3: "AWL", 4: "SCREWDRIVER", 5: "NEGRONI", 6: "SMASH", 7: "UPPERCUT" }, bridges: { "RIPOSTE": ["Quick counter-attack", "Witty comeback"], "BIT": ["Comedy routine", "Drill attachment"], "SCREWDRIVER": ["Tool for screws", "Vodka cocktail"], "SMASH": ["Cocktail with fruit", "Powerful hit"] }, centerWord: "PUNCH", centerExplanations: { "FIGHTING": "Boxing strike", "COMEDY": "Comedy punchline", "COCKTAILS": "Party drink", "TOOLS": "Hole-making tool" } },
+  { id: 6, title: "Left and Right", themes: ["ORIENTATION", "POLITICS", "BUSINESS", "CORRECTNESS"], colors: ["#3B82F6", "#DC2626", "#6366F1", "#22C55E"], solution: { 0: "LEFT", 1: "WING", 2: "FRANCHISE", 3: "CLAIM", 4: "SOUND", 5: "JUST", 6: "STRAIGHT", 7: "DIRECTION" }, bridges: { "LEFT": ["Direction opposite of right", "Progressive political grouping"], "FRANCHISE": ["Voting rights", "Licensed chain model"], "SOUND": ["Financially solid", "Logically valid"], "STRAIGHT": ["Directly ahead", "Honest and direct"] }, centerWord: "RIGHT", centerExplanations: { "ORIENTATION": "Direction", "POLITICS": "Conservative wing", "BUSINESS": "Entitlement", "CORRECTNESS": "Correct" } },
+  { id: 7, title: "Capital Punishment", themes: ["LAW", "TYPE", "MEDICAL", "GRAMMAR"], colors: ["#1F2937", "#6366F1", "#EF4444", "#22C55E"], solution: { 0: "CAPITAL", 1: "FONT", 2: "STROKE", 3: "PATIENT", 4: "COMPOUND", 5: "PRONOUN", 6: "SENTENCE", 7: "LAWSUIT" }, bridges: { "CAPITAL": ["Punishable by death", "Uppercase letter"], "STROKE": ["Pen mark", "Cerebrovascular event"], "COMPOUND": ["Multi-bone fracture", "Joined clause"], "SENTENCE": ["Grammatical unit", "Court punishment"] }, centerWord: "CASE", centerExplanations: { "LAW": "Legal proceeding", "TYPE": "Upper or lower", "GRAMMAR": "Noun inflection", "MEDICAL": "Patient file" } },
+  { id: 8, title: "Raise the Stakes", themes: ["VENTURE", "BASEBALL", "MUSIC", "TENTS"], colors: ["#6366F1", "#EF4444", "#EC4899", "#22C55E"], solution: { 0: "ANGELS", 1: "YANKS", 2: "HITS", 3: "ALBUM", 4: "COVER", 5: "CAMPING", 6: "STAKE", 7: "INVESTORS" }, bridges: { "ANGELS": ["Angel investors", "LA baseball team"], "HITS": ["Successful at-bats", "Popular songs"], "COVER": ["Song remake", "Tent protection"], "STAKE": ["Tent peg", "Equity share"] }, centerWord: "PITCH", centerExplanations: { "VENTURE": "Business presentation", "BASEBALL": "Thrown ball", "TENTS": "Tent setup", "MUSIC": "Musical tone" } },
+  { id: 9, title: "Shake, Rattle and Roll", themes: ["MOVEMENT", "FOOD", "FILM", "MUSIC"], colors: ["#F59E0B", "#22C55E", "#6366F1", "#EC4899"], solution: { 0: "SHAKE", 1: "BUN", 2: "STOCK", 3: "CAMERA", 4: "SCORE", 5: "SONG", 6: "RHYTHM", 7: "TUMBLE" }, bridges: { "SHAKE": ["Move quickly", "Milkshake"], "STOCK": ["Food broth", "Film stock"], "SCORE": ["Film soundtrack", "Written music"], "RHYTHM": ["Musical beat", "Movement pattern"] }, centerWord: "ROLL", centerExplanations: { "MOVEMENT": "Tumble", "FOOD": "Bread", "MUSIC": "Rock music", "FILM": "Film roll" } },
+  { id: 10, title: "Pool Party", themes: ["ENTERTAINMENT", "SPORTS", "WATER", "WEAPONS"], colors: ["#EC4899", "#22C55E", "#3B82F6", "#6B7280"], solution: { 0: "PLAY", 1: "TIE", 2: "POOL", 3: "WELL", 4: "PUMP", 5: "GUN", 6: "CLIP", 7: "HEADLINER" }, bridges: { "PLAY": ["Theatrical production", "Game action"], "POOL": ["Billiards", "Body of water"], "PUMP": ["Water device", "Pump-action shotgun"], "CLIP": ["Ammo holder", "Video segment"] }, centerWord: "DRAW", centerExplanations: { "ENTERTAINMENT": "Attraction", "SPORTS": "Tied game", "WEAPONS": "Pull weapon", "WATER": "Extract water" } },
+  { id: 11, title: "Band of Gold", themes: ["MUSIC", "DESTABILIZE", "SCULPTURE", "JEWELRY"], colors: ["#EC4899", "#EF4444", "#78716C", "#FBBF24"], solution: { 0: "BEAT", 1: "JOLT", 2: "HAMMER", 3: "MARBLE", 4: "STONE", 5: "GEM", 6: "BAND", 7: "JAZZ" }, bridges: { "BEAT": ["Rhythm", "Defeat soundly"], "HAMMER": ["Criticize harshly", "Sculptor's tool"], "STONE": ["Carving material", "Precious gem"], "BAND": ["Ring", "Musical group"] }, centerWord: "ROCK", centerExplanations: { "MUSIC": "Music genre", "DESTABILIZE": "Hit hard, stun", "JEWELRY": "Precious stone", "SCULPTURE": "Sculpting material" } },
+  { id: 12, title: "Walk the Plank", themes: ["LUMBER", "NAUTICAL", "DINING", "GOVERNANCE"], colors: ["#92400E", "#3B82F6", "#F97316", "#6366F1"], solution: { 0: "DECK", 1: "SHIP", 2: "COURSE", 3: "MEAL", 4: "TABLE", 5: "MOTION", 6: "PANEL", 7: "PLANK" }, bridges: { "DECK": ["Wooden platform", "Floor of ship"], "COURSE": ["Ship's route", "Part of meal"], "TABLE": ["Dining furniture", "Postpone consideration"], "PANEL": ["Group of experts", "Wood sheet"] }, centerWord: "BOARD", centerExplanations: { "LUMBER": "Wood plank", "NAUTICAL": "Ship boarding", "GOVERNANCE": "Governing body", "DINING": "Meals provided" } },
+  { id: 13, title: "Off the Hook", themes: ["MUSIC", "FISH", "WEIGHING", "MAPS"], colors: ["#EC4899", "#3B82F6", "#6B7280", "#22C55E"], solution: { 0: "BASS", 1: "SOLE", 2: "NET", 3: "BALANCE", 4: "UNITS", 5: "GRID", 6: "KEY", 7: "TEMPO" }, bridges: { "BASS": ["Low pitch", "Type of fish"], "NET": ["Fishing tool", "Weight after deductions"], "UNITS": ["Weight measurement", "Map measurement"], "KEY": ["Map legend", "Tonal center"] }, centerWord: "SCALE", centerExplanations: { "MUSIC": "Musical notes sequence", "FISH": "Fish skin", "MAPS": "Map ratio", "WEIGHING": "Weighing device" } },
+  { id: 14, title: "Around the Block", themes: ["SHAPES", "CITY", "FAIRNESS", "MATH"], colors: ["#6366F1", "#6B7280", "#22C55E", "#F59E0B"], solution: { 0: "BLOCK", 1: "PARK", 2: "BENCH", 3: "JUST", 4: "EVEN", 5: "PRIME", 6: "CUBE", 7: "OVAL" }, bridges: { "BLOCK": ["Solid cube shape", "City section"], "BENCH": ["Public seat", "Judge's seat"], "EVEN": ["Fair or equal", "Divisible by two"], "CUBE": ["Third power", "3D shape"] }, centerWord: "SQUARE", centerExplanations: { "SHAPES": "Four-sided shape", "CITY": "City plaza", "MATH": "Multiply by itself", "FAIRNESS": "Fair and honest" } },
+  { id: 15, title: "Crowned Heads", themes: ["CHECKERS", "CHESS", "CARDS", "MONARCHY"], colors: ["#1F2937", "#6366F1", "#EF4444", "#FBBF24"], solution: { 0: "BOARD", 1: "MATE", 2: "RANK", 3: "SUIT", 4: "COURT", 5: "REIGN", 6: "CROWN", 7: "JUMP" }, bridges: { "BOARD": ["Checkers surface", "Chess surface"], "RANK": ["Horizontal row", "Card value"], "COURT": ["Face cards", "Royal entourage"], "CROWN": ["Royal headgear", "Promote a piece"] }, centerWord: "KING", centerExplanations: { "CHECKERS": "Checkers piece", "CHESS": "Chess piece", "MONARCHY": "Monarch", "CARDS": "Face card" } },
+  { id: 16, title: "Crash Course", themes: ["VEHICLES", "COMPUTERS", "REMOVAL", "CATTLE HERDING"], colors: ["#EF4444", "#3B82F6", "#8B5CF6", "#22C55E"], solution: { 0: "CRASH", 1: "MOUSE", 2: "EJECT", 3: "REPEL", 4: "CULL", 5: "WRANGLE", 6: "STEER", 7: "WHEEL" }, bridges: { "CRASH": ["Vehicle accident", "System failure"], "EJECT": ["Eject disk", "Expel"], "CULL": ["Weed out", "Reduce herd"], "STEER": ["Male bovine", "Guide vehicle"] }, centerWord: "DRIVE", centerExplanations: { "VEHICLES": "Operate vehicle", "COMPUTERS": "Storage device", "CATTLE HERDING": "Herd cattle", "REMOVAL": "Drive out" } },
+  { id: 17, title: "Acid Test", themes: ["MATH", "CHEMISTRY", "MYSTERY", "CROSSWORDS"], colors: ["#F59E0B", "#22C55E", "#6366F1", "#78716C"], solution: { 0: "BASE", 1: "ACID", 2: "AGENT", 3: "CRIME", 4: "CLUE", 5: "DOWN", 6: "SQUARE", 7: "ROOT" }, bridges: { "BASE": ["Number system radix", "pH greater than 7"], "AGENT": ["Chemical substance", "Investigator"], "CLUE": ["Evidence in crime", "Puzzle hint"], "SQUARE": ["Grid box", "Number times itself"] }, centerWord: "SOLUTION", centerExplanations: { "MATH": "Math answer", "CHEMISTRY": "Chemical mixture", "CROSSWORDS": "Puzzle answer", "MYSTERY": "Solved crime" } },
+  { id: 18, title: "Perfect Match", themes: ["ROYALTY", "SPORTS", "ROMANCE", "LAW"], colors: ["#FBBF24", "#22C55E", "#EC4899", "#1F2937"], solution: { 0: "BALL", 1: "SQUASH", 2: "MATCH", 3: "FLAME", 4: "BOND", 5: "GAVEL", 6: "PEERS", 7: "THRONE" }, bridges: { "BALL": ["Formal dance", "Sports equipment"], "MATCH": ["Competition", "Marriage partner"], "BOND": ["Emotional connection", "Bail security"], "PEERS": ["Jury of peers", "Nobles"] }, centerWord: "COURT", centerExplanations: { "ROYALTY": "Royal court", "SPORTS": "Playing court", "LAW": "Court of law", "ROMANCE": "To woo" } },
+  { id: 19, title: "The Gambit", themes: ["GAMES", "ART", "FINANCE", "NEWS"], colors: ["#6366F1", "#EC4899", "#22C55E", "#6B7280"], solution: { 0: "MINIATURE", 1: "STATUE", 2: "LOT", 3: "SHARE", 4: "STOCK", 5: "SCOOP", 6: "CHECKER", 7: "KNIGHT" }, bridges: { "MINIATURE": ["Small game model", "Miniature painting"], "LOT": ["Auction item", "Bundle of shares"], "STOCK": ["Company share", "Stock photo"], "CHECKER": ["Game piece", "Fact-checker"] }, centerWord: "PIECE", centerExplanations: { "GAMES": "Game token", "ART": "Artwork", "NEWS": "Article", "FINANCE": "Share of business" } },
+  { id: 20, title: "Fielder's Choice", themes: ["VEGETATION", "MATH", "ORIGIN", "SPORTS"], colors: ["#22C55E", "#F59E0B", "#6366F1", "#EF4444"], solution: { 0: "PLOT", 1: "LOG", 2: "BASE", 3: "SOURCE", 4: "HOME", 5: "PLAY", 6: "FIELD", 7: "LEAF" }, bridges: { "PLOT": ["Garden plot", "Plot points on graph"], "BASE": ["Exponent base", "Foundation"], "HOME": ["Homeland", "Home plate"], "FIELD": ["Playing surface", "Meadow"] }, centerWord: "ROOT", centerExplanations: { "VEGETATION": "Underground part", "MATH": "Square root", "SPORTS": "Cheer for team", "ORIGIN": "Ancestry" } },
+  { id: 21, title: "Bubble Trouble", themes: ["FUEL", "MILITARY", "AQUARIUM", "MARKET"], colors: ["#F59E0B", "#6B7280", "#3B82F6", "#22C55E"], solution: { 0: "RESERVE", 1: "ARMOR", 2: "MARINE", 3: "CORAL", 4: "BUBBLES", 5: "SLUMP", 6: "VOLUME", 7: "GAS" }, bridges: { "RESERVE": ["Backup supply", "Forces held back"], "MARINE": ["Military branch", "Saltwater tank"], "BUBBLES": ["Air in water", "Economic bubbles"], "VOLUME": ["Quantity traded", "Container capacity"] }, centerWord: "TANK", centerExplanations: { "FUEL": "Fuel container", "MILITARY": "Armored vehicle", "MARKET": "To crash", "AQUARIUM": "Fish tank" } },
+  { id: 22, title: "Study Hall", themes: ["GRAMMAR", "ACADEMICS", "SCIENCE", "ROYALTY"], colors: ["#6366F1", "#F59E0B", "#22C55E", "#FBBF24"], solution: { 0: "PERIOD", 1: "ELECTIVE", 2: "STUDY", 3: "HYPOTHESIS", 4: "GRANT", 5: "THRONE", 6: "RULE", 7: "SYNTAX" }, bridges: { "PERIOD": ["Punctuation mark", "Class time slot"], "STUDY": ["Review material", "Research investigation"], "GRANT": ["Research funding", "Bestowed land"], "RULE": ["Sovereign reign", "Linguistic guideline"] }, centerWord: "SUBJECT", centerExplanations: { "GRAMMAR": "Doer of action", "ACADEMICS": "Course of study", "ROYALTY": "One under sovereign", "SCIENCE": "Experiment participant" } },
+  { id: 23, title: "Light Workload", themes: ["PHOTO", "IGNITION", "WORKLOAD", "EXPRESSION"], colors: ["#3B82F6", "#EF4444", "#6B7280", "#EC4899"], solution: { 0: "FLASH", 1: "EMBER", 2: "BURNOUT", 3: "BURDENSOME", 4: "HEAVY", 5: "FUNNY", 6: "TONE", 7: "LENS" }, bridges: { "FLASH": ["Camera flash", "Burst into flame"], "BURNOUT": ["Flame exhaustion", "Work exhaustion"], "HEAVY": ["Demanding effort", "Serious or intense"], "TONE": ["Attitude in speech", "Degree of lightness"] }, centerWord: "LIGHT", centerExplanations: { "PHOTO": "Illumination", "IGNITION": "To ignite", "EXPRESSION": "Not serious in tone", "WORKLOAD": "Not burdensome" } },
+  { id: 24, title: "Cut to the Chase", themes: ["VIOLENCE", "ELIMINATION", "SYMBOLS", "ROCKERS"], colors: ["#EF4444", "#6B7280", "#6366F1", "#EC4899"], solution: { 0: "CUT", 1: "EXCISE", 2: "DASH", 3: "ASTERISK", 4: "SEAL", 5: "BONO", 6: "STING", 7: "STAB" }, bridges: { "CUT": ["Knife wound", "Remove or reduce"], "DASH": ["Strike out text", "Hyphen or em dash"], "SEAL": ["Official emblem", "Singer"], "STING": ["The Police frontman", "Sharp wound"] }, centerWord: "SLASH", centerExplanations: { "VIOLENCE": "Knife attack", "ELIMINATION": "Cut drastically", "ROCKERS": "Guns N' Roses guitarist", "SYMBOLS": "Forward slash /" } },
+  { id: 25, title: "Chain of Command", themes: ["PAPERWORK", "OS", "ARMY", "SHOP"], colors: ["#78716C", "#3B82F6", "#6B7280", "#F59E0B"], solution: { 0: "FOLDER", 1: "BYTE", 2: "COMMAND", 3: "PLATOON", 4: "DRILL", 5: "VISE", 6: "STAMP", 7: "STAPLER" }, bridges: { "FOLDER": ["Holds documents", "Directory"], "COMMAND": ["Command line", "Authority to give orders"], "DRILL": ["Training exercise", "Boring tool"], "STAMP": ["Steel punch", "Ink device"] }, centerWord: "FILE", centerExplanations: { "PAPERWORK": "Document collection", "OS": "Stored digital document", "SHOP": "Tool for smoothing", "ARMY": "Line formation" } },
+  { id: 26, title: "Power Cell", themes: ["PRISON", "MOBILE PHONE", "BIOLOGY", "BATTERY"], colors: ["#6B7280", "#3B82F6", "#22C55E", "#F59E0B"], solution: { 0: "BARS", 1: "ROAMING", 2: "CARRIER", 3: "MITOCHONDRIA", 4: "LIFE", 5: "ALKALINE", 6: "CHARGE", 7: "WARDEN" }, bridges: { "BARS": ["Prison bars", "Signal bars"], "CARRIER": ["Phone carrier", "Disease carrier"], "LIFE": ["Living organisms", "Battery life"], "CHARGE": ["Criminal charge", "Electric charge"] }, centerWord: "CELL", centerExplanations: { "PRISON": "Prison cell", "MOBILE PHONE": "Cell phone", "BIOLOGY": "Biological cell", "BATTERY": "Battery cell" } },
+  { id: 27, title: "Join the Club", themes: ["POLICE", "GOLF", "CARDS", "NIGHTLIFE"], colors: ["#3B82F6", "#22C55E", "#EF4444", "#8B5CF6"], solution: { 0: "TRAP", 1: "CADDIE", 2: "CHIP", 3: "SPADE", 4: "DECK", 5: "DISCO", 6: "BEAT", 7: "BADGE" }, bridges: { "TRAP": ["Speed trap", "Sand trap"], "CHIP": ["Chip shot", "Poker chip"], "DECK": ["DJ deck", "Deck of cards"], "BEAT": ["Walk the beat", "Musical beat"] }, centerWord: "CLUB", centerExplanations: { "POLICE": "Billy club", "GOLF": "Golf club", "CARDS": "Card suit", "NIGHTLIFE": "Nightclub" } },
+  { id: 28, title: "Taking Wing", themes: ["BUILDING", "POLITICS", "BIRD", "PLANE"], colors: ["#6B7280", "#DC2626", "#22C55E", "#3B82F6"], solution: { 0: "LOBBY", 1: "LIBERAL", 2: "HAWK", 3: "BEAK", 4: "TAIL", 5: "JET", 6: "LANDING", 7: "ANNEX" }, bridges: { "LOBBY": ["Entrance lobby", "Political lobbying"], "HAWK": ["War hawk", "Bird of prey"], "TAIL": ["Feathered tail", "Aircraft tail"], "LANDING": ["Plane landing", "Stair landing"] }, centerWord: "WING", centerExplanations: { "BUILDING": "Building wing", "POLITICS": "Political wing", "BIRD": "Bird's wing", "PLANE": "Airplane wing" } }
+];
+
+let currentPuzzleIdx = 0;
+let currentPuzzle = null;
+let grid = {};
+let selected = null;
+let moves = 0;
+let solved = false;
+let solvedPuzzles = {};
+let centerGuessed = false;
+let guessAttempts = 0;
+let maxAttempts = 4;
+let revealedThemes = [];
+let selectedBox = 0;
+
+const board = document.getElementById('board');
+const slicesGroup = document.getElementById('slices');
+const labelsGroup = document.getElementById('labels');
+
+function openHelp() { document.getElementById('help-modal').classList.add('show'); }
+function closeHelp() { document.getElementById('help-modal').classList.remove('show'); }
+function openGallery() { renderGallery(); document.getElementById('gallery-modal').classList.add('show'); }
+function closeGallery() { document.getElementById('gallery-modal').classList.remove('show'); }
+
+function renderGallery() {
+  const g = document.getElementById('gallery-grid');
+  g.innerHTML = '';
+  PUZZLES.forEach((p, idx) => {
+    const item = document.createElement('div');
+    item.className = 'gallery-item';
+    if (idx === currentPuzzleIdx) item.classList.add('current');
+    if (solvedPuzzles[p.id]) item.classList.add('solved');
+    item.innerHTML = '<div class="gallery-title">' + p.title + '</div><div class="gallery-number">#' + p.id + '</div>' + (solvedPuzzles[p.id] ? '<div class="solved-check">✓</div>' : '');
+    item.onclick = function() { loadPuzzle(idx); closeGallery(); };
+    g.appendChild(item);
+  });
+}
+
+function loadPuzzle(idx) {
+  currentPuzzleIdx = idx;
+  currentPuzzle = PUZZLES[idx];
+  document.getElementById('puzzle-title').textContent = currentPuzzle.title;
+  document.getElementById('current-num').textContent = idx + 1;
+  document.getElementById('total-num').textContent = PUZZLES.length;
+  document.getElementById('prev-btn').disabled = idx === 0;
+  document.getElementById('next-btn').disabled = idx === PUZZLES.length - 1;
+  initBoard();
+  shuffle();
+}
+
+function prevPuzzle() { if (currentPuzzleIdx > 0) loadPuzzle(currentPuzzleIdx - 1); }
+function nextPuzzle() { if (currentPuzzleIdx < PUZZLES.length - 1) loadPuzzle(currentPuzzleIdx + 1); }
+
+function getBoardSize() { return board.getBoundingClientRect().width; }
+
+function polarToXY(angleDeg, radiusFrac, size) {
+  var rad = (angleDeg - 90) * Math.PI / 180;
+  var r = (size / 2) * radiusFrac;
+  return { x: size/2 + r * Math.cos(rad), y: size/2 + r * Math.sin(rad) };
+}
+
+function drawSlice(startAngle, endAngle, color) {
+  var cx = 250, cy = 250, r = 240;
+  var start = (startAngle - 90) * Math.PI / 180;
+  var end = (endAngle - 90) * Math.PI / 180;
+  var x1 = cx + r * Math.cos(start), y1 = cy + r * Math.sin(start);
+  var x2 = cx + r * Math.cos(end), y2 = cy + r * Math.sin(end);
+  var path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+  path.setAttribute("d", "M " + cx + " " + cy + " L " + x1 + " " + y1 + " A " + r + " " + r + " 0 0 1 " + x2 + " " + y2 + " Z");
+  path.setAttribute("fill", color);
+  path.setAttribute("class", "slice");
+  return path;
+}
+
+function drawLabel(angle, text, id) {
+  var cx = 250, cy = 250, r = 200;
+  var startAngle = angle - 30, endAngle = angle + 30;
+  var isBottom = angle > 90 && angle < 270;
+  if (isBottom) { var temp = startAngle; startAngle = endAngle; endAngle = temp; }
+  var startRad = (startAngle - 90) * Math.PI / 180;
+  var endRad = (endAngle - 90) * Math.PI / 180;
+  var x1 = cx + r * Math.cos(startRad), y1 = cy + r * Math.sin(startRad);
+  var x2 = cx + r * Math.cos(endRad), y2 = cy + r * Math.sin(endRad);
+  var pathId = "arc-" + id;
+  var path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+  path.setAttribute("id", pathId);
+  path.setAttribute("d", "M " + x1 + " " + y1 + " A " + r + " " + r + " 0 0 " + (isBottom ? 0 : 1) + " " + x2 + " " + y2);
+  path.setAttribute("fill", "none");
+  var textEl = document.createElementNS("http://www.w3.org/2000/svg", "text");
+  textEl.setAttribute("class", "theme-label");
+  var textPath = document.createElementNS("http://www.w3.org/2000/svg", "textPath");
+  textPath.setAttribute("href", "#" + pathId);
+  textPath.setAttribute("startOffset", "50%");
+  textPath.setAttribute("text-anchor", "middle");
+  textPath.textContent = text;
+  textEl.appendChild(textPath);
+  return { path: path, text: textEl };
+}
+
+function initBoard() {
+  var drops = document.querySelectorAll('.drop');
+  for (var i = 0; i < drops.length; i++) drops[i].remove();
+  slicesGroup.innerHTML = '';
+  var angles = [270, 0, 90, 180];
+  for (var i = 0; i < angles.length; i++) {
+    slicesGroup.appendChild(drawSlice(angles[i], angles[i] + 90, currentPuzzle.colors[i]));
+  }
+  
+  labelsGroup.innerHTML = '';
+  var defs = document.querySelector('#svg defs');
+  if (!defs) { 
+    defs = document.createElementNS("http://www.w3.org/2000/svg", "defs"); 
+    document.getElementById('svg').insertBefore(defs, slicesGroup); 
+  }
+  defs.innerHTML = '';
+  
+  var labelAngles = [315, 45, 135, 225];
+  for (var i = 0; i < labelAngles.length; i++) {
+    var result = drawLabel(labelAngles[i], currentPuzzle.themes[i], "theme-" + i);
+    defs.appendChild(result.path);
+    labelsGroup.appendChild(result.text);
+  }
+  
+  var positions = {
+    0: { type: "bridge", angle: 0, radius: 0.65 },
+    1: { type: "anchor", angle: 45, radius: 0.58 },
+    2: { type: "bridge", angle: 90, radius: 0.65 },
+    3: { type: "anchor", angle: 135, radius: 0.58 },
+    4: { type: "bridge", angle: 180, radius: 0.65 },
+    5: { type: "anchor", angle: 225, radius: 0.58 },
+    6: { type: "bridge", angle: 270, radius: 0.65 },
+    7: { type: "anchor", angle: 315, radius: 0.58 }
+  };
+  
+  for (var pos = 0; pos < 8; pos++) {
+    var cfg = positions[pos];
+    var drop = document.createElement('div');
+    drop.id = "drop-" + pos;
+    drop.className = "drop " + cfg.type;
+    drop.dataset.pos = pos;
+    drop.dataset.angle = cfg.angle;
+    drop.dataset.radius = cfg.radius;
+    (function(p) {
+      drop.onclick = function() { handleDropClick(p); };
+    })(pos);
+    board.appendChild(drop);
+  }
+  positionDropZones();
+  window.addEventListener('resize', positionDropZones);
+}
+
+function positionDropZones() {
+  var size = getBoardSize();
+  for (var pos = 0; pos < 8; pos++) {
+    var drop = document.getElementById("drop-" + pos);
+    if (!drop) continue;
+    var angle = parseFloat(drop.dataset.angle);
+    var radius = parseFloat(drop.dataset.radius);
+    var coords = polarToXY(angle, radius, size);
+    drop.style.left = coords.x + 'px';
+    drop.style.top = coords.y + 'px';
+    if (drop.classList.contains('bridge')) {
+      drop.style.transform = "translate(-50%, -50%) rotate(" + angle + "deg)";
+    }
+  }
+}
+
+function shuffle() {
+  solved = false;
+  moves = 0;
+  selected = null;
+  centerGuessed = false;
+  guessAttempts = 0;
+  revealedThemes = [];
+  selectedBox = 0;
+  updateMoveCount();
+  document.getElementById('solved-banner').classList.remove('show');
+  document.getElementById('center-circle').classList.remove('show', 'guessed');
+  document.getElementById('center-circle').textContent = '?';
+  document.getElementById('center-panel').classList.remove('show');
+  hideExplanations();
+  
+  var anchorPos = [1, 3, 5, 7], bridgePos = [0, 2, 4, 6];
+  var anchorWords = anchorPos.map(function(p) { return currentPuzzle.solution[p]; });
+  var bridgeWords = bridgePos.map(function(p) { return currentPuzzle.solution[p]; });
+  var anchorD = getDerangement(4), bridgeD = getDerangement(4);
+  for (var i = 0; i < anchorPos.length; i++) grid[anchorPos[i]] = anchorWords[anchorD[i]];
+  for (var i = 0; i < bridgePos.length; i++) grid[bridgePos[i]] = bridgeWords[bridgeD[i]];
+  renderGrid();
+  checkGroups();
+}
+
+function getDerangement(n) {
+  var arr;
+  do {
+    arr = [];
+    for (var i = 0; i < n; i++) arr.push(i);
+    for (var i = arr.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var temp = arr[i]; arr[i] = arr[j]; arr[j] = temp;
+    }
+  } while (arr.some(function(v, i) { return v === i; }));
+  return arr;
+}
+
+function renderGrid() {
+  for (var pos = 0; pos < 8; pos++) {
+    var drop = document.getElementById("drop-" + pos);
+    if (!drop) continue;
+    var word = grid[pos];
+    var existing = drop.querySelector('.token');
+    if (existing) existing.remove();
+    if (word) {
+      var token = document.createElement('div');
+      token.className = 'token';
+      token.textContent = word;
+      token.dataset.pos = pos;
+      var angle = parseFloat(drop.dataset.angle);
+      if (drop.classList.contains('bridge')) {
+        token.style.transform = "rotate(" + (-angle) + "deg)";
+      }
+      drop.appendChild(token);
+    }
+    drop.classList.remove('selected', 'correct');
+    var t = drop.querySelector('.token');
+    if (t) t.classList.remove('selected', 'correct');
+  }
+}
+
+function handleDropClick(pos) {
+  if (solved) return;
+  var drop = document.getElementById("drop-" + pos);
+  var token = drop.querySelector('.token');
+  if (selected === null) {
+    selected = pos;
+    drop.classList.add('selected');
+    if (token) token.classList.add('selected');
+  } else if (selected === pos) {
+    selected = null;
+    drop.classList.remove('selected');
+    if (token) token.classList.remove('selected');
+  } else {
+    var temp = grid[selected];
+    grid[selected] = grid[pos];
+    grid[pos] = temp;
+    selected = null;
+    moves++;
+    updateMoveCount();
+    renderGrid();
+    checkGroups();
+  }
+}
+
+function updateMoveCount() { document.getElementById('move-count').textContent = moves; }
+
+function checkGroups() {
+  var themePos = [[7, 0, 6], [0, 1, 2], [2, 3, 4], [4, 5, 6]];
+  var allCorrect = true;
+  
+  var themeCorrect = [];
+  for (var idx = 0; idx < themePos.length; idx++) {
+    var positions = themePos[idx];
+    var isCorrect = positions.every(function(p) { return grid[p] === currentPuzzle.solution[p]; });
+    var slices = slicesGroup.querySelectorAll('.slice');
+    if (slices[idx]) {
+      if (isCorrect) slices[idx].classList.add('correct');
+      else slices[idx].classList.remove('correct');
+    }
+    if (!isCorrect) allCorrect = false;
+    themeCorrect.push(isCorrect);
+  }
+  
+  var bridgeConfig = {
+    0: { themes: [0, 1], gradientAngle: 90 },
+    2: { themes: [1, 2], gradientAngle: 180 },
+    4: { themes: [3, 2], gradientAngle: 90 },
+    6: { themes: [0, 3], gradientAngle: 180 }
+  };
+  
+  for (var pos = 0; pos < 8; pos++) {
+    var drop = document.getElementById("drop-" + pos);
+    var token = drop ? drop.querySelector('.token') : null;
+    if (!token) continue;
+    
+    token.classList.remove('correct');
+    token.style.background = '';
+    token.style.color = '';
+    token.style.borderColor = '';
+    if (drop) drop.classList.remove('correct');
+    
+    if (drop.classList.contains('bridge')) {
+      var config = bridgeConfig[pos];
+      var aCorrect = themeCorrect[config.themes[0]];
+      var bCorrect = themeCorrect[config.themes[1]];
+      
+      if (aCorrect && bCorrect) {
+        token.classList.add('correct');
+        if (drop) drop.classList.add('correct');
+      } else if (aCorrect || bCorrect) {
+        var colorA = aCorrect ? '#22c55e' : 'white';
+        var colorB = bCorrect ? '#22c55e' : 'white';
+        token.style.background = "linear-gradient(" + config.gradientAngle + "deg, " + colorA + " 50%, " + colorB + " 50%)";
+        token.style.borderColor = '#1a1a2e';
+      }
+    } else {
+      var isInCorrectTheme = false;
+      for (var idx = 0; idx < themePos.length; idx++) {
+        if (themePos[idx].indexOf(pos) !== -1 && themeCorrect[idx]) {
+          isInCorrectTheme = true;
+          break;
+        }
+      }
+      if (isInCorrectTheme) {
+        token.classList.add('correct');
+        if (drop) drop.classList.add('correct');
+      }
+    }
+  }
+  
+  if (allCorrect && !solved) {
+    solved = true;
+    solvedPuzzles[currentPuzzle.id] = true;
+    document.getElementById('final-moves').textContent = moves;
+    document.getElementById('solved-banner').classList.add('show');
+    showExplanations();
+  }
+}
+
+function showExplanations() {
+  var list = document.getElementById('bridge-list');
+  list.innerHTML = '';
+  for (var word in currentPuzzle.bridges) {
+    var meanings = currentPuzzle.bridges[word];
+    var item = document.createElement('div');
+    item.className = 'bridge-item';
+    item.innerHTML = '<div class="bridge-word">' + word + '</div><div class="bridge-meanings"><span>' + meanings[0] + '</span> / <span>' + meanings[1] + '</span></div>';
+    list.appendChild(item);
+  }
+  document.getElementById('explanations').classList.add('show');
+  
+  if (!centerGuessed) {
+    document.getElementById('center-circle').classList.add('show');
+  }
+}
+
+function hideExplanations() { 
+  document.getElementById('explanations').classList.remove('show'); 
+}
+
+function openGuessModal() {
+  if (!solved || centerGuessed) return;
+  document.getElementById('guess-modal').classList.add('show');
+  
+  // Hide bridge explanations during guessing
+  document.getElementById('explanations').style.display = 'none';
+  
+  // Populate theme chips
+  var chipsDiv = document.getElementById('theme-chips');
+  chipsDiv.innerHTML = '';
+  for (var i = 0; i < currentPuzzle.themes.length; i++) {
+    var chip = document.createElement('span');
+    chip.className = 'theme-chip';
+    chip.textContent = currentPuzzle.themes[i];
+    chip.style.background = currentPuzzle.colors[i];
+    chipsDiv.appendChild(chip);
+  }
+  
+  // Reset if opening fresh (not continuing)
+  if (guessAttempts === 0) {
+    document.getElementById('guess-history').innerHTML = '';
+    document.getElementById('theme-hints').innerHTML = '';
+    revealedThemes = [];
+  }
+  
+  // Update attempt dots
+  var dots = document.querySelectorAll('.attempt-dot');
+  for (var i = 0; i < dots.length; i++) {
+    if (i < guessAttempts) {
+      dots[i].classList.add('used');
+    } else {
+      dots[i].classList.remove('used');
+    }
+  }
+  
+  // Set up letter boxes
+  var letterBoxes = document.getElementById('letter-boxes');
+  letterBoxes.innerHTML = '';
+  letterBoxes.classList.remove('shake');
+  var wordLength = currentPuzzle.centerWord.length;
+  for (var i = 0; i < wordLength; i++) {
+    var box = document.createElement('div');
+    box.className = 'letter-box';
+    box.dataset.index = i;
+    (function(idx) {
+      box.onmousedown = function(e) { e.preventDefault(); }; // Prevent focus loss
+      box.onclick = function() { selectBox(idx); };
+      box.ondblclick = function() { clearBox(idx); };
+    })(i);
+    letterBoxes.appendChild(box);
+  }
+  
+  // Select first box
+  selectedBox = 0;
+  updateBoxSelection();
+  
+  // Show/hide buttons based on game state
+  document.querySelector('.guess-btn.submit').style.display = guessAttempts >= maxAttempts ? 'none' : '';
+  
+  // Focus the modal for keyboard input
+  document.getElementById('guess-modal').focus();
+}
+
+function selectBox(index) {
+  var boxes = document.querySelectorAll('#letter-boxes .letter-box');
+  if (index >= 0 && index < boxes.length) {
+    selectedBox = index;
+    updateBoxSelection();
+    // Keep focus on modal for keyboard input
+    document.getElementById('guess-modal').focus();
+  }
+}
+
+function clearBox(index) {
+  var boxes = document.querySelectorAll('#letter-boxes .letter-box');
+  if (index >= 0 && index < boxes.length) {
+    boxes[index].textContent = '';
+    boxes[index].classList.remove('filled');
+    selectedBox = index;
+    updateBoxSelection();
+    // Keep focus on modal for keyboard input
+    document.getElementById('guess-modal').focus();
+  }
+}
+
+function updateBoxSelection() {
+  var boxes = document.querySelectorAll('#letter-boxes .letter-box');
+  for (var i = 0; i < boxes.length; i++) {
+    boxes[i].classList.remove('selected');
+    if (boxes[i].textContent) {
+      boxes[i].classList.add('filled');
+    } else {
+      boxes[i].classList.remove('filled');
+    }
+  }
+  if (boxes[selectedBox]) {
+    boxes[selectedBox].classList.add('selected');
+  }
+}
+
+function getGuessFromBoxes() {
+  var boxes = document.querySelectorAll('#letter-boxes .letter-box');
+  var guess = '';
+  for (var i = 0; i < boxes.length; i++) {
+    var letter = (boxes[i].textContent || '').trim();
+    guess += letter;
+  }
+  return guess.toUpperCase();
+}
+
+function clearLetterBoxes() {
+  var boxes = document.querySelectorAll('#letter-boxes .letter-box');
+  for (var i = 0; i < boxes.length; i++) {
+    boxes[i].textContent = '';
+    boxes[i].classList.remove('filled');
+  }
+  selectedBox = 0;
+  updateBoxSelection();
+}
+
+function closeGuessModal() {
+  document.getElementById('guess-modal').classList.remove('show');
+  // Reset button text for next time
+  document.querySelector('.guess-btn.cancel').textContent = 'Cancel';
+  // Reset letter boxes display
+  document.getElementById('letter-boxes').style.display = '';
+  // Show bridge explanations again if puzzle is solved
+  if (solved) {
+    document.getElementById('explanations').style.display = '';
+  }
+}
+
+function submitGuess() {
+  var guess = getGuessFromBoxes();
+  var answer = currentPuzzle.centerWord;
+  
+  // Validate guess length
+  if (guess.length !== answer.length) {
+    var letterBoxes = document.getElementById('letter-boxes');
+    letterBoxes.classList.add('shake');
+    setTimeout(function() { letterBoxes.classList.remove('shake'); }, 400);
+    return;
+  }
+  
+  guessAttempts++;
+  
+  // Evaluate guess - Wordle style
+  var result = evaluateGuess(guess, answer);
+  
+  // Add to history
+  var history = document.getElementById('guess-history');
+  var row = document.createElement('div');
+  row.className = 'guess-row';
+  for (var i = 0; i < result.length; i++) {
+    var letterDiv = document.createElement('div');
+    letterDiv.className = 'guess-letter ' + result[i].status;
+    letterDiv.textContent = result[i].letter;
+    row.appendChild(letterDiv);
+  }
+  history.appendChild(row);
+  
+  // Clear letter boxes
+  clearLetterBoxes();
+  
+  // Update attempts - mark dot as used
+  var dots = document.querySelectorAll('.attempt-dot');
+  if (dots[guessAttempts - 1]) {
+    dots[guessAttempts - 1].classList.add('used');
+  }
+  
+  // Check if correct
+  if (guess === answer) {
+    centerGuessed = true;
+    showGuessSuccess();
+    return;
+  }
+  
+  // Wrong guess - reveal a theme hint
+  revealNextThemeHint();
+  
+  // Check if out of attempts
+  if (guessAttempts >= maxAttempts) {
+    showGuessFailure();
+    return;
+  }
+}
+
+function evaluateGuess(guess, answer) {
+  var result = [];
+  var answerLetters = answer.split('');
+  var guessLetters = guess.split('');
+  var used = [];
+  
+  // First pass: mark correct positions
+  for (var i = 0; i < guessLetters.length; i++) {
+    if (guessLetters[i] === answerLetters[i]) {
+      result[i] = { letter: guessLetters[i], status: 'correct' };
+      used[i] = true;
+    } else {
+      result[i] = { letter: guessLetters[i], status: 'absent' };
+    }
+  }
+  
+  // Second pass: mark present but wrong position
+  for (var i = 0; i < guessLetters.length; i++) {
+    if (result[i].status === 'correct') continue;
+    
+    for (var j = 0; j < answerLetters.length; j++) {
+      if (!used[j] && guessLetters[i] === answerLetters[j]) {
+        result[i].status = 'present';
+        used[j] = true;
+        break;
+      }
+    }
+  }
+  
+  return result;
+}
+
+function revealNextThemeHint() {
+  var themes = Object.keys(currentPuzzle.centerExplanations);
+  var unrevealed = themes.filter(function(t) { return revealedThemes.indexOf(t) === -1; });
+  
+  if (unrevealed.length === 0) return;
+  
+  var themeToReveal = unrevealed[0];
+  revealedThemes.push(themeToReveal);
+  
+  var hintsDiv = document.getElementById('theme-hints');
+  var hint = document.createElement('div');
+  hint.className = 'theme-hint';
+  hint.innerHTML = '<div class="theme-hint-label">' + themeToReveal + '</div><div class="theme-hint-meaning">' + currentPuzzle.centerExplanations[themeToReveal] + '</div>';
+  hintsDiv.appendChild(hint);
+}
+
+function showGuessSuccess() {
+  // Close modal immediately - let the center panel celebrate
+  closeGuessModal();
+  
+  // Update center circle with celebration
+  var circle = document.getElementById('center-circle');
+  circle.textContent = currentPuzzle.centerWord;
+  circle.classList.add('guessed', 'celebrate');
+  setTimeout(function() { circle.classList.remove('celebrate'); }, 500);
+  
+  // Update banner
+  document.getElementById('solved-banner').innerHTML = '🎉 Complete! Solved in <span id="final-moves">' + moves + '</span> moves + found <strong>' + currentPuzzle.centerWord + '</strong> in ' + guessAttempts + ' guess' + (guessAttempts > 1 ? 'es' : '') + '!';
+  
+  // Show full center panel with guess count
+  showCenterPanel(guessAttempts);
+}
+
+function showGuessFailure() {
+  // Close modal - show answer in center panel
+  closeGuessModal();
+  
+  // Still update center circle to show answer
+  centerGuessed = true;
+  var circle = document.getElementById('center-circle');
+  circle.textContent = currentPuzzle.centerWord;
+  circle.classList.add('guessed');
+  
+  // Update banner
+  document.getElementById('solved-banner').innerHTML = '🎉 Stage 1 complete! Center word: <strong>' + currentPuzzle.centerWord + '</strong>';
+  
+  // Show full center panel with failure message
+  showCenterPanelFailure();
+}
+
+function showCenterPanel(guessCount) {
+  document.getElementById('center-word-display').textContent = currentPuzzle.centerWord;
+  var panelList = document.getElementById('center-panel-list');
+  panelList.innerHTML = '';
+  
+  // Add guess count if provided
+  if (guessCount) {
+    var guessInfo = document.createElement('div');
+    guessInfo.className = 'center-guess-info success';
+    guessInfo.textContent = '🎉 Found in ' + guessCount + ' guess' + (guessCount > 1 ? 'es' : '') + '!';
+    panelList.appendChild(guessInfo);
+  }
+  
+  for (var theme in currentPuzzle.centerExplanations) {
+    var meaning = currentPuzzle.centerExplanations[theme];
+    var item = document.createElement('div');
+    item.className = 'center-panel-item';
+    item.innerHTML = '<span class="center-panel-theme">' + theme + '</span><span class="center-panel-meaning">' + meaning + '</span>';
+    panelList.appendChild(item);
+  }
+  document.getElementById('center-panel').classList.add('show');
+}
+
+function showCenterPanelFailure() {
+  document.getElementById('center-word-display').textContent = currentPuzzle.centerWord;
+  var panelList = document.getElementById('center-panel-list');
+  panelList.innerHTML = '';
+  
+  var guessInfo = document.createElement('div');
+  guessInfo.className = 'center-guess-info failure';
+  guessInfo.textContent = 'Revealed after 4 attempts';
+  panelList.appendChild(guessInfo);
+  
+  for (var theme in currentPuzzle.centerExplanations) {
+    var meaning = currentPuzzle.centerExplanations[theme];
+    var item = document.createElement('div');
+    item.className = 'center-panel-item';
+    item.innerHTML = '<span class="center-panel-theme">' + theme + '</span><span class="center-panel-meaning">' + meaning + '</span>';
+    panelList.appendChild(item);
+  }
+  document.getElementById('center-panel').classList.add('show');
+}
+
+document.addEventListener('keydown', function(e) {
+  var modal = document.getElementById('guess-modal');
+  if (!modal.classList.contains('show')) return;
+  
+  // Don't process if game is over
+  if (centerGuessed || guessAttempts >= maxAttempts) {
+    if (e.key === 'Escape' || e.key === 'Enter') closeGuessModal();
+    return;
+  }
+  
+  var boxes = document.querySelectorAll('#letter-boxes .letter-box');
+  var wordLength = boxes.length;
+  
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    submitGuess();
+  } else if (e.key === 'Escape') {
+    closeGuessModal();
+  } else if (e.key === 'Backspace') {
+    e.preventDefault();
+    if (selectedBox > 0) {
+      selectedBox--;
+      updateBoxSelection();
+    }
+  } else if (e.key === 'Delete') {
+    e.preventDefault();
+    if (boxes.length > 0 && boxes[selectedBox]) {
+      boxes[selectedBox].textContent = '';
+      boxes[selectedBox].classList.remove('filled');
+      updateBoxSelection();
+    }
+  } else if (e.key === 'ArrowLeft') {
+    e.preventDefault();
+    if (selectedBox > 0) {
+      selectedBox--;
+      updateBoxSelection();
+    }
+  } else if (e.key === 'ArrowRight') {
+    e.preventDefault();
+    if (selectedBox < wordLength - 1) {
+      selectedBox++;
+      updateBoxSelection();
+    }
+  } else if (e.key.length === 1 && /^[a-zA-Z]$/.test(e.key)) {
+    e.preventDefault();
+    var letter = e.key.toUpperCase();
+    boxes[selectedBox].textContent = letter;
+    boxes[selectedBox].classList.add('filled');
+    // Auto-advance to next box
+    if (selectedBox < wordLength - 1) {
+      selectedBox++;
+    }
+    updateBoxSelection();
+    // Ensure modal stays focused
+    modal.focus();
+  }
+});
+
+function solve() {
+  for (var pos = 0; pos < 8; pos++) grid[pos] = currentPuzzle.solution[pos];
+  renderGrid();
+  checkGroups();
+}
+
+function startPlaying() {
+  // Check if user wants to skip welcome in future
+  if (document.getElementById('skip-welcome-checkbox').checked) {
+    localStorage.setItem('associology-skip-welcome', 'true');
+  }
+  document.getElementById('welcome-overlay').classList.add('hidden');
+}
+
+// Initialize welcome board ring
+function initWelcomeBoard() {
+  var puzzle = PUZZLES[0]; // Use Puzzle 1
+  var welcomeSlices = document.getElementById('welcome-slices');
+  var welcomeLabels = document.getElementById('welcome-labels');
+  var welcomeDefs = document.getElementById('welcome-defs');
+  var welcomeBoard = document.getElementById('welcome-board');
+  
+  // Draw slices using same function as game
+  var sliceAngles = [270, 0, 90, 180];
+  for (var i = 0; i < sliceAngles.length; i++) {
+    welcomeSlices.appendChild(drawSlice(sliceAngles[i], sliceAngles[i] + 90, puzzle.colors[i]));
+  }
+  
+  // Draw labels using same function as game
+  var labelAngles = [315, 45, 135, 225];
+  for (var i = 0; i < labelAngles.length; i++) {
+    var result = drawLabel(labelAngles[i], puzzle.themes[i], "welcome-theme-" + i);
+    welcomeDefs.appendChild(result.path);
+    welcomeLabels.appendChild(result.text);
+  }
+  
+  // Add word chips - same positions as game
+  var positions = {
+    0: { angle: 0, radius: 0.65 },
+    1: { angle: 45, radius: 0.58 },
+    2: { angle: 90, radius: 0.65 },
+    3: { angle: 135, radius: 0.58 },
+    4: { angle: 180, radius: 0.65 },
+    5: { angle: 225, radius: 0.58 },
+    6: { angle: 270, radius: 0.65 },
+    7: { angle: 315, radius: 0.58 }
+  };
+  
+  function polarToPercent(angleDeg, radiusFrac) {
+    var rad = (angleDeg - 90) * Math.PI / 180;
+    var x = 50 + 50 * radiusFrac * Math.cos(rad);
+    var y = 50 + 50 * radiusFrac * Math.sin(rad);
+    return { x: x, y: y };
+  }
+  
+  // Shuffle words for welcome screen
+  var words = [];
+  for (var i = 0; i < 8; i++) {
+    words.push(puzzle.solution[i]);
+  }
+  // Fisher-Yates shuffle
+  for (var i = words.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var temp = words[i];
+    words[i] = words[j];
+    words[j] = temp;
+  }
+  
+  for (var pos = 0; pos < 8; pos++) {
+    var cfg = positions[pos];
+    var coords = polarToPercent(cfg.angle, cfg.radius);
+    var drop = document.createElement('div');
+    drop.className = 'welcome-drop';
+    drop.style.left = coords.x + '%';
+    drop.style.top = coords.y + '%';
+    drop.textContent = words[pos];
+    welcomeBoard.appendChild(drop);
+  }
+}
+
+// Clear old localStorage key if present
+localStorage.removeItem('associology-welcomed');
+
+// Check if user opted to skip welcome screen
+if (localStorage.getItem('associology-skip-welcome')) {
+  document.getElementById('welcome-overlay').classList.add('hidden');
+}
+
+// Initialize welcome board
+initWelcomeBoard();
+
+// Update puzzle count on welcome screen
+document.querySelector('.welcome-footer span:last-child').textContent = PUZZLES.length + ' puzzles';
+
+loadPuzzle(0);
+</script>
+</body>
+</html>
