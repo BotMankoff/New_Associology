@@ -619,8 +619,8 @@
     z-index: 200;
     align-items: flex-start;
     justify-content: center;
-    padding: 0;
-    padding-top: calc(var(--size) + 140px);
+    padding: 20px 0;
+    overflow-y: auto;
   }
   
   .guess-modal.show { display: flex; }
@@ -635,8 +635,6 @@
     width: calc(100% - 24px);
     margin: 0 12px;
     text-align: center;
-    max-height: calc(100vh - var(--size) - 160px);
-    overflow-y: auto;
     box-shadow: 0 4px 20px rgba(0,0,0,0.15);
   }
   
@@ -724,7 +722,7 @@
     display: flex;
     justify-content: center;
     gap: 8px;
-    margin-bottom: 16px;
+    margin-bottom: 12px;
   }
   
   .letter-box {
@@ -756,6 +754,91 @@
   .letter-box.filled {
     border-color: var(--dark);
     background: #f9f9f9;
+  }
+  
+  .feedback-legend {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin: 12px 0;
+    font-size: 11px;
+    color: #666;
+  }
+  
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  
+  .legend-box {
+    width: 14px;
+    height: 14px;
+    border-radius: 3px;
+  }
+  
+  .legend-box.green {
+    background: var(--success);
+  }
+  
+  .legend-box.yellow {
+    background: #eab308;
+  }
+  
+  .legend-box.gray {
+    background: #9ca3af;
+  }
+  
+  .virtual-keyboard {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 12px;
+  }
+  
+  .kb-row {
+    display: flex;
+    justify-content: center;
+    gap: 4px;
+  }
+  
+  .kb-key {
+    min-width: 28px;
+    height: 38px;
+    padding: 0 8px;
+    border: none;
+    border-radius: 6px;
+    background: #e5e7eb;
+    color: #1f2937;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.1s, transform 0.1s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  .kb-key:hover {
+    background: #d1d5db;
+  }
+  
+  .kb-key:active {
+    background: #9ca3af;
+    transform: scale(0.95);
+  }
+  
+  .kb-backspace {
+    min-width: 50px;
+    background: #fee2e2;
+    color: #dc2626;
+  }
+  
+  .kb-backspace:hover {
+    background: #fecaca;
+  }
+  
+  .kb-backspace:active {
+    background: #fca5a5;
   }
   
   .guess-history {
@@ -1018,6 +1101,46 @@
     </div>
     <div class="guess-history" id="guess-history"></div>
     <div class="letter-boxes" id="letter-boxes"></div>
+    <div class="virtual-keyboard" id="virtual-keyboard">
+      <div class="kb-row">
+        <button class="kb-key" data-key="Q">Q</button>
+        <button class="kb-key" data-key="W">W</button>
+        <button class="kb-key" data-key="E">E</button>
+        <button class="kb-key" data-key="R">R</button>
+        <button class="kb-key" data-key="T">T</button>
+        <button class="kb-key" data-key="Y">Y</button>
+        <button class="kb-key" data-key="U">U</button>
+        <button class="kb-key" data-key="I">I</button>
+        <button class="kb-key" data-key="O">O</button>
+        <button class="kb-key" data-key="P">P</button>
+      </div>
+      <div class="kb-row">
+        <button class="kb-key" data-key="A">A</button>
+        <button class="kb-key" data-key="S">S</button>
+        <button class="kb-key" data-key="D">D</button>
+        <button class="kb-key" data-key="F">F</button>
+        <button class="kb-key" data-key="G">G</button>
+        <button class="kb-key" data-key="H">H</button>
+        <button class="kb-key" data-key="J">J</button>
+        <button class="kb-key" data-key="K">K</button>
+        <button class="kb-key" data-key="L">L</button>
+      </div>
+      <div class="kb-row">
+        <button class="kb-key" data-key="Z">Z</button>
+        <button class="kb-key" data-key="X">X</button>
+        <button class="kb-key" data-key="C">C</button>
+        <button class="kb-key" data-key="V">V</button>
+        <button class="kb-key" data-key="B">B</button>
+        <button class="kb-key" data-key="N">N</button>
+        <button class="kb-key" data-key="M">M</button>
+        <button class="kb-key kb-backspace" data-key="BACK">←</button>
+      </div>
+    </div>
+    <div class="feedback-legend">
+      <span class="legend-item"><span class="legend-box green"></span>right spot</span>
+      <span class="legend-item"><span class="legend-box yellow"></span>wrong spot</span>
+      <span class="legend-item"><span class="legend-box gray"></span>not in word</span>
+    </div>
     <div class="guess-buttons">
       <button class="guess-btn cancel" onclick="closeGuessModal()">Cancel</button>
       <button class="guess-btn submit" onclick="submitGuess()">Submit</button>
@@ -1484,11 +1607,6 @@ function openGuessModal() {
     var box = document.createElement('div');
     box.className = 'letter-box';
     box.dataset.index = i;
-    (function(idx) {
-      box.onmousedown = function(e) { e.preventDefault(); }; // Prevent focus loss
-      box.onclick = function() { selectBox(idx); };
-      box.ondblclick = function() { clearBox(idx); };
-    })(i);
     letterBoxes.appendChild(box);
   }
   
@@ -1498,9 +1616,6 @@ function openGuessModal() {
   
   // Show/hide buttons based on game state
   document.querySelector('.guess-btn.submit').style.display = guessAttempts >= maxAttempts ? 'none' : '';
-  
-  // Focus the modal for keyboard input
-  document.getElementById('guess-modal').focus();
 }
 
 function selectBox(index) {
@@ -1508,8 +1623,6 @@ function selectBox(index) {
   if (index >= 0 && index < boxes.length) {
     selectedBox = index;
     updateBoxSelection();
-    // Keep focus on modal for keyboard input
-    document.getElementById('guess-modal').focus();
   }
 }
 
@@ -1520,8 +1633,6 @@ function clearBox(index) {
     boxes[index].classList.remove('filled');
     selectedBox = index;
     updateBoxSelection();
-    // Keep focus on modal for keyboard input
-    document.getElementById('guess-modal').focus();
   }
 }
 
@@ -1772,43 +1883,49 @@ document.addEventListener('keydown', function(e) {
     closeGuessModal();
   } else if (e.key === 'Backspace') {
     e.preventDefault();
-    if (selectedBox > 0) {
-      selectedBox--;
-      updateBoxSelection();
-    }
-  } else if (e.key === 'Delete') {
-    e.preventDefault();
-    if (boxes.length > 0 && boxes[selectedBox]) {
-      boxes[selectedBox].textContent = '';
-      boxes[selectedBox].classList.remove('filled');
-      updateBoxSelection();
-    }
-  } else if (e.key === 'ArrowLeft') {
-    e.preventDefault();
-    if (selectedBox > 0) {
-      selectedBox--;
-      updateBoxSelection();
-    }
-  } else if (e.key === 'ArrowRight') {
-    e.preventDefault();
-    if (selectedBox < wordLength - 1) {
-      selectedBox++;
-      updateBoxSelection();
-    }
+    handleVirtualKey('BACK');
   } else if (e.key.length === 1 && /^[a-zA-Z]$/.test(e.key)) {
     e.preventDefault();
-    var letter = e.key.toUpperCase();
-    boxes[selectedBox].textContent = letter;
-    boxes[selectedBox].classList.add('filled');
-    // Auto-advance to next box
-    if (selectedBox < wordLength - 1) {
-      selectedBox++;
-    }
-    updateBoxSelection();
-    // Ensure modal stays focused
-    modal.focus();
+    handleVirtualKey(e.key.toUpperCase());
   }
 });
+
+// Virtual keyboard click handler
+document.getElementById('virtual-keyboard').addEventListener('click', function(e) {
+  var key = e.target.dataset.key;
+  if (key) {
+    handleVirtualKey(key);
+  }
+});
+
+function handleVirtualKey(key) {
+  var boxes = document.querySelectorAll('#letter-boxes .letter-box');
+  var wordLength = boxes.length;
+  
+  if (key === 'BACK') {
+    // Find last filled box and clear it
+    for (var i = wordLength - 1; i >= 0; i--) {
+      if (boxes[i].textContent) {
+        boxes[i].textContent = '';
+        boxes[i].classList.remove('filled');
+        selectedBox = i;
+        updateBoxSelection();
+        break;
+      }
+    }
+  } else {
+    // Find first empty box and fill it
+    for (var i = 0; i < wordLength; i++) {
+      if (!boxes[i].textContent) {
+        boxes[i].textContent = key;
+        boxes[i].classList.add('filled');
+        selectedBox = Math.min(i + 1, wordLength - 1);
+        updateBoxSelection();
+        break;
+      }
+    }
+  }
+}
 
 function solve() {
   for (var pos = 0; pos < 8; pos++) grid[pos] = currentPuzzle.solution[pos];
