@@ -359,12 +359,16 @@
     z-index: 20;
     box-shadow: 0 4px 15px rgba(0,0,0,0.2);
     transition: transform 0.3s ease, color 0.3s ease;
+    text-align: center;
+    line-height: 1.1;
   }
   
   .center-circle.show {
     color: var(--accent);
     cursor: pointer;
     animation: pulse 2s ease-in-out infinite;
+    font-size: 12px;
+    padding: 4px;
   }
   
   .center-circle.guessed {
@@ -1648,7 +1652,10 @@ function showExplanations() {
   document.getElementById('explanations').classList.add('show');
   
   if (!centerGuessed) {
-    document.getElementById('center-circle').classList.add('show');
+    var circle = document.getElementById('center-circle');
+    var len = currentPuzzle.centerWord.length;
+    circle.textContent = len + ' letters';
+    circle.classList.add('show');
   }
 }
 
