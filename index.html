@@ -869,9 +869,95 @@
   .guess-letter.present { background: #F59E0B; }
   .guess-letter.absent { background: #6B7280; }
   
+  .theme-meanings {
+    background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+    border: 2px solid #7dd3fc;
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin-bottom: 14px;
+    text-align: left;
+  }
+  
+  .theme-meanings-header {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #0369a1;
+    margin-bottom: 8px;
+    text-align: center;
+  }
+  
+  .theme-meaning-item {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin-bottom: 6px;
+    font-size: 13px;
+  }
+  
+  .theme-meaning-item:last-child {
+    margin-bottom: 0;
+  }
+  
+  .theme-meaning-label {
+    font-weight: 700;
+    color: #0c4a6e;
+    font-size: 10px;
+    text-transform: uppercase;
+    min-width: 80px;
+  }
+  
+  .theme-meaning-text {
+    color: #1e3a5f;
+    font-style: italic;
+  }
+  
+  .hint-btn {
+    padding: 10px 20px;
+    background: linear-gradient(135deg, #fef3c7, #fde68a);
+    border: 2px solid #f59e0b;
+    border-radius: 10px;
+    color: #92400e;
+    font-weight: 700;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-bottom: 12px;
+  }
+  
+  .hint-btn:hover {
+    background: linear-gradient(135deg, #fde68a, #fcd34d);
+    transform: scale(1.02);
+  }
+  
+  .hint-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+  }
+  
+  .letter-box.hinted {
+    border-color: #f59e0b;
+    background: #fef3c7;
+    color: #92400e;
+  }
+  
+  .letter-box.hinted.selected {
+    border-color: #f59e0b;
+    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.25);
+  }
+  
+  .hints-used {
+    font-size: 11px;
+    color: #92400e;
+    margin-bottom: 8px;
+  }
+  
   .theme-hints {
     margin-top: 16px;
     text-align: left;
+    display: none; /* No longer used - meanings shown upfront */
   }
   
   .theme-hint {
@@ -1091,8 +1177,8 @@
 <div class="guess-modal" id="guess-modal" tabindex="-1">
   <div class="guess-content">
     <h3>Mystery Center Word</h3>
-    <p>What single word connects all 4 themes?</p>
-    <div class="theme-chips" id="theme-chips"></div>
+    <p>What single word has ALL of these meanings?</p>
+    <div class="theme-meanings" id="theme-meanings"></div>
     <div class="attempt-dots" id="attempt-dots">
       <span class="attempt-dot"></span>
       <span class="attempt-dot"></span>
@@ -1101,6 +1187,8 @@
     </div>
     <div class="guess-history" id="guess-history"></div>
     <div class="letter-boxes" id="letter-boxes"></div>
+    <button class="hint-btn" id="hint-btn" onclick="revealHint()">💡 Reveal a Letter</button>
+    <div class="hints-used" id="hints-used"></div>
     <div class="virtual-keyboard" id="virtual-keyboard">
       <div class="kb-row">
         <button class="kb-key" data-key="Q">Q</button>
@@ -1160,14 +1248,15 @@
       <p>Place 8 words around the ring so each belongs to its correct theme(s). <strong>Anchors</strong> (inside quadrants) belong to ONE theme. <strong>Bridges</strong> (on boundaries) belong to TWO adjacent themes.</p>
       <p>Tap two words to swap them. Bridges show split coloring as you solve — only the half inside a completed quadrant turns green.</p>
       <p><strong>Stage 2 — Find the Center Word</strong></p>
-      <p>Once all words are placed, a "?" appears at the center. This mystery word connects ALL 4 themes through different meanings of the same word.</p>
+      <p>Once all words are placed, tap the "?" at the center. This mystery word connects ALL 4 themes through different meanings of the same word.</p>
       <p>For example, if the themes were THEATER, FISHING, MEDICINE, and METALWORK, the center word might be CAST (cast of actors / cast a line / arm cast / cast molten metal).</p>
-      <p><strong>How to guess:</strong> Tap the "?" to open the guessing panel. Type your guess using the letter boxes, then hit Submit.</p>
+      <p><strong>Your clues:</strong> When the guessing panel opens, you'll see all 4 meanings — one for each theme. Use these to deduce the answer!</p>
+      <p><strong>Need help?</strong> Tap "💡 Reveal a Letter" to fill in a random letter. Use as many hints as you need!</p>
       <p><strong>Feedback:</strong></p>
       <p>🟩 <strong>Green</strong> = Correct letter, correct position<br/>
       🟨 <strong>Yellow</strong> = Letter is in the word, but wrong position<br/>
       ⬜ <strong>Gray</strong> = Letter is not in the word</p>
-      <p>You have <strong>4 attempts</strong>. After each wrong guess, one theme hint is revealed to help you. Solve it in fewer guesses to prove your word mastery!</p>
+      <p>You have <strong>4 attempts</strong>. Solve it with fewer guesses and hints to prove your word mastery!</p>
     </div>
   </div>
 </div>
@@ -1228,6 +1317,8 @@ let guessAttempts = 0;
 let maxAttempts = 4;
 let revealedThemes = [];
 let selectedBox = 0;
+let hintsUsed = 0;
+let hintedPositions = [];
 
 const board = document.getElementById('board');
 const slicesGroup = document.getElementById('slices');
@@ -1389,6 +1480,8 @@ function shuffle() {
   guessAttempts = 0;
   revealedThemes = [];
   selectedBox = 0;
+  hintsUsed = 0;
+  hintedPositions = [];
   updateMoveCount();
   document.getElementById('solved-banner').classList.remove('show');
   document.getElementById('center-circle').classList.remove('show', 'guessed');
@@ -1570,22 +1663,24 @@ function openGuessModal() {
   // Hide bridge explanations during guessing
   document.getElementById('explanations').style.display = 'none';
   
-  // Populate theme chips
-  var chipsDiv = document.getElementById('theme-chips');
-  chipsDiv.innerHTML = '';
+  // Show all theme meanings upfront
+  var meaningsDiv = document.getElementById('theme-meanings');
+  meaningsDiv.innerHTML = '<div class="theme-meanings-header">The word means...</div>';
   for (var i = 0; i < currentPuzzle.themes.length; i++) {
-    var chip = document.createElement('span');
-    chip.className = 'theme-chip';
-    chip.textContent = currentPuzzle.themes[i];
-    chip.style.background = currentPuzzle.colors[i];
-    chipsDiv.appendChild(chip);
+    var theme = currentPuzzle.themes[i];
+    var meaning = currentPuzzle.centerExplanations[theme];
+    var item = document.createElement('div');
+    item.className = 'theme-meaning-item';
+    item.innerHTML = '<span class="theme-meaning-label" style="color:' + currentPuzzle.colors[i] + '">' + theme + ':</span><span class="theme-meaning-text">"' + meaning + '"</span>';
+    meaningsDiv.appendChild(item);
   }
   
   // Reset if opening fresh (not continuing)
   if (guessAttempts === 0) {
     document.getElementById('guess-history').innerHTML = '';
-    document.getElementById('theme-hints').innerHTML = '';
-    revealedThemes = [];
+    hintsUsed = 0;
+    hintedPositions = [];
+    updateHintsDisplay();
   }
   
   // Update attempt dots
@@ -1607,12 +1702,28 @@ function openGuessModal() {
     var box = document.createElement('div');
     box.className = 'letter-box';
     box.dataset.index = i;
+    // Restore hinted letters
+    if (hintedPositions.indexOf(i) !== -1) {
+      box.textContent = currentPuzzle.centerWord[i];
+      box.classList.add('filled', 'hinted');
+    }
     letterBoxes.appendChild(box);
   }
   
-  // Select first box
+  // Select first non-hinted box
   selectedBox = 0;
+  for (var i = 0; i < wordLength; i++) {
+    if (hintedPositions.indexOf(i) === -1) {
+      selectedBox = i;
+      break;
+    }
+  }
   updateBoxSelection();
+  
+  // Enable/disable hint button
+  var hintBtn = document.getElementById('hint-btn');
+  hintBtn.disabled = hintedPositions.length >= wordLength - 1 || guessAttempts >= maxAttempts;
+  hintBtn.style.display = guessAttempts >= maxAttempts ? 'none' : '';
   
   // Show/hide buttons based on game state
   document.querySelector('.guess-btn.submit').style.display = guessAttempts >= maxAttempts ? 'none' : '';
@@ -1664,11 +1775,72 @@ function getGuessFromBoxes() {
 function clearLetterBoxes() {
   var boxes = document.querySelectorAll('#letter-boxes .letter-box');
   for (var i = 0; i < boxes.length; i++) {
-    boxes[i].textContent = '';
-    boxes[i].classList.remove('filled');
+    // Don't clear hinted letters
+    if (hintedPositions.indexOf(i) === -1) {
+      boxes[i].textContent = '';
+      boxes[i].classList.remove('filled');
+    }
   }
   selectedBox = 0;
+  // Find first non-hinted box
+  for (var i = 0; i < boxes.length; i++) {
+    if (hintedPositions.indexOf(i) === -1) {
+      selectedBox = i;
+      break;
+    }
+  }
   updateBoxSelection();
+}
+
+function revealHint() {
+  var answer = currentPuzzle.centerWord;
+  var boxes = document.querySelectorAll('#letter-boxes .letter-box');
+  
+  // Find positions that haven't been hinted yet
+  var available = [];
+  for (var i = 0; i < answer.length; i++) {
+    if (hintedPositions.indexOf(i) === -1) {
+      available.push(i);
+    }
+  }
+  
+  if (available.length === 0) return;
+  
+  // Pick a random available position
+  var randomIdx = Math.floor(Math.random() * available.length);
+  var pos = available[randomIdx];
+  
+  // Reveal the letter
+  boxes[pos].textContent = answer[pos];
+  boxes[pos].classList.add('filled', 'hinted');
+  hintedPositions.push(pos);
+  hintsUsed++;
+  
+  // Update hints display
+  updateHintsDisplay();
+  
+  // Disable button if all letters revealed
+  if (hintedPositions.length >= answer.length - 1) {
+    document.getElementById('hint-btn').disabled = true;
+  }
+  
+  // Move selection to next empty box
+  for (var i = 0; i < boxes.length; i++) {
+    if (!boxes[i].textContent) {
+      selectedBox = i;
+      updateBoxSelection();
+      break;
+    }
+  }
+}
+
+function updateHintsDisplay() {
+  var display = document.getElementById('hints-used');
+  if (hintsUsed > 0) {
+    display.textContent = hintsUsed + ' letter hint' + (hintsUsed > 1 ? 's' : '') + ' used';
+  } else {
+    display.textContent = '';
+  }
 }
 
 function closeGuessModal() {
@@ -1728,8 +1900,7 @@ function submitGuess() {
     return;
   }
   
-  // Wrong guess - reveal a theme hint
-  revealNextThemeHint();
+  // Wrong guess - meanings already shown upfront, no additional hints needed
   
   // Check if out of attempts
   if (guessAttempts >= maxAttempts) {
@@ -1796,8 +1967,13 @@ function showGuessSuccess() {
   circle.classList.add('guessed', 'celebrate');
   setTimeout(function() { circle.classList.remove('celebrate'); }, 500);
   
-  // Update banner
-  document.getElementById('solved-banner').innerHTML = '🎉 Complete! Solved in <span id="final-moves">' + moves + '</span> moves + found <strong>' + currentPuzzle.centerWord + '</strong> in ' + guessAttempts + ' guess' + (guessAttempts > 1 ? 'es' : '') + '!';
+  // Build success message
+  var msg = '🎉 Complete! Solved in <span id="final-moves">' + moves + '</span> moves + found <strong>' + currentPuzzle.centerWord + '</strong> in ' + guessAttempts + ' guess' + (guessAttempts > 1 ? 'es' : '');
+  if (hintsUsed > 0) {
+    msg += ' with ' + hintsUsed + ' hint' + (hintsUsed > 1 ? 's' : '');
+  }
+  msg += '!';
+  document.getElementById('solved-banner').innerHTML = msg;
   
   // Show full center panel with guess count
   showCenterPanel(guessAttempts);
@@ -1829,7 +2005,12 @@ function showCenterPanel(guessCount) {
   if (guessCount) {
     var guessInfo = document.createElement('div');
     guessInfo.className = 'center-guess-info success';
-    guessInfo.textContent = '🎉 Found in ' + guessCount + ' guess' + (guessCount > 1 ? 'es' : '') + '!';
+    var msg = '🎉 Found in ' + guessCount + ' guess' + (guessCount > 1 ? 'es' : '');
+    if (hintsUsed > 0) {
+      msg += ' with ' + hintsUsed + ' hint' + (hintsUsed > 1 ? 's' : '');
+    }
+    msg += '!';
+    guessInfo.textContent = msg;
     panelList.appendChild(guessInfo);
   }
   
@@ -1903,9 +2084,9 @@ function handleVirtualKey(key) {
   var wordLength = boxes.length;
   
   if (key === 'BACK') {
-    // Find last filled box and clear it
+    // Find last filled non-hinted box and clear it
     for (var i = wordLength - 1; i >= 0; i--) {
-      if (boxes[i].textContent) {
+      if (boxes[i].textContent && hintedPositions.indexOf(i) === -1) {
         boxes[i].textContent = '';
         boxes[i].classList.remove('filled');
         selectedBox = i;
@@ -1914,12 +2095,19 @@ function handleVirtualKey(key) {
       }
     }
   } else {
-    // Find first empty box and fill it
+    // Find first empty non-hinted box and fill it
     for (var i = 0; i < wordLength; i++) {
-      if (!boxes[i].textContent) {
+      if (!boxes[i].textContent && hintedPositions.indexOf(i) === -1) {
         boxes[i].textContent = key;
         boxes[i].classList.add('filled');
-        selectedBox = Math.min(i + 1, wordLength - 1);
+        // Move to next empty non-hinted box
+        selectedBox = i;
+        for (var j = i + 1; j < wordLength; j++) {
+          if (!boxes[j].textContent && hintedPositions.indexOf(j) === -1) {
+            selectedBox = j;
+            break;
+          }
+        }
         updateBoxSelection();
         break;
       }
