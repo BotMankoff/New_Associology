@@ -617,6 +617,104 @@
     cursor: pointer;
   }
 
+  /* Difficulty selector modal */
+  .difficulty-modal {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  
+  .difficulty-modal.show { display: flex; }
+  
+  .difficulty-content {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    max-width: 360px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  }
+  
+  .difficulty-content h3 {
+    margin: 0 0 6px 0;
+    font-size: 20px;
+    color: var(--dark);
+  }
+  
+  .difficulty-content > p {
+    margin: 0 0 20px 0;
+    font-size: 13px;
+    color: #666;
+  }
+  
+  .difficulty-options {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .difficulty-option {
+    background: #f8f9fa;
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 14px 16px;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.2s ease;
+  }
+  
+  .difficulty-option:hover {
+    border-color: var(--accent);
+    background: #f0f4ff;
+  }
+  
+  .difficulty-option.easy { border-left: 4px solid #22c55e; }
+  .difficulty-option.medium { border-left: 4px solid #f59e0b; }
+  .difficulty-option.hard { border-left: 4px solid #ef4444; }
+  
+  .difficulty-option:hover.easy { background: #f0fdf4; border-color: #22c55e; }
+  .difficulty-option:hover.medium { background: #fffbeb; border-color: #f59e0b; }
+  .difficulty-option:hover.hard { background: #fef2f2; border-color: #ef4444; }
+  
+  .difficulty-label {
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--dark);
+    margin-bottom: 4px;
+  }
+  
+  .difficulty-option.easy .difficulty-label { color: #16a34a; }
+  .difficulty-option.medium .difficulty-label { color: #d97706; }
+  .difficulty-option.hard .difficulty-label { color: #dc2626; }
+  
+  .difficulty-desc {
+    font-size: 12px;
+    color: #666;
+    line-height: 1.4;
+  }
+  
+  .difficulty-cancel {
+    margin-top: 16px;
+    padding: 10px 20px;
+    background: #eee;
+    border: none;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #666;
+    cursor: pointer;
+  }
+  
+  .difficulty-cancel:hover {
+    background: #ddd;
+  }
+
   /* Guess modal */
   .guess-modal {
     display: none;
@@ -1181,10 +1279,32 @@
   <div id="center-panel-list"></div>
 </div>
 
+<div class="difficulty-modal" id="difficulty-modal">
+  <div class="difficulty-content">
+    <h3>Choose Your Challenge</h3>
+    <p>How much help do you want?</p>
+    <div class="difficulty-options">
+      <div class="difficulty-option easy" onclick="selectDifficulty('easy')">
+        <div class="difficulty-label">EASY</div>
+        <div class="difficulty-desc">All 4 word meanings revealed • Unlimited letter hints</div>
+      </div>
+      <div class="difficulty-option medium" onclick="selectDifficulty('medium')">
+        <div class="difficulty-label">MEDIUM</div>
+        <div class="difficulty-desc">Only theme names shown • Up to 3 letter hints</div>
+      </div>
+      <div class="difficulty-option hard" onclick="selectDifficulty('hard')">
+        <div class="difficulty-label">HARD</div>
+        <div class="difficulty-desc">Only theme names shown • No letter hints</div>
+      </div>
+    </div>
+    <button class="difficulty-cancel" onclick="closeDifficultyModal()">Cancel</button>
+  </div>
+</div>
+
 <div class="guess-modal" id="guess-modal" tabindex="-1">
   <div class="guess-content">
     <h3>Mystery Center Word</h3>
-    <p>What single word has ALL of these meanings?</p>
+    <p id="guess-subtitle">What single word has ALL of these meanings?</p>
     <div class="theme-meanings" id="theme-meanings"></div>
     <div class="attempt-dots" id="attempt-dots">
       <span class="attempt-dot"></span>
@@ -1326,6 +1446,8 @@ let revealedThemes = [];
 let selectedBox = 0;
 let hintsUsed = 0;
 let hintedPositions = [];
+let currentDifficulty = null;
+let maxHints = Infinity;
 
 const board = document.getElementById('board');
 const slicesGroup = document.getElementById('slices');
@@ -1489,6 +1611,8 @@ function shuffle() {
   selectedBox = 0;
   hintsUsed = 0;
   hintedPositions = [];
+  currentDifficulty = null;
+  maxHints = Infinity;
   updateMoveCount();
   document.getElementById('solved-banner').classList.remove('show');
   document.getElementById('center-circle').classList.remove('show', 'guessed');
@@ -1668,21 +1792,78 @@ function hideExplanations() {
 
 function openGuessModal() {
   if (!solved || centerGuessed) return;
+  
+  // If no difficulty selected yet, show difficulty selector first
+  if (!currentDifficulty) {
+    document.getElementById('difficulty-modal').classList.add('show');
+    return;
+  }
+  
+  // Otherwise, open the guess modal directly
+  openGuessModalWithDifficulty();
+}
+
+function closeDifficultyModal() {
+  document.getElementById('difficulty-modal').classList.remove('show');
+}
+
+function selectDifficulty(difficulty) {
+  currentDifficulty = difficulty;
+  
+  // Set max hints based on difficulty
+  if (difficulty === 'easy') {
+    maxHints = Infinity;
+  } else if (difficulty === 'medium') {
+    maxHints = 3;
+  } else {
+    maxHints = 0;
+  }
+  
+  closeDifficultyModal();
+  openGuessModalWithDifficulty();
+}
+
+function openGuessModalWithDifficulty() {
   document.getElementById('guess-modal').classList.add('show');
   
   // Hide bridge explanations during guessing
   document.getElementById('explanations').style.display = 'none';
   
-  // Show all theme meanings upfront
+  // Update subtitle based on difficulty
+  var subtitle = document.getElementById('guess-subtitle');
+  if (currentDifficulty === 'easy') {
+    subtitle.textContent = 'What single word has ALL of these meanings?';
+  } else {
+    subtitle.textContent = 'What single word connects ALL of these themes?';
+  }
+  
+  // Set up theme meanings based on difficulty
   var meaningsDiv = document.getElementById('theme-meanings');
-  meaningsDiv.innerHTML = '<div class="theme-meanings-header">The word means...</div>';
-  for (var i = 0; i < currentPuzzle.themes.length; i++) {
-    var theme = currentPuzzle.themes[i];
-    var meaning = currentPuzzle.centerExplanations[theme];
-    var item = document.createElement('div');
-    item.className = 'theme-meaning-item';
-    item.innerHTML = '<span class="theme-meaning-label" style="color:' + currentPuzzle.colors[i] + '">' + theme + ':</span><span class="theme-meaning-text">"' + meaning + '"</span>';
-    meaningsDiv.appendChild(item);
+  meaningsDiv.innerHTML = '';
+  
+  if (currentDifficulty === 'easy') {
+    // Show all meanings
+    meaningsDiv.innerHTML = '<div class="theme-meanings-header">The word means...</div>';
+    for (var i = 0; i < currentPuzzle.themes.length; i++) {
+      var theme = currentPuzzle.themes[i];
+      var meaning = currentPuzzle.centerExplanations[theme];
+      var item = document.createElement('div');
+      item.className = 'theme-meaning-item';
+      item.innerHTML = '<span class="theme-meaning-label" style="color:' + currentPuzzle.colors[i] + '">' + theme + ':</span><span class="theme-meaning-text">"' + meaning + '"</span>';
+      meaningsDiv.appendChild(item);
+    }
+  } else {
+    // Medium and Hard: show only theme names
+    meaningsDiv.innerHTML = '<div class="theme-meanings-header">The word connects...</div>';
+    var themesRow = document.createElement('div');
+    themesRow.style.cssText = 'display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 8px;';
+    for (var i = 0; i < currentPuzzle.themes.length; i++) {
+      var chip = document.createElement('span');
+      chip.style.cssText = 'padding: 6px 12px; border-radius: 16px; font-size: 11px; font-weight: 700; text-transform: uppercase; color: white; background: ' + currentPuzzle.colors[i] + ';';
+      chip.textContent = currentPuzzle.themes[i];
+      themesRow.appendChild(chip);
+    }
+    meaningsDiv.appendChild(themesRow);
   }
   
   // Reset if opening fresh (not continuing)
@@ -1730,10 +1911,21 @@ function openGuessModal() {
   }
   updateBoxSelection();
   
-  // Enable/disable hint button
+  // Enable/disable hint button based on difficulty and state
   var hintBtn = document.getElementById('hint-btn');
-  hintBtn.disabled = hintedPositions.length >= wordLength - 1 || guessAttempts >= maxAttempts;
-  hintBtn.style.display = guessAttempts >= maxAttempts ? 'none' : '';
+  var hintsRemaining = maxHints - hintsUsed;
+  var allHintsUsed = hintsRemaining <= 0;
+  var almostComplete = hintedPositions.length >= wordLength - 1;
+  
+  hintBtn.disabled = allHintsUsed || almostComplete || guessAttempts >= maxAttempts;
+  hintBtn.style.display = (maxHints === 0 || guessAttempts >= maxAttempts) ? 'none' : '';
+  
+  // Update hint button text for medium difficulty
+  if (currentDifficulty === 'medium' && maxHints > 0) {
+    hintBtn.textContent = '💡 Reveal a Letter (' + hintsRemaining + ' left)';
+  } else {
+    hintBtn.textContent = '💡 Reveal a Letter';
+  }
   
   // Show/hide buttons based on game state
   document.querySelector('.guess-btn.submit').style.display = guessAttempts >= maxAttempts ? 'none' : '';
@@ -1803,6 +1995,9 @@ function clearLetterBoxes() {
 }
 
 function revealHint() {
+  // Check if hints are available
+  if (hintsUsed >= maxHints) return;
+  
   var answer = currentPuzzle.centerWord;
   var boxes = document.querySelectorAll('#letter-boxes .letter-box');
   
@@ -1829,9 +2024,18 @@ function revealHint() {
   // Update hints display
   updateHintsDisplay();
   
-  // Disable button if all letters revealed
-  if (hintedPositions.length >= answer.length - 1) {
-    document.getElementById('hint-btn').disabled = true;
+  // Update hint button
+  var hintBtn = document.getElementById('hint-btn');
+  var hintsRemaining = maxHints - hintsUsed;
+  
+  // Disable button if max hints reached or almost complete
+  if (hintsRemaining <= 0 || hintedPositions.length >= answer.length - 1) {
+    hintBtn.disabled = true;
+  }
+  
+  // Update button text for medium difficulty
+  if (currentDifficulty === 'medium' && maxHints > 0) {
+    hintBtn.textContent = '💡 Reveal a Letter (' + hintsRemaining + ' left)';
   }
   
   // Move selection to next empty box
@@ -1847,7 +2051,8 @@ function revealHint() {
 function updateHintsDisplay() {
   var display = document.getElementById('hints-used');
   if (hintsUsed > 0) {
-    display.textContent = hintsUsed + ' letter hint' + (hintsUsed > 1 ? 's' : '') + ' used';
+    var msg = hintsUsed + ' letter hint' + (hintsUsed > 1 ? 's' : '') + ' used';
+    display.textContent = msg;
   } else {
     display.textContent = '';
   }
