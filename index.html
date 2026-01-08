@@ -494,6 +494,199 @@
     animation: celebrate-pop 0.5s ease-out;
   }
 
+  /* Guessing mode - expanded center */
+  .center-circle.guessing-mode {
+    width: 130px;
+    height: 130px;
+    background: linear-gradient(135deg, #eef2ff, #e0e7ff);
+    border: 3px solid var(--accent);
+    animation: none;
+    cursor: default;
+    transition: all 0.3s ease;
+  }
+  
+  .center-circle.guessing-mode .center-input-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+  }
+  
+  .center-circle.guessing-mode .center-letter-count {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--accent);
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  
+  .center-circle.guessing-mode .center-input {
+    width: 90px;
+    height: 32px;
+    border: 2px solid var(--accent);
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 700;
+    text-align: center;
+    text-transform: uppercase;
+    outline: none;
+    background: white;
+    color: var(--dark);
+  }
+  
+  .center-circle.guessing-mode .center-input:focus {
+    border-color: #4f46e5;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+  }
+  
+  .center-circle.guessing-mode .center-input.shake {
+    animation: shake 0.4s ease;
+  }
+  
+  .center-circle.guessing-mode .center-submit {
+    margin-top: 6px;
+    padding: 4px 16px;
+    border: none;
+    border-radius: 12px;
+    background: var(--accent);
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  
+  .center-circle.guessing-mode .center-submit:hover {
+    background: #4f46e5;
+  }
+  
+  /* Wrong guesses display in center */
+  .center-wrong-guesses {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    justify-content: center;
+    margin-top: 4px;
+    max-width: 110px;
+  }
+  
+  .center-wrong-guess {
+    font-size: 9px;
+    color: #ef4444;
+    text-decoration: line-through;
+    font-weight: 600;
+  }
+
+  /* Hints panel below puzzle */
+  .hints-panel {
+    width: 100%;
+    max-width: 440px;
+    background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+    border: 2px solid #7dd3fc;
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-top: 12px;
+    display: none;
+  }
+  
+  .hints-panel.show {
+    display: block;
+  }
+  
+  .hints-panel-header {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #0369a1;
+    margin-bottom: 10px;
+    text-align: center;
+  }
+  
+  .hints-panel-instruction {
+    font-size: 12px;
+    color: #0369a1;
+    text-align: center;
+    margin-bottom: 12px;
+    font-style: italic;
+  }
+  
+  .hints-panel .hint-progress {
+    justify-content: center;
+    margin-bottom: 8px;
+  }
+  
+  .hints-panel .hint-difficulty-labels {
+    max-width: 200px;
+    margin: 0 auto 10px;
+  }
+  
+  .hints-panel .crossword-hints {
+    margin-bottom: 12px;
+  }
+  
+  .hints-panel .crossword-hint {
+    padding: 8px 12px;
+    margin-bottom: 6px;
+    background: #f8fafc;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 13px;
+    color: #334155;
+    display: none;
+  }
+  
+  .hints-panel .crossword-hint.revealed {
+    display: block;
+    background: white;
+    border-color: #7dd3fc;
+  }
+  
+  .hints-panel .get-hint-btn {
+    width: 100%;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 20px;
+    background: linear-gradient(135deg, #0ea5e9, #0284c7);
+    color: white;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  
+  .hints-panel .get-hint-btn:disabled {
+    background: #94a3b8;
+    cursor: not-allowed;
+  }
+  
+  .hints-panel-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 12px;
+  }
+  
+  .hints-panel-buttons button {
+    flex: 1;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  
+  .hints-panel-buttons .reveal-btn {
+    background: #fecaca;
+    color: #dc2626;
+  }
+  
+  .hints-panel-buttons .reveal-btn:hover {
+    background: #fca5a5;
+  }
+
   /* Welcome screen */
   .welcome-overlay {
     position: fixed;
@@ -750,6 +943,7 @@
   
   .guess-btn.submit { background: var(--accent); color: white; }
   .guess-btn.cancel { background: #eee; color: #666; }
+  .guess-btn.reveal { background: rgba(239, 68, 68, 0.15); color: #dc2626; border: 1px solid #dc2626; }
   
   .guess-buttons {
     display: flex;
@@ -829,6 +1023,138 @@
     color: #0369a1;
     margin-bottom: 8px;
     text-align: center;
+  }
+  
+  .themes-display {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+  
+  .theme-display-item {
+    background: white;
+    border: 2px solid #e2e8f0;
+    border-left-width: 4px;
+    border-radius: 6px;
+    padding: 8px 10px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #334155;
+    text-align: center;
+  }
+  
+  .hint-difficulty-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 10px;
+    color: #64748b;
+    margin-bottom: 6px;
+    padding: 0 4px;
+  }
+  
+  .hint-progress {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 12px;
+  }
+  
+  .hint-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #e2e8f0;
+    border: 2px solid #cbd5e1;
+    transition: all 0.3s ease;
+  }
+  
+  .hint-dot.revealed {
+    background: #0ea5e9;
+    border-color: #0284c7;
+  }
+  
+  .hint-dot.current {
+    background: #fbbf24;
+    border-color: #f59e0b;
+    animation: hintPulse 1.5s infinite;
+  }
+  
+  @keyframes hintPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+  }
+  
+  .crossword-hints {
+    margin-bottom: 12px;
+  }
+  
+  .crossword-hint {
+    padding: 10px 12px;
+    margin-bottom: 6px;
+    background: #f8fafc;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 14px;
+    color: #334155;
+    display: none;
+  }
+  
+  .crossword-hint.revealed {
+    display: block;
+    background: white;
+    border-color: #7dd3fc;
+    animation: fadeIn 0.3s ease;
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  .crossword-hint .hint-number {
+    font-weight: 700;
+    color: #0369a1;
+    margin-right: 8px;
+  }
+  
+  .crossword-hint .hint-difficulty {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-left: 8px;
+    float: right;
+  }
+  
+  .crossword-hint .hint-difficulty.friday { background: #fef3c7; color: #92400e; }
+  .crossword-hint .hint-difficulty.thursday { background: #fee2e2; color: #991b1b; }
+  .crossword-hint .hint-difficulty.wednesday { background: #dbeafe; color: #1e40af; }
+  .crossword-hint .hint-difficulty.tuesday { background: #dcfce7; color: #166534; }
+  
+  .get-hint-btn {
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(135deg, #0ea5e9, #0284c7);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-bottom: 8px;
+    transition: all 0.2s ease;
+  }
+  
+  .get-hint-btn:hover {
+    background: linear-gradient(135deg, #0284c7, #0369a1);
+    transform: translateY(-1px);
+  }
+  
+  .get-hint-btn:disabled {
+    background: #94a3b8;
+    cursor: not-allowed;
+    transform: none;
   }
   
   .theme-hint-row {
@@ -1026,7 +1352,7 @@
         <input type="checkbox" id="skip-welcome-checkbox" />
         <span>Don't show this again</span>
       </label>
-      <span>40 puzzles</span>
+      <span>41 puzzles</span>
     </div>
   </div>
 </div>
@@ -1074,6 +1400,18 @@
   <div class="bridge-hint">Tap any word to see its meaning</div>
 </div>
 
+<div class="hints-panel" id="hints-panel">
+  <div class="hints-panel-header">Crossword Clues</div>
+  <div class="hints-panel-instruction">Tap ring words to see meanings — they may help!</div>
+  <div class="hint-progress" id="hints-progress"></div>
+  <div class="hint-difficulty-labels"><span>Harder</span><span>Easier</span></div>
+  <div class="crossword-hints" id="hints-container"></div>
+  <button class="get-hint-btn" id="panel-hint-btn">Get Hint (4 remaining)</button>
+  <div class="hints-panel-buttons">
+    <button class="reveal-btn" onclick="revealAnswer()">Give Up</button>
+  </div>
+</div>
+
 <div class="bridge-tooltip" id="bridge-tooltip">
   <div class="bridge-tooltip-word" id="tooltip-word"></div>
   <div class="bridge-tooltip-meanings" id="tooltip-meanings"></div>
@@ -1094,6 +1432,7 @@
     <input type="text" class="guess-input" id="guess-input" placeholder="Type your answer..." autocomplete="off" autocapitalize="characters" spellcheck="false">
     <div class="guess-buttons">
       <button class="guess-btn cancel" onclick="closeGuessModal()">Cancel</button>
+      <button class="guess-btn reveal" onclick="revealFromModal()">Reveal</button>
       <button class="guess-btn submit" onclick="submitGuess()">Submit</button>
     </div>
   </div>
@@ -1110,10 +1449,11 @@
       <p>Place 8 words around the ring so each belongs to its correct theme(s). <strong>Anchors</strong> (inside quadrants) belong to ONE theme. <strong>Bridges</strong> (on boundaries) belong to TWO adjacent themes.</p>
       <p>Tap two words to swap them. Bridges show split coloring as you solve — only the half inside a completed quadrant turns green.</p>
       <p><strong>Stage 2 — Find the Center Word</strong></p>
-      <p>Once all words are placed, tap the "?" at the center. This mystery word connects ALL 4 themes through different meanings of the same word.</p>
-      <p>For example, if the themes were THEATER, FISHING, MEDICINE, and METALWORK, the center word might be CAST (cast of actors / cast a line / arm cast / cast molten metal).</p>
-      <p><strong>Your clues:</strong> When the guessing panel opens, you'll see all 4 meanings — one for each theme. Use these to deduce the answer!</p>
-      <p>You have <strong>4 attempts</strong> to type the correct word. Good luck!</p>
+      <p>Once all words are placed, tap the center to enter guessing mode. The center expands so you can type your answer directly into it.</p>
+      <p>The mystery word connects ALL 4 themes through different meanings. For example, if the themes were THEATER, FISHING, MEDICINE, and METALWORK, the center word might be CAST (cast of actors / cast a line / arm cast / cast molten metal).</p>
+      <p><strong>Use the ring words!</strong> Tap any word on the ring to see how it connects to its theme(s) — this may help you find the center word.</p>
+      <p><strong>Need more help?</strong> Use the "Get Hint" button below the puzzle to reveal crossword-style clues, progressing from harder to easier. Use fewer hints for a better score!</p>
+      <p>You have <strong>4 attempts</strong> to guess the correct word. Good luck!</p>
       <p><strong>📖 Classic</strong> puzzles use dictionary words throughout.<br>
       <strong>🌍 Cultural</strong> puzzles may include famous names, brands, or places — as the mystery word or even among the clues.</p>
     </div>
@@ -1134,46 +1474,47 @@
 
 <script>
 const PUZZLES = [
-  { id: 1, title: "Break a Leg", themes: ["THEATER", "MEDICINE", "METALWORK", "FISHING"], colors: ["#EC4899", "#EF4444", "#6B7280", "#3B82F6"], solution: { 0: "STAGE", 1: "SUTURE", 2: "BRACE", 3: "ANVIL", 4: "HOOK", 5: "REEL", 6: "LINE", 7: "BOW" }, bridges: { "STAGE": ["Performance platform", "Illness progression"], "BRACE": ["Orthopedic support", "Structural support"], "HOOK": ["Curved metal tool", "Fishing barb"], "LINE": ["Fishing string", "Spoken dialogue"] }, anchors: { "SUTURE": "Surgical stitches", "ANVIL": "Blacksmith's block", "REEL": "Line spool", "BOW": "Curtain call gesture" }, centerWord: "CAST", centerHints: { "THEATER": "Actors", "MEDICINE": "Plaster casing", "FISHING": "Throw line", "METALWORK": "Mold metal" }, centerExplanations: { "THEATER": "The cast of a play", "MEDICINE": "A plaster cast", "FISHING": "Cast a line", "METALWORK": "Cast metal in a mold" } },
-  { id: 2, title: "Out of the Blue", themes: ["MECHANICAL", "STORM", "SUDDEN MOVEMENT", "SEWING"], colors: ["#6B7280", "#3B82F6", "#F59E0B", "#EC4899"], solution: { 0: "WIND", 1: "HAIL", 2: "SURGE", 3: "DASH", 4: "DART", 5: "SEAM", 6: "PIN", 7: "AXLE" }, bridges: { "WIND": ["Wind up a mechanism", "Gale force air"], "SURGE": ["Storm surge", "Rush forward"], "DART": ["Move suddenly", "Sewn fold for shaping"], "PIN": ["Sewing tool", "Mechanical fastener"] }, anchors: { "HAIL": "Ice pellets from sky", "DASH": "Sprint quickly", "SEAM": "Stitched fabric edge", "AXLE": "Wheel shaft" }, centerWord: "BOLT", centerHints: { "MECHANICAL": "Metal fastener", "STORM": "Lightning", "SUDDEN MOVEMENT": "To flee quickly", "SEWING": "Roll of fabric" }, centerExplanations: { "MECHANICAL": "A nut and bolt", "STORM": "A bolt of lightning", "SUDDEN MOVEMENT": "Bolt out the door", "SEWING": "A bolt of fabric" } },
-  { id: 3, title: "Chip Off the Block", themes: ["SPORTS", "MASONRY", "COLORS", "KITCHEN"], colors: ["#22C55E", "#78716C", "#8B5CF6", "#F97316"], solution: { 0: "MARBLE", 1: "GRANITE", 2: "BRICK", 3: "TAUPE", 4: "SAGE", 5: "PIZZA", 6: "BOWL", 7: "CURLING" }, bridges: { "MARBLE": ["Game piece", "Type of stone"], "BRICK": ["Building block", "Reddish-brown hue"], "SAGE": ["Greenish-grey color", "Culinary herb"], "BOWL": ["Mixing vessel", "Championship game"] }, anchors: { "GRANITE": "Igneous rock", "TAUPE": "Brownish-grey hue", "PIZZA": "Baked flatbread dish", "CURLING": "Ice sport with brooms" }, centerWord: "STONE", centerHints: { "SPORTS": "Heavy polished granite disc", "MASONRY": "Natural building material", "KITCHEN": "Baking surface for pizza", "COLORS": "Earthy greyish hue" }, centerExplanations: { "SPORTS": "A curling stone", "MASONRY": "Stone masonry", "KITCHEN": "A pizza stone", "COLORS": "Stone grey" } },
-  { id: 4, title: "Ink and Iron", themes: ["MEDIA", "PRINTING", "WEIGHTS", "LAUNDRY"], colors: ["#6366F1", "#1F2937", "#EF4444", "#06B6D4"], solution: { 0: "COPY", 1: "SERIF", 2: "PLATE", 3: "SQUAT", 4: "IRON", 5: "STARCH", 6: "SPIN", 7: "SCOOP" }, bridges: { "COPY": ["Written material", "Text for printing"], "PLATE": ["Metal printing sheet", "Weighted disc"], "IRON": ["Pump iron", "Pressing tool"], "SPIN": ["Washing cycle", "Present with bias"] }, anchors: { "SERIF": "Letter stroke flourish", "SQUAT": "Deep knee bend exercise", "STARCH": "Fabric stiffener", "SCOOP": "Exclusive news story" }, centerWord: "PRESS", centerHints: { "MEDIA": "News media", "PRINTING": "Printing machine", "LAUNDRY": "Iron clothes", "WEIGHTS": "Lift weights" }, centerExplanations: { "MEDIA": "The press corps", "PRINTING": "A printing press", "LAUNDRY": "Press a shirt", "WEIGHTS": "Bench press" } },
-  { id: 5, title: "Bits and Pieces", themes: ["FIGHTING", "COMEDY", "TOOLS", "COCKTAILS"], colors: ["#EF4444", "#FBBF24", "#78716C", "#EC4899"], solution: { 0: "RIPOSTE", 1: "SKIT", 2: "BIT", 3: "AWL", 4: "SCREWDRIVER", 5: "CHASER", 6: "SMASH", 7: "UPPERCUT" }, bridges: { "RIPOSTE": ["Quick counter-attack", "Witty comeback"], "BIT": ["Comedy routine", "Drill attachment"], "SCREWDRIVER": ["Tool for screws", "Vodka cocktail"], "SMASH": ["Cocktail with fruit", "Powerful hit"] }, anchors: { "SKIT": "Short comedy sketch", "AWL": "Pointed leather tool", "CHASER": "Drink after a shot", "UPPERCUT": "Upward boxing blow" }, centerWord: "PUNCH", centerHints: { "FIGHTING": "Boxing strike", "COMEDY": "Joke's payoff line", "COCKTAILS": "Party drink", "TOOLS": "Hole-making tool" }, centerExplanations: { "FIGHTING": "Throw a punch", "COMEDY": "The punch line", "COCKTAILS": "Fruit punch", "TOOLS": "A hole punch" } },
-  { id: 6, title: "Just My Type", themes: ["LAW", "TYPE", "MEDICAL", "GRAMMAR"], colors: ["#1F2937", "#6366F1", "#EF4444", "#22C55E"], solution: { 0: "CAPITAL", 1: "FONT", 2: "STROKE", 3: "PATIENT", 4: "COMPOUND", 5: "PRONOUN", 6: "SENTENCE", 7: "SUIT" }, bridges: { "CAPITAL": ["Punishable by death", "Uppercase letter"], "STROKE": ["Pen mark", "Cerebrovascular event"], "COMPOUND": ["Custom pharmacy preparation", "Joined clause"], "SENTENCE": ["Grammatical unit", "Court punishment"] }, anchors: { "FONT": "Typeface design", "PATIENT": "Person under care", "PRONOUN": "Word replacing noun", "SUIT": "Legal action" }, centerWord: "CASE", centerHints: { "LAW": "Legal proceeding", "TYPE": "Shift key changes this", "GRAMMAR": "Noun inflection", "MEDICAL": "Patient file" }, centerExplanations: { "LAW": "A court case", "TYPE": "Upper case letters", "GRAMMAR": "Grammatical case", "MEDICAL": "A medical case" } },
-  { id: 7, title: "Raise the Stakes", themes: ["VENTURE", "BASEBALL", "MUSIC", "TENTS"], colors: ["#6366F1", "#EF4444", "#EC4899", "#22C55E"], solution: { 0: "ANGELS", 1: "HOME", 2: "HITS", 3: "ALBUM", 4: "COVER", 5: "CAMPING", 6: "STAKE", 7: "UNICORN" }, bridges: { "ANGELS": ["Angel investors", "LA baseball team"], "HITS": ["Successful at-bats", "Popular songs"], "COVER": ["Song remake", "Tent protection"], "STAKE": ["Tent peg", "Equity share"] }, anchors: { "HOME": "Base or plate", "ALBUM": "Song collection", "CAMPING": "Outdoor overnight stay", "UNICORN": "Billion-dollar startup" }, centerWord: "PITCH", centerHints: { "VENTURE": "Business presentation", "BASEBALL": "Thrown ball", "TENTS": "Tent setup", "MUSIC": "Musical tone" }, centerExplanations: { "VENTURE": "A startup pitch", "BASEBALL": "Pitch the ball", "TENTS": "Pitch a tent", "MUSIC": "Perfect pitch" } },
-  { id: 8, title: "That's a Wrap", themes: ["MOVEMENT", "FOOD", "FILM", "MUSIC"], colors: ["#F59E0B", "#22C55E", "#6366F1", "#EC4899"], solution: { 0: "SHAKE", 1: "BUN", 2: "STOCK", 3: "FLICK", 4: "SCORE", 5: "STAFF", 6: "RHYTHM", 7: "TUMBLE" }, bridges: { "SHAKE": ["Move quickly", "Milkshake"], "STOCK": ["Food broth", "Film stock"], "SCORE": ["Film soundtrack", "Written music"], "RHYTHM": ["Musical beat", "Movement pattern"] }, anchors: { "BUN": "Bread for burgers", "FLICK": "Informal term for movie", "STAFF": "Musical notation lines", "TUMBLE": "Fall or somersault" }, centerWord: "ROLL", centerHints: { "MOVEMENT": "Tumble", "FOOD": "Bread", "MUSIC": "Drum technique", "FILM": "Spool of celluloid" }, centerExplanations: { "MOVEMENT": "Roll over", "FOOD": "A dinner roll", "MUSIC": "A drum roll", "FILM": "A roll of film" } },
-  { id: 9, title: "Ink Slinger", themes: ["ENTERTAINMENT", "COMIC BOOKS", "WATER", "FIREARMS"], colors: ["#EC4899", "#22C55E", "#3B82F6", "#6B7280"], solution: { 0: "SKETCH", 1: "PANEL", 2: "SPLASH", 3: "WELL", 4: "PUMP", 5: "GUN", 6: "CLIP", 7: "HEADLINER" }, bridges: { "SKETCH": ["Comedy bit", "Preliminary drawing"], "SPLASH": ["Full-page panel", "Water spray"], "PUMP": ["Water device", "Pump-action shotgun"], "CLIP": ["Ammo holder", "Video segment"] }, anchors: { "PANEL": "Comic frame", "WELL": "Underground water source", "GUN": "Handheld firearm", "HEADLINER": "Star performer" }, centerWord: "DRAW", centerHints: { "ENTERTAINMENT": "Attraction", "COMIC BOOKS": "Illustrate", "FIREARMS": "Cowboy showdown", "WATER": "Extract water" }, centerExplanations: { "ENTERTAINMENT": "The main draw", "COMIC BOOKS": "Draw a comic", "FIREARMS": "Quick draw", "WATER": "Draw water from a well" } },
-  { id: 10, title: "Band of Gold", themes: ["MUSIC", "DESTABILIZE", "SCULPTURE", "JEWELRY"], colors: ["#EC4899", "#EF4444", "#78716C", "#FBBF24"], solution: { 0: "BEAT", 1: "JOLT", 2: "HAMMER", 3: "MARBLE", 4: "STONE", 5: "GEM", 6: "BAND", 7: "JAZZ" }, bridges: { "BEAT": ["Rhythm", "Defeat soundly"], "HAMMER": ["Criticize harshly", "Sculptor's tool"], "STONE": ["Carving material", "Precious gem"], "BAND": ["Ring", "Musical group"] }, anchors: { "JOLT": "Sudden shock", "MARBLE": "Sculptor's medium", "GEM": "Cut precious stone", "JAZZ": "Improvisational genre" }, centerWord: "ROCK", centerHints: { "MUSIC": "Music genre", "DESTABILIZE": "Hit hard, stun", "JEWELRY": "Precious stone", "SCULPTURE": "Sculpting material" }, centerExplanations: { "MUSIC": "Rock music", "DESTABILIZE": "Rock the boat", "JEWELRY": "A rock on her finger", "SCULPTURE": "Carved from rock" } },
-  { id: 11, title: "Walk the Plank", themes: ["LUMBER", "NAUTICAL", "DINING", "GOVERNANCE"], colors: ["#92400E", "#3B82F6", "#F97316", "#6366F1"], solution: { 0: "DECK", 1: "SHIP", 2: "COURSE", 3: "MEAL", 4: "TABLE", 5: "MOTION", 6: "PANEL", 7: "PLANK" }, bridges: { "DECK": ["Wooden platform", "Floor of ship"], "COURSE": ["Ship's route", "Part of meal"], "TABLE": ["Dining furniture", "Postpone consideration"], "PANEL": ["Group of experts", "Wood sheet"] }, anchors: { "SHIP": "Seagoing vessel", "MEAL": "Prepared food", "MOTION": "Formal proposal", "PLANK": "Long wood piece" }, centerWord: "BOARD", centerHints: { "LUMBER": "Wood plank", "NAUTICAL": "Get on a ship", "GOVERNANCE": "Governing body", "DINING": "Meals provided" }, centerExplanations: { "LUMBER": "A wooden board", "NAUTICAL": "Board a ship", "GOVERNANCE": "Board of directors", "DINING": "Room and board" } },
-  { id: 12, title: "Off the Hook", themes: ["MUSIC", "FISH", "WEIGHING", "MAPS"], colors: ["#EC4899", "#3B82F6", "#6B7280", "#22C55E"], solution: { 0: "BASS", 1: "SOLE", 2: "NET", 3: "BALANCE", 4: "UNITS", 5: "GRID", 6: "KEY", 7: "TEMPO" }, bridges: { "BASS": ["Low pitch", "Type of fish"], "NET": ["Fishing tool", "Weight after deductions"], "UNITS": ["Weight measurement", "Map measurement"], "KEY": ["Map legend", "Tonal center"] }, anchors: { "SOLE": "Flatfish", "BALANCE": "Weighing device", "GRID": "Map coordinate lines", "TEMPO": "Speed of music" }, centerWord: "SCALE", centerHints: { "MUSIC": "Musical notes sequence", "FISH": "Fish skin", "MAPS": "Map ratio", "WEIGHING": "Bathroom fixture" }, centerExplanations: { "MUSIC": "A musical scale", "FISH": "Fish scales", "MAPS": "Map scale", "WEIGHING": "A bathroom scale" } },
-  { id: 13, title: "Around the Block", themes: ["SHAPES", "CITY", "FAIRNESS", "MATH"], colors: ["#6366F1", "#6B7280", "#22C55E", "#F59E0B"], solution: { 0: "BLOCK", 1: "PARK", 2: "BENCH", 3: "JUST", 4: "EVEN", 5: "PRIME", 6: "CUBE", 7: "OVAL" }, bridges: { "BLOCK": ["Solid cube shape", "City section"], "BENCH": ["Public seat", "Judge's seat"], "EVEN": ["Fair or equal", "Divisible by two"], "CUBE": ["Third power", "3D shape"] }, anchors: { "PARK": "Urban green space", "JUST": "Fair and righteous", "PRIME": "Number with two factors", "OVAL": "Elliptical shape" }, centerWord: "SQUARE", centerHints: { "SHAPES": "Four-sided shape", "CITY": "City plaza", "MATH": "Multiply by itself", "FAIRNESS": "On the level" }, centerExplanations: { "SHAPES": "A square shape", "CITY": "Times Square", "MATH": "Square a number", "FAIRNESS": "A square deal" } },
-  { id: 14, title: "Crowned Heads", themes: ["CHECKERS", "CHESS", "CARDS", "MONARCHY"], colors: ["#1F2937", "#6366F1", "#EF4444", "#FBBF24"], solution: { 0: "BOARD", 1: "MATE", 2: "RANK", 3: "SUIT", 4: "COURT", 5: "REIGN", 6: "CROWN", 7: "JUMP" }, bridges: { "BOARD": ["Checkers surface", "Chess surface"], "RANK": ["Horizontal row", "Card value"], "COURT": ["Face cards", "Royal entourage"], "CROWN": ["Royal headgear", "Promote a piece"] }, anchors: { "MATE": "Checkmate", "SUIT": "Hearts or spades", "REIGN": "Royal rule period", "JUMP": "Checkers capture move" }, centerWord: "KING", centerHints: { "CHECKERS": "Promoted piece", "CHESS": "Most important piece", "MONARCHY": "Most royal royal", "CARDS": "Face card" }, centerExplanations: { "CHECKERS": "King me!", "CHESS": "The chess king", "MONARCHY": "A king on the throne", "CARDS": "King of hearts" } },
-  { id: 15, title: "Crash Course", themes: ["VEHICLES", "COMPUTERS", "REMOVAL", "CATTLE HERDING"], colors: ["#EF4444", "#3B82F6", "#8B5CF6", "#22C55E"], solution: { 0: "CRASH", 1: "MOUSE", 2: "EJECT", 3: "REPEL", 4: "CULL", 5: "WRANGLE", 6: "STEER", 7: "WHEEL" }, bridges: { "CRASH": ["Vehicle accident", "System failure"], "EJECT": ["Eject disk", "Expel"], "CULL": ["Weed out", "Reduce herd"], "STEER": ["Male bovine", "Guide vehicle"] }, anchors: { "MOUSE": "Input device", "REPEL": "Drive away", "WRANGLE": "Herd livestock", "WHEEL": "Steering control" }, centerWord: "DRIVE", centerHints: { "VEHICLES": "Operate vehicle", "COMPUTERS": "Storage device", "CATTLE HERDING": "Herd cattle", "REMOVAL": "Expel or force out" }, centerExplanations: { "VEHICLES": "Drive a car", "COMPUTERS": "A hard drive", "CATTLE HERDING": "A cattle drive", "REMOVAL": "Drive out the enemy" } },
-  { id: 16, title: "Acid Test", themes: ["MATH", "CHEMISTRY", "MYSTERY", "CROSSWORDS"], colors: ["#F59E0B", "#22C55E", "#6366F1", "#78716C"], solution: { 0: "BASE", 1: "ACID", 2: "AGENT", 3: "CRIME", 4: "CLUE", 5: "DOWN", 6: "SQUARE", 7: "ROOT" }, bridges: { "BASE": ["Number system radix", "pH greater than 7"], "AGENT": ["Chemical substance", "Investigator"], "CLUE": ["Evidence in crime", "Puzzle hint"], "SQUARE": ["Grid box", "Number times itself"] }, anchors: { "ACID": "Corrosive compound", "CRIME": "Unlawful act", "DOWN": "Vertical clue direction", "ROOT": "Square or cube extraction" }, centerWord: "SOLUTION", centerHints: { "MATH": "Math answer", "CHEMISTRY": "Chemical mixture", "CROSSWORDS": "Puzzle answer", "MYSTERY": "Solved crime" }, centerExplanations: { "MATH": "The solution to the equation", "CHEMISTRY": "A saline solution", "CROSSWORDS": "The puzzle solution", "MYSTERY": "Solution to the mystery" } },
-  { id: 17, title: "Perfect Match", themes: ["ROYALTY", "SPORTS", "ROMANCE", "LAW"], colors: ["#FBBF24", "#22C55E", "#EC4899", "#1F2937"], solution: { 0: "BALL", 1: "SQUASH", 2: "MATCH", 3: "FLAME", 4: "BOND", 5: "BRIEF", 6: "PEERS", 7: "THRONE" }, bridges: { "BALL": ["Formal dance", "Sports equipment"], "MATCH": ["Competition", "Marriage partner"], "BOND": ["Emotional connection", "Bail security"], "PEERS": ["Jury of peers", "Nobles"] }, anchors: { "SQUASH": "Racquet sport", "FLAME": "Romantic interest", "BRIEF": "Legal document", "THRONE": "Monarch's seat" }, centerWord: "COURT", centerHints: { "ROYALTY": "King's attendants", "SPORTS": "Tennis playing surface", "LAW": "Where trials are held", "ROMANCE": "To woo" }, centerExplanations: { "ROYALTY": "The royal court", "SPORTS": "A tennis court", "LAW": "A court of law", "ROMANCE": "Court a partner" } },
-  { id: 18, title: "The Gambit", themes: ["GAMES", "ART", "FINANCE", "NEWS"], colors: ["#6366F1", "#EC4899", "#22C55E", "#6B7280"], solution: { 0: "MINIATURE", 1: "STATUE", 2: "LOT", 3: "SHARE", 4: "STOCK", 5: "SCOOP", 6: "CHECKER", 7: "KNIGHT" }, bridges: { "MINIATURE": ["Small game model", "Miniature painting"], "LOT": ["Auction item", "Bundle of shares"], "STOCK": ["Company share", "Stock photo"], "CHECKER": ["Game piece", "Fact-checker"] }, anchors: { "STATUE": "Sculpted figure", "SHARE": "Equity portion", "SCOOP": "Breaking story", "KNIGHT": "Chess piece" }, centerWord: "PIECE", centerHints: { "GAMES": "Game token", "ART": "Artwork", "NEWS": "Article", "FINANCE": "Share of business" }, centerExplanations: { "GAMES": "A game piece", "ART": "A piece of art", "NEWS": "A news piece", "FINANCE": "A piece of the action" } },
-  { id: 19, title: "Fielder's Choice", themes: ["VEGETATION", "MATH", "ORIGIN", "SPORTS"], colors: ["#22C55E", "#F59E0B", "#6366F1", "#EF4444"], solution: { 0: "PLOT", 1: "LOG", 2: "BASE", 3: "SOURCE", 4: "HOME", 5: "PLAY", 6: "FIELD", 7: "LEAF" }, bridges: { "PLOT": ["Garden plot", "Plot points on graph"], "BASE": ["Exponent base", "Foundation"], "HOME": ["Homeland", "Home plate"], "FIELD": ["Playing surface", "Meadow"] }, anchors: { "LOG": "Logarithm", "SOURCE": "Point of origin", "PLAY": "Athletic competition", "LEAF": "Plant foliage" }, centerWord: "ROOT", centerHints: { "VEGETATION": "Underground part", "MATH": "Number that multiplies by itself", "SPORTS": "Cheer for team", "ORIGIN": "Ancestry" }, centerExplanations: { "VEGETATION": "Plant roots", "MATH": "Square root", "SPORTS": "Root for the team", "ORIGIN": "Family roots" } },
-  { id: 20, title: "Bubble Trouble", themes: ["FUEL", "MILITARY", "AQUARIUM", "MARKET"], colors: ["#F59E0B", "#6B7280", "#3B82F6", "#22C55E"], solution: { 0: "RESERVE", 1: "SHELL", 2: "MARINE", 3: "CORAL", 4: "BUBBLES", 5: "SLUMP", 6: "VOLUME", 7: "CRUDE" }, bridges: { "RESERVE": ["Backup supply", "Forces held back"], "MARINE": ["Military branch", "Saltwater tank"], "BUBBLES": ["Air in water", "Economic bubbles"], "VOLUME": ["Quantity traded", "Container capacity"] }, anchors: { "SHELL": "Artillery projectile", "CORAL": "Marine invertebrate", "SLUMP": "Market decline", "CRUDE": "Unrefined petroleum" }, centerWord: "TANK", centerHints: { "FUEL": "Fuel container", "MILITARY": "Armored vehicle", "MARKET": "To crash", "AQUARIUM": "Glass container for fish" }, centerExplanations: { "FUEL": "A gas tank", "MILITARY": "A military tank", "MARKET": "Tank in the market", "AQUARIUM": "A fish tank" } },
-  { id: 21, title: "Study Hall", themes: ["GRAMMAR", "ACADEMICS", "SCIENCE", "ROYALTY"], colors: ["#6366F1", "#F59E0B", "#22C55E", "#FBBF24"], solution: { 0: "PERIOD", 1: "MAJOR", 2: "STUDY", 3: "HYPOTHESIS", 4: "GRANT", 5: "THRONE", 6: "RULE", 7: "OBJECT" }, bridges: { "PERIOD": ["Punctuation mark", "Class time slot"], "STUDY": ["Review material", "Research investigation"], "GRANT": ["Research funding", "Bestowed land"], "RULE": ["Sovereign reign", "Linguistic guideline"] }, anchors: { "MAJOR": "Primary field of study", "HYPOTHESIS": "Testable prediction", "THRONE": "Royal seat", "OBJECT": "Grammatical receiver" }, centerWord: "SUBJECT", centerHints: { "GRAMMAR": "Doer of action", "ACADEMICS": "Course of study", "ROYALTY": "One under sovereign", "SCIENCE": "Experiment participant" }, centerExplanations: { "GRAMMAR": "The subject of a sentence", "ACADEMICS": "A school subject", "ROYALTY": "A loyal subject", "SCIENCE": "A test subject" } },
-  { id: 22, title: "Flash Point", themes: ["PHOTO", "IGNITION", "WORKLOAD", "EXPRESSION"], colors: ["#3B82F6", "#EF4444", "#6B7280", "#EC4899"], solution: { 0: "FLASH", 1: "EMBER", 2: "BURNOUT", 3: "BURDENSOME", 4: "HEAVY", 5: "FUNNY", 6: "TONE", 7: "LENS" }, bridges: { "FLASH": ["Camera flash", "Burst into flame"], "BURNOUT": ["Flame exhaustion", "Work exhaustion"], "HEAVY": ["Demanding effort", "Serious or intense"], "TONE": ["Attitude in speech", "Degree of lightness"] }, anchors: { "EMBER": "Glowing coal", "BURDENSOME": "Oppressively heavy", "FUNNY": "Comical or amusing", "LENS": "Camera optic" }, centerWord: "LIGHT", centerHints: { "PHOTO": "Illumination", "IGNITION": "To ignite", "EXPRESSION": "Not serious in tone", "WORKLOAD": "Not burdensome" }, centerExplanations: { "PHOTO": "Light for photography", "IGNITION": "Light a match", "EXPRESSION": "Light conversation", "WORKLOAD": "A light workload" } },
-  { id: 23, title: "Cut to the Chase", themes: ["VIOLENCE", "ELIMINATION", "SYMBOLS", "ROCKERS"], colors: ["#EF4444", "#6B7280", "#6366F1", "#EC4899"], solution: { 0: "CUT", 1: "EXCISE", 2: "DASH", 3: "ASTERISK", 4: "SEAL", 5: "AXE", 6: "STING", 7: "STAB" }, bridges: { "CUT": ["Knife wound", "Remove or reduce"], "DASH": ["Strike out text", "Hyphen or em dash"], "SEAL": ["Official emblem", "Singer"], "STING": ["The Police frontman", "Sharp wound"] }, anchors: { "EXCISE": "Cut out or remove", "ASTERISK": "Star-shaped symbol", "AXE": "Guitar (slang)", "STAB": "Thrust with blade" }, centerWord: "SLASH", centerHints: { "VIOLENCE": "Knife attack", "ELIMINATION": "Cut drastically", "ROCKERS": "Guns N' Roses guitarist", "SYMBOLS": "Diagonal line punctuation" }, centerExplanations: { "VIOLENCE": "Slash with a blade", "ELIMINATION": "Slash prices", "ROCKERS": "Slash, the guitarist", "SYMBOLS": "A forward slash" } },
-  { id: 24, title: "Chain of Command", themes: ["PAPERWORK", "OS", "ARMY", "SHOP"], colors: ["#78716C", "#3B82F6", "#6B7280", "#F59E0B"], solution: { 0: "FOLDER", 1: "ICON", 2: "COMMAND", 3: "PLATOON", 4: "DRILL", 5: "VISE", 6: "STAMP", 7: "DOSSIER" }, bridges: { "FOLDER": ["Holds documents", "Directory"], "COMMAND": ["Command line", "Authority to give orders"], "DRILL": ["Training exercise", "Boring tool"], "STAMP": ["Steel punch", "Ink device"] }, anchors: { "ICON": "Desktop shortcut image", "PLATOON": "Military unit", "VISE": "Clamping tool", "DOSSIER": "Document collection" }, centerWord: "FILE", centerHints: { "PAPERWORK": "Document collection", "OS": "Stored digital document", "SHOP": "Tool for smoothing", "ARMY": "Line formation" }, centerExplanations: { "PAPERWORK": "A file folder", "OS": "A computer file", "SHOP": "A metal file", "ARMY": "Single file march" } },
-  { id: 25, title: "Behind Bars", themes: ["PRISON", "MOBILE PHONE", "BIOLOGY", "BATTERY"], colors: ["#6B7280", "#3B82F6", "#22C55E", "#F59E0B"], solution: { 0: "BARS", 1: "ROAMING", 2: "CARRIER", 3: "CULTURE", 4: "LIFE", 5: "ALKALINE", 6: "CHARGE", 7: "WARDEN" }, bridges: { "BARS": ["Prison bars", "Signal bars"], "CARRIER": ["Phone carrier", "Disease carrier"], "LIFE": ["Living organisms", "Battery life"], "CHARGE": ["Criminal charge", "Electric charge"] }, anchors: { "ROAMING": "Off-network service", "CULTURE": "Grown microorganisms", "ALKALINE": "Battery chemistry type", "WARDEN": "Prison administrator" }, centerWord: "CELL", centerHints: { "PRISON": "Where inmates are confined", "MOBILE PHONE": "Pocket caller", "BIOLOGY": "Basic unit of life", "BATTERY": "Individual power unit" }, centerExplanations: { "PRISON": "A prison cell", "MOBILE PHONE": "A cell phone", "BIOLOGY": "A living cell", "BATTERY": "A battery cell" } },
-  { id: 26, title: "House Rules", themes: ["POLICE", "GOLF", "CARDS", "NIGHTLIFE"], colors: ["#3B82F6", "#22C55E", "#EF4444", "#8B5CF6"], solution: { 0: "TRAP", 1: "CADDIE", 2: "CHIP", 3: "SPADE", 4: "DECK", 5: "DISCO", 6: "BEAT", 7: "BADGE" }, bridges: { "TRAP": ["Speed trap", "Sand trap"], "CHIP": ["Chip shot", "Poker chip"], "DECK": ["DJ deck", "Deck of cards"], "BEAT": ["Walk the beat", "Musical beat"] }, anchors: { "CADDIE": "Bag carrier", "SPADE": "Black pointed suit", "DISCO": "Dance venue", "BADGE": "Officer's ID" }, centerWord: "CLUB", centerHints: { "POLICE": "Officer's baton", "GOLF": "Iron or driver", "CARDS": "Card suit", "NIGHTLIFE": "Venue for dancing" }, centerExplanations: { "POLICE": "A billy club", "GOLF": "A golf club", "CARDS": "Club suit", "NIGHTLIFE": "A night club" } },
-  { id: 27, title: "Cross the Aisle", themes: ["BUILDING", "POLITICS", "BIRD", "PLANE"], colors: ["#6B7280", "#DC2626", "#22C55E", "#3B82F6"], solution: { 0: "LOBBY", 1: "LIBERAL", 2: "HAWK", 3: "BEAK", 4: "TAIL", 5: "JET", 6: "LANDING", 7: "ANNEX" }, bridges: { "LOBBY": ["Entrance lobby", "Political lobbying"], "HAWK": ["War hawk", "Bird of prey"], "TAIL": ["Feathered tail", "Aircraft tail"], "LANDING": ["Plane landing", "Stair landing"] }, anchors: { "LIBERAL": "Left-leaning ideology", "BEAK": "Bird's bill", "JET": "Aircraft type", "ANNEX": "Building addition" }, centerWord: "WING", centerHints: { "BUILDING": "Section of a structure", "POLITICS": "Left or right faction", "BIRD": "Feathered limb for flight", "PLANE": "Aircraft lifting surface" }, centerExplanations: { "BUILDING": "The east wing", "POLITICS": "The political wing", "BIRD": "A bird's wing", "PLANE": "An airplane wing" } },
-  { id: 28, title: "Walking the Line", themes: ["POLICE", "COOKING", "SPORTS", "MUSIC"], colors: ["#3B82F6", "#F97316", "#22C55E", "#EC4899"], solution: { 0: "GRILL", 1: "WHISK", 2: "BATTER", 3: "OPPONENT", 4: "SCORE", 5: "RHYTHM", 6: "RECORD", 7: "PATROL" }, bridges: { "GRILL": ["Interrogate suspect", "Cook over fire"], "BATTER": ["Cake mixture", "Baseball player"], "SCORE": ["Game points", "Sheet music"], "RECORD": ["Vinyl album", "Criminal history"] }, anchors: { "WHISK": "Egg beater", "OPPONENT": "Rival to defeat", "RHYTHM": "Musical timing", "PATROL": "Officer's rounds" }, centerWord: "BEAT", centerHints: { "POLICE": "Officer's patrol route", "COOKING": "Whisk eggs vigorously", "SPORTS": "Defeat the opponent", "MUSIC": "Rhythm or tempo" }, centerExplanations: { "POLICE": "Walk the beat", "COOKING": "Beat the eggs", "SPORTS": "Beat the competition", "MUSIC": "The musical beat" } },
-  { id: 29, title: "The Oval Office", themes: ["CARS", "PRESIDENTS", "CROSSING", "ACTORS"], colors: ["#3B82F6", "#EF4444", "#10B981", "#F59E0B"], solution: { 0: "LINCOLN", 1: "KENNEDY", 2: "WASHINGTON", 3: "RIVER", 4: "BRIDGES", 5: "HOLLYWOOD", 6: "DRIVER", 7: "MUSTANG" }, bridges: { "LINCOLN": ["Car brand", "US President"], "WASHINGTON": ["US President", "Crossing the Delaware"], "BRIDGES": ["River structures", "Famous acting family"], "DRIVER": ["Adam Driver", "Car operator"] }, anchors: { "KENNEDY": "35th President", "RIVER": "Flowing waterway", "HOLLYWOOD": "Film industry hub", "MUSTANG": "Iconic pony car" }, centerWord: "FORD", centerHints: { "CARS": "Blue Oval automaker", "PRESIDENTS": "38th US President", "ACTORS": "Han Solo & Indiana Jones actor", "CROSSING": "Wade through a river" }, centerExplanations: { "CARS": "Ford Motor Company", "PRESIDENTS": "President Gerald Ford", "ACTORS": "Harrison Ford", "CROSSING": "Ford a river" } },
-  { id: 30, title: "Golden Eye", themes: ["SPY", "FINANCE", "CHEMISTRY", "ADHESIVE"], colors: ["#1F2937", "#10B981", "#8B5CF6", "#EC4899"], solution: { 0: "SECURITY", 1: "ASSET", 2: "YIELD", 3: "ATOM", 4: "COMPOUND", 5: "GLUE", 6: "AGENT", 7: "SECRET" }, bridges: { "SECURITY": ["National Security", "Financial securities"], "YIELD": ["Investment return", "Chemical output"], "COMPOUND": ["Chemical substance", "Joint compound"], "AGENT": ["Bonding agent", "Secret agent"] }, anchors: { "ASSET": "Valuable holding", "ATOM": "Smallest unit", "GLUE": "Sticky adhesive", "SECRET": "Classified info" }, centerWord: "BOND", centerHints: { "SPY": "007", "FINANCE": "Government debt instrument", "CHEMISTRY": "Molecular connection", "ADHESIVE": "Stick together" }, centerExplanations: { "SPY": "James Bond", "FINANCE": "A savings bond", "CHEMISTRY": "A chemical bond", "ADHESIVE": "Bond two surfaces" } },
-  { id: 31, title: "Force of Nature", themes: ["E-COMMERCE", "RAINFOREST", "RIVER", "GREEK MYTH"], colors: ["#F97316", "#22C55E", "#3B82F6", "#8B5CF6"], solution: { 0: "CLOUD", 1: "CANOPY", 2: "BASIN", 3: "DELTA", 4: "STYX", 5: "TITAN", 6: "ECHO", 7: "PRIME" }, bridges: { "CLOUD": ["Cloud computing (AWS)", "Rainforest cloud cover"], "BASIN": ["Amazon basin", "River drainage area"], "STYX": ["River of the underworld", "Boundary to Hades"], "ECHO": ["Repeating nymph", "Smart speaker"] }, anchors: { "CANOPY": "Forest upper layer", "DELTA": "River mouth formation", "TITAN": "Pre-Olympian god", "PRIME": "Membership service" }, centerWord: "AMAZON", centerHints: { "E-COMMERCE": "Prime destination", "RAINFOREST": "The lungs of the Earth", "RIVER": "South America's mightiest waterway", "GREEK MYTH": "Hippolyta's tribe" }, centerExplanations: { "E-COMMERCE": "Amazon.com", "RAINFOREST": "The Amazon rainforest", "RIVER": "The Amazon River", "GREEK MYTH": "Amazon warriors" } },
-  { id: 32, title: "Royal Flush", themes: ["MUSIC", "CHESS", "ROYALTY", "CARDS"], colors: ["#8B5CF6", "#1F2937", "#FBBF24", "#EF4444"], solution: { 0: "TEMPO", 1: "PAWN", 2: "CASTLE", 3: "THRONE", 4: "COURT", 5: "ACE", 6: "CLUB", 7: "FLAT" }, bridges: { "TEMPO": ["Musical timing", "Chess move efficiency"], "CASTLE": ["Rook's special move", "Royal fortress"], "COURT": ["Royal attendants", "Face cards"], "CLUB": ["Card suit", "Music venue"] }, anchors: { "PAWN": "Least valuable piece", "THRONE": "Sovereign's seat", "ACE": "Highest card", "FLAT": "Musical half-step down" }, centerWord: "QUEEN", centerHints: { "MUSIC": "Freddie Mercury's court", "CHESS": "Combines rook and bishop moves", "ROYALTY": "Elizabeth or Victoria", "CARDS": "The lady of the deck" }, centerExplanations: { "MUSIC": "Queen, the band", "CHESS": "The chess queen", "ROYALTY": "A reigning queen", "CARDS": "Queen of hearts" } },
-  { id: 33, title: "Core Values", themes: ["FRUIT", "TECH", "PHYSICS", "MUSIC"], colors: ["#22C55E", "#3B82F6", "#8B5CF6", "#EC4899"], solution: { 0: "MACINTOSH", 1: "JOBS", 2: "AIR", 3: "GRAVITY", 4: "REVOLUTION", 5: "VINYL", 6: "JAM", 7: "CIDER" }, bridges: { "MACINTOSH": ["Apple variety", "Classic Mac computer"], "AIR": ["MacBook model", "Resistance medium"], "REVOLUTION": ["Orbital motion", "Famous song"], "JAM": ["Fruit preserve", "Musical session"] }, anchors: { "JOBS": "Co-founder Steve", "GRAVITY": "Newton's force", "VINYL": "Record format", "CIDER": "Fermented juice" }, centerWord: "APPLE", centerHints: { "FRUIT": "Cortland or Braeburn", "TECH": "The bitten logo", "PHYSICS": "Isaac's inspiration", "MUSIC": "Savile Row record company" }, centerExplanations: { "FRUIT": "An apple variety", "TECH": "Apple Inc.", "PHYSICS": "Newton's apple", "MUSIC": "Apple Records" } },
-  { id: 34, title: "The Bottom Line", themes: ["TENNIS", "COMPUTERS", "FISHING", "FINANCE"], colors: ["#F59E0B", "#6366F1", "#3B82F6", "#10B981"], solution: { 0: "SERVER", 1: "MOUSE", 2: "STREAM", 3: "BAIT", 4: "BANK", 5: "YIELD", 6: "RETURN", 7: "RACKET" }, bridges: { "SERVER": ["Starts the point", "Network computer"], "STREAM": ["Data flow", "River current"], "BANK": ["River edge", "Financial institution"], "RETURN": ["Investment profit", "Hit ball back"] }, anchors: { "MOUSE": "Input device", "BAIT": "Lure for fish", "YIELD": "Investment return", "RACKET": "Tennis paddle" }, centerWord: "NET", centerHints: { "TENNIS": "It sags a little in the middle", "COMPUTERS": "WWW", "FISHING": "Mesh trap", "FINANCE": "Income after tax" }, centerExplanations: { "TENNIS": "The tennis net", "COMPUTERS": "The net", "FISHING": "A fishing net", "FINANCE": "Net income" } },
-  { id: 35, title: "Seeing Red", themes: ["CANDY", "SPACE", "MYTH", "MUSIC"], colors: ["#92400E", "#1F2937", "#8B5CF6", "#EC4899"], solution: { 0: "MILKY WAY", 1: "ROVER", 2: "TITAN", 3: "ARES", 4: "MERCURY", 5: "FUNK", 6: "KISS", 7: "WRAPPER" }, bridges: { "MILKY WAY": ["Chocolate bar", "Our galaxy"], "TITAN": ["Saturn's moon", "Pre-Olympian god"], "MERCURY": ["Messenger god", "Freddie of Queen"], "KISS": ["Rock band", "Chocolate drop"] }, anchors: { "ROVER": "Planetary explorer", "ARES": "Greek war god", "FUNK": "Bruno's genre", "WRAPPER": "Candy packaging" }, centerWord: "MARS", centerHints: { "CANDY": "Nougat bar manufacturer", "SPACE": "Curiosity's destination", "MYTH": "Ares' Latin counterpart", "MUSIC": "Singer of 'Uptown Funk'" }, centerExplanations: { "CANDY": "Mars candy bar", "SPACE": "The planet Mars", "MYTH": "Mars, god of war", "MUSIC": "Bruno Mars" } },
-  { id: 36, title: "Cold Front", themes: ["BEER", "WRITING", "MILITARY", "WIND"], colors: ["#F59E0B", "#6B7280", "#EF4444", "#3B82F6"], solution: { 0: "PROOF", 1: "EDIT", 2: "REVIEW", 3: "SERVICE", 4: "FORCE", 5: "GUST", 6: "COLD", 7: "PINT" }, bridges: { "PROOF": ["Alcohol percentage", "Galley copy"], "REVIEW": ["Critical appraisal", "Troop inspection"], "FORCE": ["Air Force", "Gale force"], "COLD": ["Chilly air", "Chilled drink"] }, anchors: { "EDIT": "Revision pass", "SERVICE": "Military duty", "GUST": "Wind burst", "PINT": "Beer measure" }, centerWord: "DRAFT", centerHints: { "BEER": "Drawn from a cask", "WRITING": "Preliminary version", "MILITARY": "Conscription", "WIND": "Current of air" }, centerExplanations: { "BEER": "Draft beer", "WRITING": "A rough draft", "MILITARY": "The military draft", "WIND": "A draft of cold air" } },
-  { id: 37, title: "Gloves Off", themes: ["CONSERVATISM", "BOXING", "ETHICS", "LAW"], colors: ["#EF4444", "#F97316", "#10B981", "#1F2937"], solution: { 0: "STANCE", 1: "DECISION", 2: "CLEAN", 3: "CHARACTER", 4: "CODE", 5: "COUNSEL", 6: "PARTY", 7: "FACTION" }, bridges: { "STANCE": ["Ideological position", "Fighting posture"], "CLEAN": ["Fair and sportsmanlike", "Morally pure"], "CODE": ["Moral principles", "Legal statutes"], "PARTY": ["Litigant in lawsuit", "Political organization"] }, anchors: { "DECISION": "Fight goes the distance", "CHARACTER": "Moral fiber", "COUNSEL": "Legal representation", "FACTION": "Political subgroup" }, centerWord: "RIGHT", centerHints: { "CONSERVATISM": "The conservative faction", "BOXING": "The power punch for most", "ETHICS": "Moral correctness", "LAW": "Legal entitlement" }, centerExplanations: { "CONSERVATISM": "The political right", "BOXING": "A right hook", "ETHICS": "Right and wrong", "LAW": "A legal right" } },
-  { id: 38, title: "Rank and File", themes: ["SEQUENCE", "LEGAL", "ARCHITECTURE", "RELIGIOUS"], colors: ["#3B82F6", "#1F2937", "#78716C", "#8B5CF6"], solution: { 0: "DOCKET", 1: "GAG", 2: "COURT", 3: "CAPITAL", 4: "CLOISTER", 5: "HABIT", 6: "CHAPTER", 7: "SUCCESSION" }, bridges: { "DOCKET": ["Court calendar", "Agenda in sequence"], "COURT": ["Where judges preside", "Open courtyard"], "CLOISTER": ["Covered colonnade", "Monastic enclosure"], "CHAPTER": ["Division of religious order", "Book section"] }, anchors: { "GAG": "Silencing injunction", "CAPITAL": "Column crown", "HABIT": "Nun's garment", "SUCCESSION": "Line of inheritance" }, centerWord: "ORDER", centerHints: { "SEQUENCE": "Arrangement or ranking", "LEGAL": "Court directive", "ARCHITECTURE": "Doric, Ionic, Corinthian", "RELIGIOUS": "Monastic community" }, centerExplanations: { "SEQUENCE": "In proper order", "LEGAL": "A court order", "ARCHITECTURE": "A classical order", "RELIGIOUS": "A religious order" } },
-  { id: 39, title: "The Web We Weave", themes: ["TEXTILE", "NARRATIVE", "SOCIAL", "COMPUTING"], colors: ["#EC4899", "#F59E0B", "#3B82F6", "#10B981"], solution: { 0: "WEAVE", 1: "PLOT", 2: "POST", 3: "VIRAL", 4: "NETWORK", 5: "CRASH", 6: "LOOP", 7: "NEEDLE" }, bridges: { "WEAVE": ["Interlace fibers", "Weave a narrative"], "POST": ["Blog or article entry", "Share online"], "NETWORK": ["Online connections", "Connected computers"], "LOOP": ["Program iteration cycle", "Thread looped through fabric"] }, anchors: { "PLOT": "Story arc or scheme", "VIRAL": "Spreading rapidly", "CRASH": "System failure", "NEEDLE": "Sewing implement" }, centerWord: "THREAD", centerHints: { "TEXTILE": "Spun fiber for sewing", "NARRATIVE": "Story's continuous element", "SOCIAL": "Series of connected posts", "COMPUTING": "Sequence of program execution" }, centerExplanations: { "TEXTILE": "A thread of yarn", "NARRATIVE": "The thread of a story", "SOCIAL": "A Twitter/X thread", "COMPUTING": "A program thread" } },
-  { id: 40, title: "Ready or Not", themes: ["THEATER", "TENNIS", "DINING", "GYM"], colors: ["#EC4899", "#22C55E", "#F97316", "#3B82F6"], solution: { 0: "BOX", 1: "MATCH", 2: "SERVE", 3: "TABLE", 4: "DIP", 5: "REP", 6: "ROUTINE", 7: "SCENE" }, bridges: { "BOX": ["Private seating area", "Target area for serve"], "SERVE": ["Start the point", "Deliver food"], "DIP": ["Appetizer sauce", "Tricep exercise"], "ROUTINE": ["Workout regimen", "Dance or comedy act"] }, anchors: { "MATCH": "Tennis competition", "TABLE": "Where diners sit", "REP": "Single repetition", "SCENE": "Dramatic segment" }, centerWord: "SET", centerHints: { "THEATER": "Stage arrangement", "TENNIS": "Six games to win one", "DINING": "Arranged for guests", "GYM": "Group of repetitions" }, centerExplanations: { "THEATER": "A stage set", "TENNIS": "A tennis set", "DINING": "Set the table", "GYM": "Sets and reps" } }
+  { id: 1, title: "Break a Leg", themes: ["THEATER", "MEDICINE", "METALWORK", "FISHING"], colors: ["#EC4899", "#EF4444", "#6B7280", "#3B82F6"], solution: { 0: "STAGE", 1: "SUTURE", 2: "BRACE", 3: "ANVIL", 4: "HOOK", 5: "REEL", 6: "LINE", 7: "BOW" }, bridges: { "STAGE": ["Performance platform", "Illness progression"], "BRACE": ["Orthopedic support", "Structural support"], "HOOK": ["Curved metal tool", "Fishing barb"], "LINE": ["Fishing string", "Spoken dialogue"] }, anchors: { "SUTURE": "Surgical stitches", "ANVIL": "Blacksmith's block", "REEL": "Line spool", "BOW": "Curtain call gesture" }, centerWord: "CAST", centerHints: ["It goes on a break", "Ones making a scene?", "Start angling", "Group of actors"], centerExplanations: { "THEATER": "The cast of a play", "MEDICINE": "A plaster cast", "FISHING": "Cast a line", "METALWORK": "Cast metal in a mold" } },
+  { id: 2, title: "Out of the Blue", themes: ["MECHANICAL", "STORM", "SUDDEN MOVEMENT", "SEWING"], colors: ["#6B7280", "#3B82F6", "#F59E0B", "#EC4899"], solution: { 0: "WIND", 1: "HAIL", 2: "SURGE", 3: "DASH", 4: "DART", 5: "SEAM", 6: "PIN", 7: "AXLE" }, bridges: { "WIND": ["Wind up a mechanism", "Gale force air"], "SURGE": ["Storm surge", "Rush forward"], "DART": ["Move suddenly", "Sewn fold for shaping"], "PIN": ["Sewing tool", "Mechanical fastener"] }, anchors: { "HAIL": "Ice pellets from sky", "DASH": "Sprint quickly", "SEAM": "Stitched fabric edge", "AXLE": "Wheel shaft" }, centerWord: "BOLT", centerHints: ["Fabric purchase", "Aptly named Olympics star", "Zeus's weapon", "Nut's partner"], centerExplanations: { "MECHANICAL": "A nut and bolt", "STORM": "A bolt of lightning", "SUDDEN MOVEMENT": "Bolt out the door", "SEWING": "A bolt of fabric" } },
+  { id: 3, title: "Diamond in the Rough", themes: ["SPORTS", "MASONRY", "COLORS", "JEWELRY"], colors: ["#22C55E", "#78716C", "#8B5CF6", "#06B6D4"], solution: { 0: "MARBLE", 1: "GRANITE", 2: "BRICK", 3: "TAUPE", 4: "JADE", 5: "GEM", 6: "DIAMOND", 7: "CURLING" }, bridges: { "MARBLE": ["Game piece", "Type of stone"], "BRICK": ["Building block", "Reddish-brown hue"], "JADE": ["Greenish hue", "Ornamental stone"], "DIAMOND": ["Precious stone", "Baseball field"] }, anchors: { "GRANITE": "Igneous rock", "TAUPE": "Brownish-grey hue", "GEM": "Cut precious stone", "CURLING": "Ice sport with brooms" }, centerWord: "STONE", centerHints: ["14 pounds, in Britain", "Curling disc", "Peach pit", "Rock"], centerExplanations: { "SPORTS": "A curling stone", "MASONRY": "Stone masonry", "JEWELRY": "A precious stone", "COLORS": "Stone grey" } },
+  { id: 4, title: "Ink and Iron", themes: ["MEDIA", "PRINTING", "WEIGHTS", "LAUNDRY"], colors: ["#6366F1", "#1F2937", "#EF4444", "#06B6D4"], solution: { 0: "COPY", 1: "SERIF", 2: "PLATE", 3: "SQUAT", 4: "IRON", 5: "STARCH", 6: "SPIN", 7: "SCOOP" }, bridges: { "COPY": ["Written material", "Text for printing"], "PLATE": ["Metal printing sheet", "Weighted disc"], "IRON": ["Pump iron", "Pressing tool"], "SPIN": ["Washing cycle", "Present with bias"] }, anchors: { "SERIF": "Letter stroke flourish", "SQUAT": "Deep knee bend exercise", "STARCH": "Fabric stiffener", "SCOOP": "Exclusive news story" }, centerWord: "PRESS", centerHints: ["Court defense?", "Juice extractor", "De-crease?", "Fourth Estate"], centerExplanations: { "MEDIA": "The press corps", "PRINTING": "A printing press", "LAUNDRY": "Press a shirt", "WEIGHTS": "Bench press" } },
+  { id: 5, title: "Bits and Pieces", themes: ["FIGHTING", "COMEDY", "TOOLS", "COCKTAILS"], colors: ["#EF4444", "#FBBF24", "#78716C", "#EC4899"], solution: { 0: "RIPOSTE", 1: "SKIT", 2: "BIT", 3: "AWL", 4: "SCREWDRIVER", 5: "CHASER", 6: "SMASH", 7: "UPPERCUT" }, bridges: { "RIPOSTE": ["Quick counter-attack", "Witty comeback"], "BIT": ["Comedy routine", "Drill attachment"], "SCREWDRIVER": ["Tool for screws", "Vodka cocktail"], "SMASH": ["Cocktail with fruit", "Powerful hit"] }, anchors: { "SKIT": "Short comedy sketch", "AWL": "Pointed leather tool", "CHASER": "Drink after a shot", "UPPERCUT": "Upward boxing blow" }, centerWord: "PUNCH", centerHints: ["Right or left", "Forcefulness", "Hero of children's puppet show", "Contents of a big bowl"], centerExplanations: { "FIGHTING": "Throw a punch", "COMEDY": "The punch line", "COCKTAILS": "Fruit punch", "TOOLS": "A hole punch" } },
+  { id: 6, title: "Just My Type", themes: ["LAW", "TYPE", "MEDICAL", "GRAMMAR"], colors: ["#1F2937", "#6366F1", "#EF4444", "#22C55E"], solution: { 0: "CAPITAL", 1: "FONT", 2: "STROKE", 3: "PATIENT", 4: "COMPOUND", 5: "PRONOUN", 6: "SENTENCE", 7: "SUIT" }, bridges: { "CAPITAL": ["Punishable by death", "Uppercase letter"], "STROKE": ["Pen mark", "Cerebrovascular event"], "COMPOUND": ["Custom pharmacy preparation", "Joined clause"], "SENTENCE": ["Grammatical unit", "Court punishment"] }, anchors: { "FONT": "Typeface design", "PATIENT": "Person under care", "PRONOUN": "Word replacing noun", "SUIT": "Legal action" }, centerWord: "CASE", centerHints: ["Jewelry store feature", "Carryall", "Four six-packs", "Job for Sherlock"], centerExplanations: { "LAW": "A court case", "TYPE": "Upper case letters", "GRAMMAR": "Grammatical case", "MEDICAL": "A medical case" } },
+  { id: 7, title: "Raise the Stakes", themes: ["VENTURE", "BASEBALL", "MUSIC", "TENTS"], colors: ["#6366F1", "#EF4444", "#EC4899", "#22C55E"], solution: { 0: "ANGELS", 1: "HOME", 2: "HITS", 3: "ALBUM", 4: "COVER", 5: "CAMPING", 6: "STAKE", 7: "UNICORN" }, bridges: { "ANGELS": ["Angel investors", "LA baseball team"], "HITS": ["Successful at-bats", "Popular songs"], "COVER": ["Song remake", "Tent protection"], "STAKE": ["Tent peg", "Equity share"] }, anchors: { "HOME": "Base or plate", "ALBUM": "Song collection", "CAMPING": "Outdoor overnight stay", "UNICORN": "Billion-dollar startup" }, centerWord: "PITCH", centerHints: ["Hull sealer", "Topic for a voice coach", "Word before or after perfect", "Sales spiel"], centerExplanations: { "VENTURE": "A startup pitch", "BASEBALL": "Pitch the ball", "TENTS": "Pitch a tent", "MUSIC": "Perfect pitch" } },
+  { id: 8, title: "That's a Wrap", themes: ["MOVEMENT", "FOOD", "FILM", "MUSIC"], colors: ["#F59E0B", "#22C55E", "#6366F1", "#EC4899"], solution: { 0: "SHAKE", 1: "BUN", 2: "STOCK", 3: "FLICK", 4: "SCORE", 5: "STAFF", 6: "RHYTHM", 7: "TUMBLE" }, bridges: { "SHAKE": ["Move quickly", "Milkshake"], "STOCK": ["Food broth", "Film stock"], "SCORE": ["Film soundtrack", "Written music"], "RHYTHM": ["Musical beat", "Movement pattern"] }, anchors: { "BUN": "Bread for burgers", "FLICK": "Informal term for movie", "STAFF": "Musical notation lines", "TUMBLE": "Fall or somersault" }, centerWord: "ROLL", centerHints: ["Casino action", "Order to make a scene?", "Drum sound", "Item in a restaurant basket"], centerExplanations: { "MOVEMENT": "Roll over", "FOOD": "A dinner roll", "MUSIC": "A drum roll", "FILM": "A roll of film" } },
+  { id: 9, title: "Ink Slinger", themes: ["ENTERTAINMENT", "COMIC BOOKS", "WATER", "FIREARMS"], colors: ["#EC4899", "#22C55E", "#3B82F6", "#6B7280"], solution: { 0: "SKETCH", 1: "PANEL", 2: "SPLASH", 3: "WELL", 4: "PUMP", 5: "GUN", 6: "CLIP", 7: "HEADLINER" }, bridges: { "SKETCH": ["Comedy bit", "Preliminary drawing"], "SPLASH": ["Full-page panel", "Water spray"], "PUMP": ["Water device", "Pump-action shotgun"], "CLIP": ["Ammo holder", "Video segment"] }, anchors: { "PANEL": "Comic frame", "WELL": "Underground water source", "GUN": "Handheld firearm", "HEADLINER": "Star performer" }, centerWord: "DRAW", centerHints: ["Duel action?", "Box office need", "Stalemate", "Sketch"], centerExplanations: { "ENTERTAINMENT": "The main draw", "COMIC BOOKS": "Draw a comic", "FIREARMS": "Quick draw", "WATER": "Draw water from a well" } },
+  { id: 10, title: "Band of Gold", themes: ["MUSIC", "DESTABILIZE", "SCULPTURE", "JEWELRY"], colors: ["#EC4899", "#EF4444", "#78716C", "#FBBF24"], solution: { 0: "BEAT", 1: "JOLT", 2: "HAMMER", 3: "MARBLE", 4: "STONE", 5: "GEM", 6: "BAND", 7: "JAZZ" }, bridges: { "BEAT": ["Rhythm", "Defeat soundly"], "HAMMER": ["Criticize harshly", "Sculptor's tool"], "STONE": ["Carving material", "Precious gem"], "BAND": ["Ring", "Musical group"] }, anchors: { "JOLT": "Sudden shock", "MARBLE": "Sculptor's medium", "GEM": "Cut precious stone", "JAZZ": "Improvisational genre" }, centerWord: "ROCK", centerHints: ["Seesaw", "Swing alternative", "Sling missile", "Scissors topper, in a game"], centerExplanations: { "MUSIC": "Rock music", "DESTABILIZE": "Rock the boat", "JEWELRY": "A rock on her finger", "SCULPTURE": "Carved from rock" } },
+  { id: 11, title: "Walk the Plank", themes: ["LUMBER", "NAUTICAL", "DINING", "GOVERNANCE"], colors: ["#92400E", "#3B82F6", "#F97316", "#6366F1"], solution: { 0: "DECK", 1: "SHIP", 2: "COURSE", 3: "MEAL", 4: "TABLE", 5: "MOTION", 6: "PANEL", 7: "PLANK" }, bridges: { "DECK": ["Wooden platform", "Floor of ship"], "COURSE": ["Ship's route", "Part of meal"], "TABLE": ["Dining furniture", "Postpone consideration"], "PANEL": ["Group of experts", "Wood sheet"] }, anchors: { "SHIP": "Seagoing vessel", "MEAL": "Prepared food", "MOTION": "Formal proposal", "PLANK": "Long wood piece" }, centerWord: "BOARD", centerHints: ["Cooperative people?", "Daily meals", "Two-by-four, for one", "What chess is played on"], centerExplanations: { "LUMBER": "A wooden board", "NAUTICAL": "Board a ship", "GOVERNANCE": "Board of directors", "DINING": "Room and board" } },
+  { id: 12, title: "Off the Hook", themes: ["MUSIC", "FISH", "WEIGHING", "MAPS"], colors: ["#EC4899", "#3B82F6", "#6B7280", "#22C55E"], solution: { 0: "BASS", 1: "SOLE", 2: "NET", 3: "BALANCE", 4: "UNITS", 5: "GRID", 6: "KEY", 7: "TEMPO" }, bridges: { "BASS": ["Low pitch", "Type of fish"], "NET": ["Fishing tool", "Weight after deductions"], "UNITS": ["Weight measurement", "Map measurement"], "KEY": ["Map legend", "Tonal center"] }, anchors: { "SOLE": "Flatfish", "BALANCE": "Weighing device", "GRID": "Map coordinate lines", "TEMPO": "Speed of music" }, centerWord: "SCALE", centerHints: ["Union wage", "Run from a pianist", "It might reveal what you've lost", "Fixture in a post office or a doctor's office"], centerExplanations: { "MUSIC": "A musical scale", "FISH": "Fish scales", "MAPS": "Map scale", "WEIGHING": "A bathroom scale" } },
+  { id: 13, title: "Around the Block", themes: ["SHAPES", "CITY", "FAIRNESS", "MATH"], colors: ["#6366F1", "#6B7280", "#22C55E", "#F59E0B"], solution: { 0: "BLOCK", 1: "PARK", 2: "BENCH", 3: "JUST", 4: "EVEN", 5: "PRIME", 6: "CUBE", 7: "OVAL" }, bridges: { "BLOCK": ["Solid cube shape", "City section"], "BENCH": ["Public seat", "Judge's seat"], "EVEN": ["Fair or equal", "Divisible by two"], "CUBE": ["Third power", "3D shape"] }, anchors: { "PARK": "Urban green space", "JUST": "Fair and righteous", "PRIME": "Number with two factors", "OVAL": "Elliptical shape" }, centerWord: "SQUARE", centerHints: ["Low power?", "Cat's opposite", "Even", "Equilateral quadrilateral"], centerExplanations: { "SHAPES": "A square shape", "CITY": "Times Square", "MATH": "Square a number", "FAIRNESS": "A square deal" } },
+  { id: 14, title: "Crowned Heads", themes: ["CHECKERS", "CHESS", "CARDS", "MONARCHY"], colors: ["#1F2937", "#6366F1", "#EF4444", "#FBBF24"], solution: { 0: "BOARD", 1: "MATE", 2: "RANK", 3: "SUIT", 4: "COURT", 5: "REIGN", 6: "CROWN", 7: "JUMP" }, bridges: { "BOARD": ["Checkers surface", "Chess surface"], "RANK": ["Horizontal row", "Card value"], "COURT": ["Face cards", "Royal entourage"], "CROWN": ["Royal headgear", "Promote a piece"] }, anchors: { "MATE": "Checkmate", "SUIT": "Hearts or spades", "REIGN": "Royal rule period", "JUMP": "Checkers capture move" }, centerWord: "KING", centerHints: ["Hopper around a board", "It's worth zero in baccarat", "Hotel room option", "Double-decker checker"], centerExplanations: { "CHECKERS": "King me!", "CHESS": "The chess king", "MONARCHY": "A king on the throne", "CARDS": "King of hearts" } },
+  { id: 15, title: "Crash Course", themes: ["VEHICLES", "COMPUTERS", "REMOVAL", "CATTLE HERDING"], colors: ["#EF4444", "#3B82F6", "#8B5CF6", "#22C55E"], solution: { 0: "CRASH", 1: "MOUSE", 2: "EJECT", 3: "REPEL", 4: "CULL", 5: "WRANGLE", 6: "STEER", 7: "WHEEL" }, bridges: { "CRASH": ["Vehicle accident", "System failure"], "EJECT": ["Eject disk", "Expel"], "CULL": ["Weed out", "Reduce herd"], "STEER": ["Male bovine", "Guide vehicle"] }, anchors: { "MOUSE": "Input device", "REPEL": "Drive away", "WRANGLE": "Herd livestock", "WHEEL": "Steering control" }, centerWord: "DRIVE", centerHints: ["Automatic selection?", "Sense of purpose", "Charity money-raiser", "Opening golf shot"], centerExplanations: { "VEHICLES": "Drive a car", "COMPUTERS": "A hard drive", "CATTLE HERDING": "A cattle drive", "REMOVAL": "Drive out the enemy" } },
+  { id: 16, title: "Acid Test", themes: ["MATH", "CHEMISTRY", "MYSTERY", "CROSSWORDS"], colors: ["#F59E0B", "#22C55E", "#6366F1", "#78716C"], solution: { 0: "BASE", 1: "ACID", 2: "AGENT", 3: "CRIME", 4: "CLUE", 5: "DOWN", 6: "SQUARE", 7: "ROOT" }, bridges: { "BASE": ["Number system radix", "pH greater than 7"], "AGENT": ["Chemical substance", "Investigator"], "CLUE": ["Evidence in crime", "Puzzle hint"], "SQUARE": ["Grid box", "Number times itself"] }, anchors: { "ACID": "Corrosive compound", "CRIME": "Unlawful act", "DOWN": "Vertical clue direction", "ROOT": "Square or cube extraction" }, centerWord: "SOLUTION", centerHints: ["\"Eureka!\" cause", "Whodunit finale", "Holmes's aim", "Puzzle fan's goal"], centerExplanations: { "MATH": "The solution to the equation", "CHEMISTRY": "A saline solution", "CROSSWORDS": "The puzzle solution", "MYSTERY": "Solution to the mystery" } },
+  { id: 17, title: "Perfect Match", themes: ["ROYALTY", "SPORTS", "ROMANCE", "LAW"], colors: ["#FBBF24", "#22C55E", "#EC4899", "#1F2937"], solution: { 0: "BALL", 1: "SQUASH", 2: "MATCH", 3: "FLAME", 4: "BOND", 5: "BRIEF", 6: "PEERS", 7: "THRONE" }, bridges: { "BALL": ["Formal dance", "Sports equipment"], "MATCH": ["Competition", "Marriage partner"], "BOND": ["Emotional connection", "Bail security"], "PEERS": ["Jury of peers", "Nobles"] }, anchors: { "SQUASH": "Racquet sport", "FLAME": "Romantic interest", "BRIEF": "Legal document", "THRONE": "Monarch's seat" }, centerWord: "COURT", centerHints: ["Jester's locale", "Woo", "Pickleball venue", "Legal setting"], centerExplanations: { "ROYALTY": "The royal court", "SPORTS": "A tennis court", "LAW": "A court of law", "ROMANCE": "Court a partner" } },
+  { id: 18, title: "The Gambit", themes: ["GAMES", "ART", "FINANCE", "NEWS"], colors: ["#6366F1", "#EC4899", "#22C55E", "#6B7280"], solution: { 0: "MINIATURE", 1: "STATUE", 2: "LOT", 3: "SHARE", 4: "STOCK", 5: "SCOOP", 6: "CHECKER", 7: "KNIGHT" }, bridges: { "MINIATURE": ["Small game model", "Miniature painting"], "LOT": ["Auction item", "Bundle of shares"], "STOCK": ["Company share", "Stock photo"], "CHECKER": ["Game piece", "Fact-checker"] }, anchors: { "STATUE": "Sculpted figure", "SHARE": "Equity portion", "SCOOP": "Breaking story", "KNIGHT": "Chess piece" }, centerWord: "PIECE", centerHints: ["Heat unit?", "Saturday night special", "Work of art", "Jigsaw puzzle element"], centerExplanations: { "GAMES": "A game piece", "ART": "A piece of art", "NEWS": "A news piece", "FINANCE": "A piece of the action" } },
+  { id: 19, title: "Fielder's Choice", themes: ["VEGETATION", "MATH", "ORIGIN", "SPORTS"], colors: ["#22C55E", "#F59E0B", "#6366F1", "#EF4444"], solution: { 0: "PLOT", 1: "LOG", 2: "BASE", 3: "SOURCE", 4: "HOME", 5: "PLAY", 6: "FIELD", 7: "LEAF" }, bridges: { "PLOT": ["Garden plot", "Plot points on graph"], "BASE": ["Exponent base", "Foundation"], "HOME": ["Homeland", "Home plate"], "FIELD": ["Playing surface", "Meadow"] }, anchors: { "LOG": "Logarithm", "SOURCE": "Point of origin", "PLAY": "Athletic competition", "LEAF": "Plant foliage" }, centerWord: "ROOT", centerHints: ["Underground part", "Number that multiplies by itself", "Cheer for team", "Ancestry"], centerExplanations: { "VEGETATION": "Plant roots", "MATH": "Square root", "SPORTS": "Root for the team", "ORIGIN": "Family roots" } },
+  { id: 20, title: "Bubble Trouble", themes: ["FUEL", "MILITARY", "AQUARIUM", "MARKET"], colors: ["#F59E0B", "#6B7280", "#3B82F6", "#22C55E"], solution: { 0: "RESERVE", 1: "SHELL", 2: "MARINE", 3: "CORAL", 4: "BUBBLES", 5: "SLUMP", 6: "VOLUME", 7: "CRUDE" }, bridges: { "RESERVE": ["Backup supply", "Forces held back"], "MARINE": ["Military branch", "Saltwater tank"], "BUBBLES": ["Air in water", "Economic bubbles"], "VOLUME": ["Quantity traded", "Container capacity"] }, anchors: { "SHELL": "Artillery projectile", "CORAL": "Marine invertebrate", "SLUMP": "Market decline", "CRUDE": "Unrefined petroleum" }, centerWord: "TANK", centerHints: ["Fuel container", "Armored vehicle", "To crash", "Glass container for fish"], centerExplanations: { "FUEL": "A gas tank", "MILITARY": "A military tank", "MARKET": "Tank in the market", "AQUARIUM": "A fish tank" } },
+  { id: 21, title: "Study Hall", themes: ["GRAMMAR", "ACADEMICS", "SCIENCE", "ROYALTY"], colors: ["#6366F1", "#F59E0B", "#22C55E", "#FBBF24"], solution: { 0: "PERIOD", 1: "MAJOR", 2: "STUDY", 3: "HYPOTHESIS", 4: "GRANT", 5: "THRONE", 6: "RULE", 7: "OBJECT" }, bridges: { "PERIOD": ["Punctuation mark", "Class time slot"], "STUDY": ["Review material", "Research investigation"], "GRANT": ["Research funding", "Bestowed land"], "RULE": ["Sovereign reign", "Linguistic guideline"] }, anchors: { "MAJOR": "Primary field of study", "HYPOTHESIS": "Testable prediction", "THRONE": "Royal seat", "OBJECT": "Grammatical receiver" }, centerWord: "SUBJECT", centerHints: ["Doer of action", "Course of study", "One under sovereign", "Experiment participant"], centerExplanations: { "GRAMMAR": "The subject of a sentence", "ACADEMICS": "A school subject", "ROYALTY": "A loyal subject", "SCIENCE": "A test subject" } },
+  { id: 22, title: "Flash Point", themes: ["PHOTO", "IGNITION", "WORKLOAD", "EXPRESSION"], colors: ["#3B82F6", "#EF4444", "#6B7280", "#EC4899"], solution: { 0: "FLASH", 1: "EMBER", 2: "BURNOUT", 3: "BURDENSOME", 4: "HEAVY", 5: "FUNNY", 6: "TONE", 7: "LENS" }, bridges: { "FLASH": ["Camera flash", "Burst into flame"], "BURNOUT": ["Flame exhaustion", "Work exhaustion"], "HEAVY": ["Demanding effort", "Serious or intense"], "TONE": ["Attitude in speech", "Degree of lightness"] }, anchors: { "EMBER": "Glowing coal", "BURDENSOME": "Oppressively heavy", "FUNNY": "Comical or amusing", "LENS": "Camera optic" }, centerWord: "LIGHT", centerHints: ["Diaphanous", "Smoker's request", "Hardly serious", "End of a tunnel, proverbially"], centerExplanations: { "PHOTO": "Light for photography", "IGNITION": "Light a match", "EXPRESSION": "Light conversation", "WORKLOAD": "A light workload" } },
+  { id: 23, title: "Cut to the Chase", themes: ["VIOLENCE", "ELIMINATION", "SYMBOLS", "ROCKERS"], colors: ["#EF4444", "#6B7280", "#6366F1", "#EC4899"], solution: { 0: "CUT", 1: "EXCISE", 2: "DASH", 3: "ASTERISK", 4: "SEAL", 5: "AXE", 6: "STING", 7: "STAB" }, bridges: { "CUT": ["Knife wound", "Remove or reduce"], "DASH": ["Strike out text", "Hyphen or em dash"], "SEAL": ["Official emblem", "Singer"], "STING": ["The Police frontman", "Sharp wound"] }, anchors: { "EXCISE": "Cut out or remove", "ASTERISK": "Star-shaped symbol", "AXE": "Guitar (slang)", "STAB": "Thrust with blade" }, centerWord: "SLASH", centerHints: ["Mark of Zorro?", "Fractional part?", "Web address punctuation", "Cut in a hurry"], centerExplanations: { "VIOLENCE": "Slash with a blade", "ELIMINATION": "Slash prices", "ROCKERS": "Slash, the guitarist", "SYMBOLS": "A forward slash" } },
+  { id: 24, title: "Chain of Command", themes: ["PAPERWORK", "OS", "ARMY", "SHOP"], colors: ["#78716C", "#3B82F6", "#6B7280", "#F59E0B"], solution: { 0: "FOLDER", 1: "ICON", 2: "COMMAND", 3: "PLATOON", 4: "DRILL", 5: "VISE", 6: "STAMP", 7: "DOSSIER" }, bridges: { "FOLDER": ["Holds documents", "Directory"], "COMMAND": ["Command line", "Authority to give orders"], "DRILL": ["Training exercise", "Boring tool"], "STAMP": ["Steel punch", "Ink device"] }, anchors: { "ICON": "Desktop shortcut image", "PLATOON": "Military unit", "VISE": "Clamping tool", "DOSSIER": "Document collection" }, centerWord: "FILE", centerHints: ["Cabinet member?", "Rank's counterpart, on a chessboard", "Escape tool hidden in a cake", "Tool for nails"], centerExplanations: { "PAPERWORK": "A file folder", "OS": "A computer file", "SHOP": "A metal file", "ARMY": "Single file march" } },
+  { id: 25, title: "Behind Bars", themes: ["PRISON", "MOBILE PHONE", "BIOLOGY", "BATTERY"], colors: ["#6B7280", "#3B82F6", "#22C55E", "#F59E0B"], solution: { 0: "BARS", 1: "ROAMING", 2: "CARRIER", 3: "CULTURE", 4: "LIFE", 5: "ALKALINE", 6: "CHARGE", 7: "WARDEN" }, bridges: { "BARS": ["Prison bars", "Signal bars"], "CARRIER": ["Phone carrier", "Disease carrier"], "LIFE": ["Living organisms", "Battery life"], "CHARGE": ["Criminal charge", "Electric charge"] }, anchors: { "ROAMING": "Off-network service", "CULTURE": "Grown microorganisms", "ALKALINE": "Battery chemistry type", "WARDEN": "Prison administrator" }, centerWord: "CELL", centerHints: ["It multiplies by dividing", "Spy group", "Sentence structure?", "Smallest unit of life"], centerExplanations: { "PRISON": "A prison cell", "MOBILE PHONE": "A cell phone", "BIOLOGY": "A living cell", "BATTERY": "A battery cell" } },
+  { id: 26, title: "House Rules", themes: ["POLICE", "GOLF", "CARDS", "NIGHTLIFE"], colors: ["#3B82F6", "#22C55E", "#EF4444", "#8B5CF6"], solution: { 0: "TRAP", 1: "CADDIE", 2: "CHIP", 3: "SPADE", 4: "DECK", 5: "DISCO", 6: "BEAT", 7: "BADGE" }, bridges: { "TRAP": ["Speed trap", "Sand trap"], "CHIP": ["Chip shot", "Poker chip"], "DECK": ["DJ deck", "Deck of cards"], "BEAT": ["Walk the beat", "Musical beat"] }, anchors: { "CADDIE": "Bag carrier", "SPADE": "Black pointed suit", "DISCO": "Dance venue", "BADGE": "Officer's ID" }, centerWord: "CLUB", centerHints: ["Triple-decker", "Iron, e.g.", "Extracurricular group", "Neanderthal's weapon"], centerExplanations: { "POLICE": "A billy club", "GOLF": "A golf club", "CARDS": "Club suit", "NIGHTLIFE": "A night club" } },
+  { id: 27, title: "Cross the Aisle", themes: ["BUILDING", "POLITICS", "BIRD", "PLANE"], colors: ["#6B7280", "#DC2626", "#22C55E", "#3B82F6"], solution: { 0: "LOBBY", 1: "LIBERAL", 2: "HAWK", 3: "BEAK", 4: "TAIL", 5: "JET", 6: "LANDING", 7: "ANNEX" }, bridges: { "LOBBY": ["Entrance lobby", "Political lobbying"], "HAWK": ["War hawk", "Bird of prey"], "TAIL": ["Feathered tail", "Aircraft tail"], "LANDING": ["Plane landing", "Stair landing"] }, anchors: { "LIBERAL": "Left-leaning ideology", "BEAK": "Bird's bill", "JET": "Aircraft type", "ANNEX": "Building addition" }, centerWord: "WING", centerHints: ["Section of a structure", "Left or right faction", "Feathered limb for flight", "Aircraft lifting surface"], centerExplanations: { "BUILDING": "The east wing", "POLITICS": "The political wing", "BIRD": "A bird's wing", "PLANE": "An airplane wing" } },
+  { id: 28, title: "Walking the Line", themes: ["POLICE", "COOKING", "SPORTS", "MUSIC"], colors: ["#3B82F6", "#F97316", "#22C55E", "#EC4899"], solution: { 0: "GRILL", 1: "WHISK", 2: "BATTER", 3: "OPPONENT", 4: "SCORE", 5: "RHYTHM", 6: "RECORD", 7: "PATROL" }, bridges: { "GRILL": ["Interrogate suspect", "Cook over fire"], "BATTER": ["Cake mixture", "Baseball player"], "SCORE": ["Game points", "Sheet music"], "RECORD": ["Vinyl album", "Criminal history"] }, anchors: { "WHISK": "Egg beater", "OPPONENT": "Rival to defeat", "RHYTHM": "Musical timing", "PATROL": "Officer's rounds" }, centerWord: "BEAT", centerHints: ["The conductor keeps it", "Kerouac, e.g.", "Flatfoot's circuit", "Musical rhythm"], centerExplanations: { "POLICE": "Walk the beat", "COOKING": "Beat the eggs", "SPORTS": "Beat the competition", "MUSIC": "The musical beat" } },
+  { id: 29, title: "The Oval Office", themes: ["CARS", "PRESIDENTS", "CROSSING", "ACTORS"], colors: ["#3B82F6", "#EF4444", "#10B981", "#F59E0B"], solution: { 0: "LINCOLN", 1: "KENNEDY", 2: "WASHINGTON", 3: "RIVER", 4: "BRIDGES", 5: "HOLLYWOOD", 6: "DRIVER", 7: "MUSTANG" }, bridges: { "LINCOLN": ["Car brand", "US President"], "WASHINGTON": ["US President", "Crossing the Delaware"], "BRIDGES": ["River structures", "Famous acting family"], "DRIVER": ["Adam Driver", "Car operator"] }, anchors: { "KENNEDY": "35th President", "RIVER": "Flowing waterway", "HOLLYWOOD": "Film industry hub", "MUSTANG": "Iconic pony car" }, centerWord: "FORD", centerHints: ["Focus provider?", "First assemblyman?", "Major employer in Detroit", "Nixon pardoner"], centerExplanations: { "CARS": "Ford Motor Company", "PRESIDENTS": "President Gerald Ford", "ACTORS": "Harrison Ford", "CROSSING": "Ford a river" } },
+  { id: 30, title: "Golden Eye", themes: ["SPY", "FINANCE", "CHEMISTRY", "ADHESIVE"], colors: ["#1F2937", "#10B981", "#8B5CF6", "#EC4899"], solution: { 0: "SECURITY", 1: "ASSET", 2: "YIELD", 3: "ATOM", 4: "COMPOUND", 5: "GLUE", 6: "AGENT", 7: "SECRET" }, bridges: { "SECURITY": ["National Security", "Financial securities"], "YIELD": ["Investment return", "Chemical output"], "COMPOUND": ["Chemical substance", "Joint compound"], "AGENT": ["Bonding agent", "Secret agent"] }, anchors: { "ASSET": "Valuable holding", "ATOM": "Smallest unit", "GLUE": "Sticky adhesive", "SECRET": "Classified info" }, centerWord: "BOND", centerHints: ["M asset", "Get tight (with)", "Source of interest", "Strong connection"], centerExplanations: { "SPY": "James Bond", "FINANCE": "A savings bond", "CHEMISTRY": "A chemical bond", "ADHESIVE": "Bond two surfaces" } },
+  { id: 31, title: "Force of Nature", themes: ["E-COMMERCE", "RAINFOREST", "RIVER", "GREEK MYTH"], colors: ["#F97316", "#22C55E", "#3B82F6", "#8B5CF6"], solution: { 0: "CLOUD", 1: "CANOPY", 2: "BASIN", 3: "DELTA", 4: "STYX", 5: "TITAN", 6: "ECHO", 7: "PRIME" }, bridges: { "CLOUD": ["Cloud computing (AWS)", "Rainforest cloud cover"], "BASIN": ["Amazon basin", "River drainage area"], "STYX": ["River of the underworld", "Boundary to Hades"], "ECHO": ["Repeating nymph", "Smart speaker"] }, anchors: { "CANOPY": "Forest upper layer", "DELTA": "River mouth formation", "TITAN": "Pre-Olympian god", "PRIME": "Membership service" }, centerWord: "AMAZON", centerHints: ["Its basin covers roughly 40% of South America", "One of a tribe of mythical warriors", "Seattle-based retail giant", "Bookseller ___.com"], centerExplanations: { "E-COMMERCE": "Amazon.com", "RAINFOREST": "The Amazon rainforest", "RIVER": "The Amazon River", "GREEK MYTH": "Amazon warriors" } },
+  { id: 32, title: "Royal Flush", themes: ["MUSIC", "CHESS", "ROYALTY", "CARDS"], colors: ["#8B5CF6", "#1F2937", "#FBBF24", "#EF4444"], solution: { 0: "TEMPO", 1: "PAWN", 2: "CASTLE", 3: "THRONE", 4: "COURT", 5: "ACE", 6: "CLUB", 7: "FLAT" }, bridges: { "TEMPO": ["Musical timing", "Chess move efficiency"], "CASTLE": ["Rook's special move", "Royal fortress"], "COURT": ["Royal attendants", "Face cards"], "CLUB": ["Card suit", "Music venue"] }, anchors: { "PAWN": "Least valuable piece", "THRONE": "Sovereign's seat", "ACE": "Highest card", "FLAT": "Musical half-step down" }, centerWord: "QUEEN", centerHints: ["Powerful board member", "Doyenne", "Ruler of a hive", "Bohemian Rhapsody band"], centerExplanations: { "MUSIC": "Queen, the band", "CHESS": "The chess queen", "ROYALTY": "A reigning queen", "CARDS": "Queen of hearts" } },
+  { id: 33, title: "Core Values", themes: ["FRUIT", "TECH", "PHYSICS", "MUSIC"], colors: ["#22C55E", "#3B82F6", "#8B5CF6", "#EC4899"], solution: { 0: "MACINTOSH", 1: "JOBS", 2: "AIR", 3: "GRAVITY", 4: "REVOLUTION", 5: "VINYL", 6: "JAM", 7: "CIDER" }, bridges: { "MACINTOSH": ["Apple variety", "Classic Mac computer"], "AIR": ["MacBook model", "Resistance medium"], "REVOLUTION": ["Orbital motion", "Famous song"], "JAM": ["Fruit preserve", "Musical session"] }, anchors: { "JOBS": "Co-founder Steve", "GRAVITY": "Newton's force", "VINYL": "Record format", "CIDER": "Fermented juice" }, centerWord: "APPLE", centerHints: ["Gala, e.g.", "Jobs creation", "Inspiration for Isaac Newton", "Orchard fruit"], centerExplanations: { "FRUIT": "An apple variety", "TECH": "Apple Inc.", "PHYSICS": "Newton's apple", "MUSIC": "Apple Records" } },
+  { id: 34, title: "The Bottom Line", themes: ["TENNIS", "COMPUTERS", "FISHING", "FINANCE"], colors: ["#F59E0B", "#6366F1", "#3B82F6", "#10B981"], solution: { 0: "SERVER", 1: "MOUSE", 2: "STREAM", 3: "BAIT", 4: "BANK", 5: "YIELD", 6: "RETURN", 7: "RACKET" }, bridges: { "SERVER": ["Starts the point", "Network computer"], "STREAM": ["Data flow", "River current"], "BANK": ["River edge", "Financial institution"], "RETURN": ["Investment profit", "Hit ball back"] }, anchors: { "MOUSE": "Input device", "BAIT": "Lure for fish", "YIELD": "Investment return", "RACKET": "Tennis paddle" }, centerWord: "NET", centerHints: ["What a birdie flies over", "Catchy thing?", "After deductions", "Circus safety device"], centerExplanations: { "TENNIS": "The tennis net", "COMPUTERS": "The net", "FISHING": "A fishing net", "FINANCE": "Net income" } },
+  { id: 35, title: "Seeing Red", themes: ["CANDY", "SPACE", "MYTH", "MUSIC"], colors: ["#92400E", "#1F2937", "#8B5CF6", "#EC4899"], solution: { 0: "MILKY WAY", 1: "ROVER", 2: "TITAN", 3: "ARES", 4: "MERCURY", 5: "FUNK", 6: "KISS", 7: "WRAPPER" }, bridges: { "MILKY WAY": ["Chocolate bar", "Our galaxy"], "TITAN": ["Saturn's moon", "Pre-Olympian god"], "MERCURY": ["Messenger god", "Freddie of Queen"], "KISS": ["Rock band", "Chocolate drop"] }, anchors: { "ROVER": "Planetary explorer", "ARES": "Greek war god", "FUNK": "Bruno's genre", "WRAPPER": "Candy packaging" }, centerWord: "MARS", centerHints: ["Curiosity's locale", "Land of Opportunity?", "Milky Way maker", "Fourth rock from the sun"], centerExplanations: { "CANDY": "Mars candy bar", "SPACE": "The planet Mars", "MYTH": "Mars, god of war", "MUSIC": "Bruno Mars" } },
+  { id: 36, title: "Cold Front", themes: ["BEER", "WRITING", "MILITARY", "WIND"], colors: ["#F59E0B", "#6B7280", "#EF4444", "#3B82F6"], solution: { 0: "PROOF", 1: "EDIT", 2: "REVIEW", 3: "SERVICE", 4: "FORCE", 5: "GUST", 6: "COLD", 7: "PINT" }, bridges: { "PROOF": ["Alcohol percentage", "Galley copy"], "REVIEW": ["Critical appraisal", "Troop inspection"], "FORCE": ["Air Force", "Gale force"], "COLD": ["Chilly air", "Chilled drink"] }, anchors: { "EDIT": "Revision pass", "SERVICE": "Military duty", "GUST": "Wind burst", "PINT": "Beer measure" }, centerWord: "DRAFT", centerHints: ["Send to the front?", "Tap choice", "Early writing", "Alternative to a volunteer army"], centerExplanations: { "BEER": "Draft beer", "WRITING": "A rough draft", "MILITARY": "The military draft", "WIND": "A draft of cold air" } },
+  { id: 37, title: "Gloves Off", themes: ["CONSERVATISM", "BOXING", "ETHICS", "LAW"], colors: ["#EF4444", "#F97316", "#10B981", "#1F2937"], solution: { 0: "STANCE", 1: "DECISION", 2: "CLEAN", 3: "CHARACTER", 4: "CODE", 5: "COUNSEL", 6: "PARTY", 7: "FACTION" }, bridges: { "STANCE": ["Ideological position", "Fighting posture"], "CLEAN": ["Fair and sportsmanlike", "Morally pure"], "CODE": ["Moral principles", "Legal statutes"], "PARTY": ["Litigant in lawsuit", "Political organization"] }, anchors: { "DECISION": "Fight goes the distance", "CHARACTER": "Moral fiber", "COUNSEL": "Legal representation", "FACTION": "Political subgroup" }, centerWord: "RIGHT", centerHints: ["The conservative faction", "The power punch for most", "Moral correctness", "Legal entitlement"], centerExplanations: { "CONSERVATISM": "The political right", "BOXING": "A right hook", "ETHICS": "Right and wrong", "LAW": "A legal right" } },
+  { id: 38, title: "Rank and File", themes: ["SEQUENCE", "LEGAL", "ARCHITECTURE", "RELIGIOUS"], colors: ["#3B82F6", "#1F2937", "#78716C", "#8B5CF6"], solution: { 0: "DOCKET", 1: "GAG", 2: "COURT", 3: "CAPITAL", 4: "CLOISTER", 5: "HABIT", 6: "CHAPTER", 7: "SUCCESSION" }, bridges: { "DOCKET": ["Court calendar", "Agenda in sequence"], "COURT": ["Where judges preside", "Open courtyard"], "CLOISTER": ["Covered colonnade", "Monastic enclosure"], "CHAPTER": ["Division of religious order", "Book section"] }, anchors: { "GAG": "Silencing injunction", "CAPITAL": "Column crown", "HABIT": "Nun's garment", "SUCCESSION": "Line of inheritance" }, centerWord: "ORDER", centerHints: ["It's bigger than a family", "Alphabetize, e.g.", "Gavel pounder's demand", "Waiter's jotting"], centerExplanations: { "SEQUENCE": "In proper order", "LEGAL": "A court order", "ARCHITECTURE": "A classical order", "RELIGIOUS": "A religious order" } },
+  { id: 39, title: "The Web We Weave", themes: ["TEXTILE", "NARRATIVE", "SOCIAL", "COMPUTING"], colors: ["#EC4899", "#F59E0B", "#3B82F6", "#10B981"], solution: { 0: "WEAVE", 1: "PLOT", 2: "POST", 3: "VIRAL", 4: "NETWORK", 5: "CRASH", 6: "LOOP", 7: "NEEDLE" }, bridges: { "WEAVE": ["Interlace fibers", "Weave a narrative"], "POST": ["Blog or article entry", "Share online"], "NETWORK": ["Online connections", "Connected computers"], "LOOP": ["Program iteration cycle", "Thread looped through fabric"] }, anchors: { "PLOT": "Story arc or scheme", "VIRAL": "Spreading rapidly", "CRASH": "System failure", "NEEDLE": "Sewing implement" }, centerWord: "THREAD", centerHints: ["Work one's way through, as a maze", "Sewer line?", "Series of online comments", "Filament"], centerExplanations: { "TEXTILE": "A thread of yarn", "NARRATIVE": "The thread of a story", "SOCIAL": "A Twitter/X thread", "COMPUTING": "A program thread" } },
+  { id: 40, title: "Ready or Not", themes: ["THEATER", "TENNIS", "DINING", "GYM"], colors: ["#EC4899", "#22C55E", "#F97316", "#3B82F6"], solution: { 0: "BOX", 1: "MATCH", 2: "SERVE", 3: "TABLE", 4: "DIP", 5: "REP", 6: "ROUTINE", 7: "SCENE" }, bridges: { "BOX": ["Private seating area", "Target area for serve"], "SERVE": ["Start the point", "Deliver food"], "DIP": ["Appetizer sauce", "Tricep exercise"], "ROUTINE": ["Workout regimen", "Dance or comedy act"] }, anchors: { "MATCH": "Tennis competition", "TABLE": "Where diners sit", "REP": "Single repetition", "SCENE": "Dramatic segment" }, centerWord: "SET", centerHints: ["Something made just for show?", "Comic's batch of bits", "Wimbledon unit", "Sink, as the sun"], centerExplanations: { "THEATER": "A stage set", "TENNIS": "A tennis set", "DINING": "Set the table", "GYM": "Sets and reps" } },
+  { id: 41, title: "Access Granted", themes: ["ARCHITECTURE", "BASKETBALL", "TOOLS", "LOCKS"], colors: ["#64748B", "#F97316", "#78716C", "#F59E0B"], solution: { 0: "POST", 1: "PAINT", 2: "DRILL", 3: "WRENCH", 4: "PICK", 5: "TUMBLER", 6: "VAULT", 7: "ARCH" }, bridges: { "POST": ["Vertical structural support", "Position near the basket"], "DRILL": ["Practice exercise", "Boring tool"], "PICK": ["Sharp hand tool", "Tool to open locks"], "VAULT": ["Secure room for valuables", "Arched ceiling structure"] }, anchors: { "ARCH": "Curved architectural span", "PAINT": "Area under the basket", "WRENCH": "Torque tool", "TUMBLER": "Lock cylinder component" }, centerWord: "KEY", centerHints: ["What makes a tumbler spin", "Speck in the ocean", "G, e.g., but not H", "Lock opener"], centerExplanations: { "ARCHITECTURE": "Keystone - Central stone of an arch", "BASKETBALL": "The Key - Painted area under hoop", "TOOLS": "Allen Key - Hexagonal wrench", "LOCKS": "Key - Mechanism opener" } }
 ];
 
 let currentPuzzleIdx = 0;
@@ -1264,6 +1605,26 @@ function loadPuzzle(idx) {
   
   // Hide badge tooltip if open
   document.getElementById('badge-tooltip').classList.remove('show');
+  
+  // Reset guessing state
+  revealedHints = [];
+  guessAttempts = 0;
+  centerGuessed = false;
+  
+  // Hide hints panel
+  document.getElementById('hints-panel').classList.remove('show');
+  
+  // Reset center circle if in guessing mode
+  var circle = document.getElementById('center-circle');
+  circle.classList.remove('guessing-mode', 'guessed', 'show');
+  circle.onclick = function() { openGuessModal(); };
+  
+  // Show game buttons
+  document.getElementById('game-buttons').style.display = '';
+  
+  // Hide center panel and solved banner
+  document.getElementById('center-panel').classList.remove('show');
+  document.getElementById('solved-banner').classList.remove('show');
   
   initBoard();
   shuffle();
@@ -1633,69 +1994,139 @@ function openGuessModal() {
   
   if (!solved) return;
   
-  document.getElementById('guess-modal').classList.add('show');
-  document.getElementById('explanations').style.display = 'none';
-  
-  // Update prompt with letter count
+  // Enter guessing mode - expand center circle with input
+  enterGuessingMode();
+}
+
+function enterGuessingMode() {
+  var circle = document.getElementById('center-circle');
   var letterCount = currentPuzzle.centerWord.length;
-  document.getElementById('guess-subtitle').textContent = 'What single ' + letterCount + '-letter word connects ALL of these?';
   
-  // Set up theme hints - hidden until tapped
-  var meaningsDiv = document.getElementById('theme-meanings');
-  meaningsDiv.innerHTML = '<div class="theme-meanings-header">Tap a theme for a hint</div>';
+  // Add guessing mode class
+  circle.classList.add('guessing-mode');
+  circle.onclick = null; // Disable click while in guessing mode
   
-  for (var i = 0; i < currentPuzzle.themes.length; i++) {
-    var theme = currentPuzzle.themes[i];
-    var meaning = currentPuzzle.centerHints[theme];
-    var item = document.createElement('div');
-    item.className = 'theme-hint-row';
-    item.dataset.theme = theme;
-    item.dataset.meaning = meaning;
-    item.dataset.index = i;
-    
-    // Check if already revealed
-    if (revealedHints.indexOf(theme) !== -1) {
-      item.classList.add('revealed');
-      item.innerHTML = '<span class="theme-hint-label" style="color:' + currentPuzzle.colors[i] + '">' + theme + ':</span><span class="theme-hint-text">"' + meaning + '"</span>';
-    } else {
-      item.innerHTML = '<span class="theme-hint-label" style="color:' + currentPuzzle.colors[i] + '">' + theme + '</span><span class="theme-hint-tap">tap for hint</span>';
-      (function(el, t, m, idx) {
-        el.onclick = function() { revealThemeHint(el, t, m, idx); };
-      })(item, theme, meaning, i);
+  // Create input wrapper
+  circle.innerHTML = '<div class="center-input-wrapper">' +
+    '<div class="center-letter-count">' + letterCount + ' letters</div>' +
+    '<input type="text" class="center-input" id="center-guess-input" maxlength="' + (letterCount + 2) + '" autocomplete="off" autocapitalize="characters" autocorrect="off" spellcheck="false" inputmode="text" placeholder="?">' +
+    '<button class="center-submit" onclick="submitCenterGuess()">Submit</button>' +
+    '<div class="center-wrong-guesses" id="center-wrong-guesses"></div>' +
+    '</div>';
+  
+  // Focus the input - do it immediately since this is triggered by user tap
+  var input = document.getElementById('center-guess-input');
+  if (input) {
+    input.focus();
+    // Backup focus attempt for iOS
+    setTimeout(function() {
+      if (document.activeElement !== input) {
+        input.focus();
+      }
+    }, 50);
+  }
+  
+  // Setup keyboard handler
+  document.getElementById('center-guess-input').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      submitCenterGuess();
     }
-    meaningsDiv.appendChild(item);
+  });
+  
+  // Show hints panel below puzzle
+  showHintsPanel();
+  
+  // Hide game buttons, keep explanations visible for word tapping
+  document.getElementById('game-buttons').style.display = 'none';
+}
+
+function showHintsPanel() {
+  var panel = document.getElementById('hints-panel');
+  var progressDiv = document.getElementById('hints-progress');
+  var hintsContainer = document.getElementById('hints-container');
+  var hintBtn = document.getElementById('panel-hint-btn');
+  
+  // Clear previous content
+  progressDiv.innerHTML = '';
+  hintsContainer.innerHTML = '';
+  
+  // Add progress dots
+  for (var d = 0; d < 4; d++) {
+    var dot = document.createElement('div');
+    dot.className = 'hint-dot';
+    if (d < revealedHints.length) {
+      dot.classList.add('revealed');
+    } else if (d === revealedHints.length) {
+      dot.classList.add('current');
+    }
+    progressDiv.appendChild(dot);
   }
   
-  // Reset input and focus
-  var input = document.getElementById('guess-input');
-  input.value = '';
-  input.classList.remove('shake');
-  setTimeout(function() { input.focus(); }, 100);
+  // Add crossword hints (hidden until revealed)
+  for (var i = 0; i < currentPuzzle.centerHints.length; i++) {
+    var hintDiv = document.createElement('div');
+    hintDiv.className = 'crossword-hint';
+    hintDiv.dataset.index = i;
+    
+    if (i < revealedHints.length) {
+      hintDiv.classList.add('revealed');
+    }
+    
+    hintDiv.innerHTML = '<span class="hint-number">' + (i + 1) + '.</span> ' + currentPuzzle.centerHints[i];
+    hintsContainer.appendChild(hintDiv);
+  }
   
-  // Clear wrong guesses display if starting fresh
-  if (guessAttempts === 0) {
-    document.getElementById('wrong-guesses').innerHTML = '';
+  // Setup hint button
+  if (revealedHints.length >= 4) {
+    hintBtn.textContent = 'All hints revealed';
+    hintBtn.disabled = true;
+    hintBtn.onclick = null;
+  } else {
+    hintBtn.textContent = 'Get Hint (' + (4 - revealedHints.length) + ' remaining)';
+    hintBtn.disabled = false;
+    hintBtn.onclick = revealNextHintInPanel;
+  }
+  
+  panel.classList.add('show');
+}
+
+function revealNextHintInPanel() {
+  var currentCount = revealedHints.length;
+  if (currentCount >= 4) return;
+  
+  // Reveal next hint
+  revealedHints.push(currentCount);
+  
+  // Update hint display
+  var hints = document.querySelectorAll('#hints-container .crossword-hint');
+  if (hints[currentCount]) {
+    hints[currentCount].classList.add('revealed');
+  }
+  
+  // Update progress dots
+  var dots = document.querySelectorAll('#hints-progress .hint-dot');
+  if (dots[currentCount]) {
+    dots[currentCount].classList.remove('current');
+    dots[currentCount].classList.add('revealed');
+  }
+  if (dots[currentCount + 1]) {
+    dots[currentCount + 1].classList.add('current');
+  }
+  
+  // Update button
+  var btn = document.getElementById('panel-hint-btn');
+  if (revealedHints.length >= 4) {
+    btn.textContent = 'All hints revealed';
+    btn.disabled = true;
+    btn.onclick = null;
+  } else {
+    btn.textContent = 'Get Hint (' + (4 - revealedHints.length) + ' remaining)';
   }
 }
 
-function revealThemeHint(el, theme, meaning, idx) {
-  if (el.classList.contains('revealed')) return;
-  
-  revealedHints.push(theme);
-  el.classList.add('revealed');
-  el.innerHTML = '<span class="theme-hint-label" style="color:' + currentPuzzle.colors[idx] + '">' + theme + ':</span><span class="theme-hint-text">"' + meaning + '"</span>';
-  el.onclick = null;
-}
-
-function closeGuessModal() {
-  document.getElementById('guess-modal').classList.remove('show');
-  if (solved) {
-    document.getElementById('explanations').style.display = '';
-  }
-}
-
-function submitGuess() {
-  var input = document.getElementById('guess-input');
+function submitCenterGuess() {
+  var input = document.getElementById('center-guess-input');
   var guess = input.value.trim().toUpperCase();
   var answer = currentPuzzle.centerWord;
   
@@ -1711,14 +2142,14 @@ function submitGuess() {
   // Check if correct
   if (guess === answer) {
     centerGuessed = true;
-    showGuessSuccess();
+    showGuessingSuccess();
     return;
   }
   
   // Wrong guess - add to display
-  var wrongDiv = document.getElementById('wrong-guesses');
+  var wrongDiv = document.getElementById('center-wrong-guesses');
   var wrongSpan = document.createElement('span');
-  wrongSpan.className = 'wrong-guess';
+  wrongSpan.className = 'center-wrong-guess';
   wrongSpan.textContent = guess;
   wrongDiv.appendChild(wrongSpan);
   
@@ -1729,13 +2160,13 @@ function submitGuess() {
   
   // Check if out of attempts (4 max)
   if (guessAttempts >= maxAttempts) {
-    showGuessFailure();
+    showGuessingFailure();
     return;
   }
 }
 
-function showGuessSuccess() {
-  closeGuessModal();
+function showGuessingSuccess() {
+  exitGuessingMode();
   
   var circle = document.getElementById('center-circle');
   circle.textContent = currentPuzzle.centerWord;
@@ -1753,8 +2184,8 @@ function showGuessSuccess() {
   showCenterPanel(guessAttempts);
 }
 
-function showGuessFailure() {
-  closeGuessModal();
+function showGuessingFailure() {
+  exitGuessingMode();
   
   centerGuessed = true;
   var circle = document.getElementById('center-circle');
@@ -1764,6 +2195,61 @@ function showGuessFailure() {
   document.getElementById('solved-banner').innerHTML = '🎉 Stage 1 complete! Center word: <strong>' + currentPuzzle.centerWord + '</strong>';
   
   showCenterPanelFailure();
+}
+
+function revealAnswer() {
+  exitGuessingMode();
+  
+  centerGuessed = true;
+  var circle = document.getElementById('center-circle');
+  circle.textContent = currentPuzzle.centerWord;
+  circle.classList.add('guessed');
+  
+  document.getElementById('solved-banner').innerHTML = '🎉 Stage 1 complete! Center word: <strong>' + currentPuzzle.centerWord + '</strong>';
+  
+  showCenterPanelRevealed();
+}
+
+function exitGuessingMode() {
+  var circle = document.getElementById('center-circle');
+  circle.classList.remove('guessing-mode');
+  circle.onclick = function() { openGuessModal(); };
+  
+  // Hide hints panel
+  document.getElementById('hints-panel').classList.remove('show');
+  
+  // Show game buttons again (or hide if solved)
+  document.getElementById('game-buttons').style.display = '';
+}
+
+function revealThemeHint(el, theme, meaning, idx) {
+  if (el.classList.contains('revealed')) return;
+  
+  revealedHints.push(theme);
+  el.classList.add('revealed');
+  el.innerHTML = '<span class="theme-hint-label" style="color:' + currentPuzzle.colors[idx] + '">' + theme + ':</span><span class="theme-hint-text">"' + meaning + '"</span>';
+  el.onclick = null;
+}
+
+function showCenterPanelRevealed() {
+  document.getElementById('center-word-display').textContent = currentPuzzle.centerWord;
+  var panelList = document.getElementById('center-panel-list');
+  panelList.innerHTML = '';
+  
+  var guessInfo = document.createElement('div');
+  guessInfo.className = 'center-guess-info failure';
+  var attemptsText = guessAttempts === 0 ? 'Revealed without guessing' : 'Revealed after ' + guessAttempts + ' attempt' + (guessAttempts > 1 ? 's' : '');
+  guessInfo.textContent = attemptsText;
+  panelList.appendChild(guessInfo);
+  
+  for (var theme in currentPuzzle.centerExplanations) {
+    var meaning = currentPuzzle.centerExplanations[theme];
+    var item = document.createElement('div');
+    item.className = 'center-panel-item';
+    item.innerHTML = '<span class="center-panel-theme">' + theme + '</span><span class="center-panel-meaning">' + meaning + '</span>';
+    panelList.appendChild(item);
+  }
+  document.getElementById('center-panel').classList.add('show');
 }
 
 function showCenterPanel(guessCount) {
@@ -1813,19 +2299,6 @@ function showCenterPanelFailure() {
   }
   document.getElementById('center-panel').classList.add('show');
 }
-
-// Simple keyboard handler for guess input
-document.addEventListener('keydown', function(e) {
-  var modal = document.getElementById('guess-modal');
-  if (!modal.classList.contains('show')) return;
-  
-  if (e.key === 'Enter') {
-    e.preventDefault();
-    submitGuess();
-  } else if (e.key === 'Escape') {
-    closeGuessModal();
-  }
-});
 
 function solve() {
   for (var pos = 0; pos < 8; pos++) grid[pos] = currentPuzzle.solution[pos];
