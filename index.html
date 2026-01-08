@@ -419,9 +419,10 @@
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
     width: 70px;
     height: 70px;
+    margin-top: -35px;
+    margin-left: -35px;
     border-radius: 50%;
     background: white;
     border: 3px solid var(--dark);
@@ -435,7 +436,7 @@
     cursor: default;
     z-index: 20;
     box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-    transition: transform 0.3s ease, color 0.3s ease;
+    transition: width 0.3s ease, height 0.3s ease, margin 0.3s ease, color 0.3s ease;
     text-align: center;
     line-height: 1;
   }
@@ -475,19 +476,17 @@
   }
   
   .center-circle.show:hover:not(.guessed) {
-    transform: translate(-50%, -50%) scale(1.1);
-    animation: pulse 2s ease-in-out infinite;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2), 0 0 0 8px rgba(99, 102, 241, 0.3);
   }
   
   @keyframes pulse {
-    0%, 100% { box-shadow: 0 4px 15px rgba(0,0,0,0.2), 0 0 0 0 rgba(99, 102, 241, 0.6); transform: translate(-50%, -50%) scale(1); }
-    50% { box-shadow: 0 4px 15px rgba(0,0,0,0.2), 0 0 0 15px rgba(99, 102, 241, 0); transform: translate(-50%, -50%) scale(1.05); }
+    0%, 100% { box-shadow: 0 4px 15px rgba(0,0,0,0.2), 0 0 0 0 rgba(99, 102, 241, 0.6); }
+    50% { box-shadow: 0 4px 15px rgba(0,0,0,0.2), 0 0 0 15px rgba(99, 102, 241, 0); }
   }
   
   @keyframes celebrate-pop {
-    0% { transform: translate(-50%, -50%) scale(1); }
-    50% { transform: translate(-50%, -50%) scale(1.3); }
-    100% { transform: translate(-50%, -50%) scale(1); }
+    0%, 100% { box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+    50% { box-shadow: 0 4px 25px rgba(34, 197, 94, 0.6), 0 0 0 15px rgba(34, 197, 94, 0.3); }
   }
   
   .center-circle.celebrate {
@@ -498,11 +497,12 @@
   .center-circle.guessing-mode {
     width: 130px;
     height: 130px;
+    margin-top: -65px;
+    margin-left: -65px;
     background: linear-gradient(135deg, #eef2ff, #e0e7ff);
     border: 3px solid var(--accent);
     animation: none;
     cursor: default;
-    transition: all 0.3s ease;
   }
   
   .center-circle.guessing-mode .center-input-wrapper {
