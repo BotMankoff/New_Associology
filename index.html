@@ -1465,6 +1465,10 @@
   <button class="btn btn-solve" onclick="solve()">Reveal</button>
 </div>
 
+<div class="buttons" id="replay-buttons" style="display: none;">
+  <button class="btn btn-shuffle" onclick="playAgain()">Play Again</button>
+</div>
+
 <div class="explanations" id="explanations">
   <div class="bridge-hint">Tap any word to see its meaning</div>
 </div>
@@ -1743,14 +1747,121 @@ function loadPuzzle(idx) {
   circle.classList.remove('guessing-mode', 'guessed', 'show');
   circle.onclick = function() { openGuessModal(); };
   
-  // Show game buttons
-  document.getElementById('game-buttons').style.display = '';
-  
   // Hide center panel and solved banner
   document.getElementById('center-panel').classList.remove('show');
   document.getElementById('solved-banner').classList.remove('show');
   
+  // Hide both button sets initially
+  document.getElementById('game-buttons').style.display = '';
+  document.getElementById('replay-buttons').style.display = 'none';
+  
   initBoard();
+  
+  // Check if this puzzle was previously solved
+  if (solvedPuzzles[currentPuzzle.id]) {
+    // Show in completed state
+    showPreviouslySolvedState();
+  } else {
+    // Normal shuffle for unsolved puzzle
+    shuffle();
+  }
+}
+
+function showPreviouslySolvedState() {
+  // Set grid to solution
+  for (var pos = 0; pos < 8; pos++) {
+    grid[pos] = currentPuzzle.solution[pos];
+  }
+  renderGrid();
+  
+  // Mark as solved
+  solved = true;
+  centerGuessed = true;
+  moves = 0; // We don't know their original score, so show 0
+  
+  // Mark all slices and tokens as correct
+  var slices = document.querySelectorAll('.slice');
+  for (var i = 0; i < slices.length; i++) {
+    slices[i].classList.add('correct');
+  }
+  for (var pos = 0; pos < 8; pos++) {
+    var drop = document.getElementById("drop-" + pos);
+    var token = drop ? drop.querySelector('.token') : null;
+    if (drop) drop.classList.add('correct');
+    if (token) token.classList.add('correct');
+  }
+  
+  // Show center word as guessed
+  var circle = document.getElementById('center-circle');
+  circle.textContent = currentPuzzle.centerWord;
+  circle.classList.add('guessed');
+  circle.onclick = function() { openGuessModal(); };
+  
+  // Show solved banner
+  document.getElementById('solved-banner').innerHTML = '✓ Previously Completed';
+  document.getElementById('solved-banner').classList.add('show');
+  
+  // Show explanations
+  document.getElementById('explanations').classList.add('show');
+  
+  // Show replay button instead of game buttons
+  document.getElementById('game-buttons').style.display = 'none';
+  document.getElementById('replay-buttons').style.display = 'flex';
+  
+  // Show center panel with explanations (no score since we don't have original data)
+  showCenterPanelPreviouslySolved();
+}
+
+function showCenterPanelPreviouslySolved() {
+  document.getElementById('center-word-display').textContent = currentPuzzle.centerWord;
+  var panelList = document.getElementById('center-panel-list');
+  panelList.innerHTML = '';
+  
+  // Simple "previously solved" indicator instead of score
+  var infoDiv = document.createElement('div');
+  infoDiv.className = 'center-guess-info success';
+  infoDiv.textContent = '✓ You solved this puzzle previously';
+  panelList.appendChild(infoDiv);
+  
+  for (var theme in currentPuzzle.centerExplanations) {
+    var meaning = currentPuzzle.centerExplanations[theme];
+    var item = document.createElement('div');
+    item.className = 'center-panel-item';
+    item.innerHTML = '<span class="center-panel-theme">' + theme + '</span><span class="center-panel-meaning">' + meaning + '</span>';
+    panelList.appendChild(item);
+  }
+  document.getElementById('center-panel').classList.add('show');
+}
+
+function playAgain() {
+  // Reset to playable state (but keep it marked as solved in gallery)
+  solved = false;
+  centerGuessed = false;
+  moves = 0;
+  revealedHints = [];
+  guessAttempts = 0;
+  
+  // Hide solved state UI
+  document.getElementById('solved-banner').classList.remove('show');
+  document.getElementById('center-panel').classList.remove('show');
+  document.getElementById('explanations').classList.remove('show');
+  document.getElementById('replay-buttons').style.display = 'none';
+  document.getElementById('game-buttons').style.display = 'flex';
+  
+  // Reset center circle
+  var circle = document.getElementById('center-circle');
+  circle.classList.remove('guessed', 'show');
+  var letterCount = currentPuzzle.centerWord.length;
+  circle.innerHTML = '<span class="letter-count">' + letterCount + '</span><span class="letter-label">letters</span>';
+  circle.onclick = function() { openGuessModal(); };
+  
+  // Reset slices
+  var slices = document.querySelectorAll('.slice');
+  for (var i = 0; i < slices.length; i++) {
+    slices[i].classList.remove('correct');
+  }
+  
+  // Shuffle and start fresh
   shuffle();
 }
 
@@ -2563,7 +2674,11 @@ function initWelcomeBoard() {
 localStorage.removeItem('associology-welcomed');
 
 // Check if user opted to skip welcome screen
-var isReturningPlayer = localStorage.getItem('associology-skip-welcome');
+var skipWelcome = localStorage.getItem('associology-skip-welcome');
+
+// A returning player is someone who either skipped welcome OR has solved puzzles
+var isReturningPlayer = skipWelcome || getSolvedCount() > 0;
+
 if (isReturningPlayer) {
   document.getElementById('welcome-overlay').classList.add('hidden');
 }
