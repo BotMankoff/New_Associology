@@ -140,35 +140,6 @@
   
   .puzzle-counter { font-size: 13px; opacity: 0.8; }
   
-  .progress-indicator {
-    font-size: 11px;
-    opacity: 0.7;
-    margin-top: 2px;
-  }
-  
-  .nav-center {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  .next-unsolved-btn {
-    padding: 6px 10px;
-    border-radius: 12px;
-    background: var(--success);
-    border: none;
-    color: white;
-    font-weight: 600;
-    font-size: 11px;
-    cursor: pointer;
-    margin-left: 6px;
-  }
-  
-  .next-unsolved-btn:disabled {
-    opacity: 0.3;
-    cursor: not-allowed;
-  }
-  
   .modal-overlay {
     display: none;
     position: fixed;
@@ -1315,40 +1286,6 @@
     background: #fef2f2;
     color: #991b1b;
   }
-  
-  .score-display {
-    text-align: center;
-    padding: 12px;
-    border-radius: 10px;
-    margin-bottom: 12px;
-    background: linear-gradient(135deg, #eef2ff, #e0e7ff);
-    border: 2px solid var(--accent);
-  }
-  
-  .score-number {
-    font-size: 32px;
-    font-weight: 800;
-    color: var(--accent);
-    line-height: 1;
-  }
-  
-  .score-label {
-    font-size: 16px;
-    font-weight: 700;
-    margin-top: 4px;
-  }
-  
-  .score-label.brilliant { color: #7c3aed; }
-  .score-label.sharp { color: #2563eb; }
-  .score-label.solid { color: #059669; }
-  .score-label.grinder { color: #d97706; }
-  .score-label.revealed { color: #dc2626; }
-  
-  .score-breakdown {
-    font-size: 11px;
-    color: #666;
-    margin-top: 6px;
-  }
 </style>
 </head>
 <body>
@@ -1438,14 +1375,8 @@
 
 <nav class="puzzle-nav">
   <button class="nav-btn" id="prev-btn" onclick="prevPuzzle()">← Prev</button>
-  <div class="nav-center">
-    <span class="puzzle-counter"><span id="current-num">1</span> / <span id="total-num">25</span></span>
-    <span class="progress-indicator" id="progress-indicator">0 solved</span>
-  </div>
-  <div style="display: flex; align-items: center;">
-    <button class="nav-btn" id="next-btn" onclick="nextPuzzle()">Next →</button>
-    <button class="next-unsolved-btn" id="next-unsolved-btn" onclick="nextUnsolved()">▶ Unsolved</button>
-  </div>
+  <span class="puzzle-counter"><span id="current-num">1</span> / <span id="total-num">25</span></span>
+  <button class="nav-btn" id="next-btn" onclick="nextPuzzle()">Next →</button>
 </nav>
 
 <div class="solved-banner" id="solved-banner">
@@ -1465,10 +1396,6 @@
   <button class="btn btn-solve" onclick="solve()">Reveal</button>
 </div>
 
-<div class="buttons" id="replay-buttons" style="display: none;">
-  <button class="btn btn-shuffle" onclick="playAgain()">Play Again</button>
-</div>
-
 <div class="explanations" id="explanations">
   <div class="bridge-hint">Tap any word to see its meaning</div>
 </div>
@@ -1481,7 +1408,7 @@
   <div class="crossword-hints" id="hints-container"></div>
   <button class="get-hint-btn" id="panel-hint-btn">Get Hint (4 remaining)</button>
   <div class="hints-panel-buttons">
-    <button class="reveal-btn" onclick="revealAnswer()">Show Answer</button>
+    <button class="reveal-btn" onclick="revealAnswer()">Give Up</button>
   </div>
 </div>
 
@@ -1602,58 +1529,6 @@ let revealedHints = [];
 let guessAttempts = 0;
 let maxAttempts = 4;
 
-// Load solved puzzles from localStorage
-function loadSolvedPuzzles() {
-  PUZZLES.forEach(function(p, idx) {
-    if (localStorage.getItem('associology-solved-' + idx)) {
-      solvedPuzzles[p.id] = true;
-    }
-  });
-}
-
-// Save a puzzle as solved
-function saveSolvedPuzzle(idx) {
-  localStorage.setItem('associology-solved-' + idx, 'true');
-}
-
-// Count solved puzzles
-function getSolvedCount() {
-  return Object.keys(solvedPuzzles).length;
-}
-
-// Find the first unsolved puzzle index (returns 0 if all solved)
-function getFirstUnsolvedIdx() {
-  for (var i = 0; i < PUZZLES.length; i++) {
-    if (!solvedPuzzles[PUZZLES[i].id]) {
-      return i;
-    }
-  }
-  return 0; // All solved, return to beginning
-}
-
-// Update progress indicator
-function updateProgressIndicator() {
-  var count = getSolvedCount();
-  var total = PUZZLES.length;
-  var indicator = document.getElementById('progress-indicator');
-  indicator.textContent = count + '/' + total + ' solved';
-  
-  // Update Next Unsolved button state
-  var btn = document.getElementById('next-unsolved-btn');
-  var nextIdx = getFirstUnsolvedIdx();
-  // Disable if all solved OR if current puzzle is the only unsolved one
-  btn.disabled = (count === total);
-}
-
-// Navigate to next unsolved puzzle
-function nextUnsolved() {
-  var idx = getFirstUnsolvedIdx();
-  loadPuzzle(idx);
-}
-
-// Load solved state on init
-loadSolvedPuzzles();
-
 const board = document.getElementById('board');
 const slicesGroup = document.getElementById('slices');
 const labelsGroup = document.getElementById('labels');
@@ -1724,9 +1599,6 @@ function loadPuzzle(idx) {
   document.getElementById('prev-btn').disabled = idx === 0;
   document.getElementById('next-btn').disabled = idx === PUZZLES.length - 1;
   
-  // Update progress indicator
-  updateProgressIndicator();
-  
   // Set puzzle type badge
   var badge = document.getElementById('puzzle-type-badge');
   badge.textContent = isCultural(currentPuzzle.id) ? '🌍' : '📖';
@@ -1747,121 +1619,14 @@ function loadPuzzle(idx) {
   circle.classList.remove('guessing-mode', 'guessed', 'show');
   circle.onclick = function() { openGuessModal(); };
   
+  // Show game buttons
+  document.getElementById('game-buttons').style.display = '';
+  
   // Hide center panel and solved banner
   document.getElementById('center-panel').classList.remove('show');
   document.getElementById('solved-banner').classList.remove('show');
   
-  // Hide both button sets initially
-  document.getElementById('game-buttons').style.display = '';
-  document.getElementById('replay-buttons').style.display = 'none';
-  
   initBoard();
-  
-  // Check if this puzzle was previously solved
-  if (solvedPuzzles[currentPuzzle.id]) {
-    // Show in completed state
-    showPreviouslySolvedState();
-  } else {
-    // Normal shuffle for unsolved puzzle
-    shuffle();
-  }
-}
-
-function showPreviouslySolvedState() {
-  // Set grid to solution
-  for (var pos = 0; pos < 8; pos++) {
-    grid[pos] = currentPuzzle.solution[pos];
-  }
-  renderGrid();
-  
-  // Mark as solved
-  solved = true;
-  centerGuessed = true;
-  moves = 0; // We don't know their original score, so show 0
-  
-  // Mark all slices and tokens as correct
-  var slices = document.querySelectorAll('.slice');
-  for (var i = 0; i < slices.length; i++) {
-    slices[i].classList.add('correct');
-  }
-  for (var pos = 0; pos < 8; pos++) {
-    var drop = document.getElementById("drop-" + pos);
-    var token = drop ? drop.querySelector('.token') : null;
-    if (drop) drop.classList.add('correct');
-    if (token) token.classList.add('correct');
-  }
-  
-  // Show center word as guessed
-  var circle = document.getElementById('center-circle');
-  circle.textContent = currentPuzzle.centerWord;
-  circle.classList.add('guessed');
-  circle.onclick = function() { openGuessModal(); };
-  
-  // Show solved banner
-  document.getElementById('solved-banner').innerHTML = '✓ Previously Completed';
-  document.getElementById('solved-banner').classList.add('show');
-  
-  // Show explanations
-  document.getElementById('explanations').classList.add('show');
-  
-  // Show replay button instead of game buttons
-  document.getElementById('game-buttons').style.display = 'none';
-  document.getElementById('replay-buttons').style.display = 'flex';
-  
-  // Show center panel with explanations (no score since we don't have original data)
-  showCenterPanelPreviouslySolved();
-}
-
-function showCenterPanelPreviouslySolved() {
-  document.getElementById('center-word-display').textContent = currentPuzzle.centerWord;
-  var panelList = document.getElementById('center-panel-list');
-  panelList.innerHTML = '';
-  
-  // Simple "previously solved" indicator instead of score
-  var infoDiv = document.createElement('div');
-  infoDiv.className = 'center-guess-info success';
-  infoDiv.textContent = '✓ You solved this puzzle previously';
-  panelList.appendChild(infoDiv);
-  
-  for (var theme in currentPuzzle.centerExplanations) {
-    var meaning = currentPuzzle.centerExplanations[theme];
-    var item = document.createElement('div');
-    item.className = 'center-panel-item';
-    item.innerHTML = '<span class="center-panel-theme">' + theme + '</span><span class="center-panel-meaning">' + meaning + '</span>';
-    panelList.appendChild(item);
-  }
-  document.getElementById('center-panel').classList.add('show');
-}
-
-function playAgain() {
-  // Reset to playable state (but keep it marked as solved in gallery)
-  solved = false;
-  centerGuessed = false;
-  moves = 0;
-  revealedHints = [];
-  guessAttempts = 0;
-  
-  // Hide solved state UI
-  document.getElementById('solved-banner').classList.remove('show');
-  document.getElementById('center-panel').classList.remove('show');
-  document.getElementById('explanations').classList.remove('show');
-  document.getElementById('replay-buttons').style.display = 'none';
-  document.getElementById('game-buttons').style.display = 'flex';
-  
-  // Reset center circle
-  var circle = document.getElementById('center-circle');
-  circle.classList.remove('guessed', 'show');
-  var letterCount = currentPuzzle.centerWord.length;
-  circle.innerHTML = '<span class="letter-count">' + letterCount + '</span><span class="letter-label">letters</span>';
-  circle.onclick = function() { openGuessModal(); };
-  
-  // Reset slices
-  var slices = document.querySelectorAll('.slice');
-  for (var i = 0; i < slices.length; i++) {
-    slices[i].classList.remove('correct');
-  }
-  
-  // Shuffle and start fresh
   shuffle();
 }
 
@@ -2157,8 +1922,6 @@ function checkGroups() {
   if (allCorrect && !solved) {
     solved = true;
     solvedPuzzles[currentPuzzle.id] = true;
-    saveSolvedPuzzle(currentPuzzleIdx);
-    updateProgressIndicator();
     document.getElementById('solved-banner').innerHTML = '🎉 Stage 1 complete in <span id="final-moves">' + moves + '</span> moves! <strong>Tap the center</strong> to guess the word...';
     document.getElementById('solved-banner').classList.add('show');
     document.getElementById('game-buttons').style.display = 'none';
@@ -2468,79 +2231,16 @@ function revealThemeHint(el, theme, meaning, idx) {
   el.onclick = null;
 }
 
-// Calculate puzzle score
-function calculateScore(moveCount, hintCount, gaveUp) {
-  var score = 1000;
-  
-  // Ring stage scoring (moves)
-  if (moveCount <= 4) {
-    score += 100; // Perfect
-  } else if (moveCount <= 6) {
-    // Excellent - no modifier
-  } else if (moveCount <= 10) {
-    score -= 50; // Good
-  } else {
-    score -= 100; // Struggled
-  }
-  
-  // Center word scoring (hints)
-  if (hintCount === 0) {
-    score += 200; // No hints - saw it cold
-  } else if (hintCount === 1) {
-    score += 100; // Light help
-  } else if (hintCount === 2) {
-    // Moderate - no modifier
-  } else if (hintCount === 3) {
-    score -= 100; // Heavy
-  } else if (hintCount >= 4) {
-    score -= 200; // All hints
-  }
-  
-  // Gave up penalty
-  if (gaveUp) {
-    score -= 300;
-  }
-  
-  return score;
-}
-
-// Get score label and class
-function getScoreLabel(score) {
-  if (score >= 1200) {
-    return { text: '⚡ Brilliant', className: 'brilliant' };
-  } else if (score >= 1050) {
-    return { text: '🎯 Sharp', className: 'sharp' };
-  } else if (score >= 900) {
-    return { text: '✓ Solid', className: 'solid' };
-  } else if (score >= 700) {
-    return { text: '🔧 Grinder', className: 'grinder' };
-  } else {
-    return { text: '👀 Revealed', className: 'revealed' };
-  }
-}
-
-// Create score display HTML
-function createScoreDisplay(moveCount, hintCount, gaveUp) {
-  var score = calculateScore(moveCount, hintCount, gaveUp);
-  var label = getScoreLabel(score);
-  
-  var div = document.createElement('div');
-  div.className = 'score-display';
-  div.innerHTML = '<div class="score-number">' + score + '</div>' +
-    '<div class="score-label ' + label.className + '">' + label.text + '</div>' +
-    '<div class="score-breakdown">' + moveCount + ' moves • ' + hintCount + ' hint' + (hintCount !== 1 ? 's' : '') + (gaveUp ? ' • gave up' : '') + '</div>';
-  
-  return div;
-}
-
 function showCenterPanelRevealed() {
   document.getElementById('center-word-display').textContent = currentPuzzle.centerWord;
   var panelList = document.getElementById('center-panel-list');
   panelList.innerHTML = '';
   
-  // Add score display (gave up = true)
-  var scoreDisplay = createScoreDisplay(moves, revealedHints.length, true);
-  panelList.appendChild(scoreDisplay);
+  var guessInfo = document.createElement('div');
+  guessInfo.className = 'center-guess-info failure';
+  var attemptsText = guessAttempts === 0 ? 'Revealed without guessing' : 'Revealed after ' + guessAttempts + ' attempt' + (guessAttempts > 1 ? 's' : '');
+  guessInfo.textContent = attemptsText;
+  panelList.appendChild(guessInfo);
   
   for (var theme in currentPuzzle.centerExplanations) {
     var meaning = currentPuzzle.centerExplanations[theme];
@@ -2557,9 +2257,18 @@ function showCenterPanel(guessCount) {
   var panelList = document.getElementById('center-panel-list');
   panelList.innerHTML = '';
   
-  // Add score display (got it = not gave up)
-  var scoreDisplay = createScoreDisplay(moves, revealedHints.length, false);
-  panelList.appendChild(scoreDisplay);
+  if (guessCount) {
+    var guessInfo = document.createElement('div');
+    guessInfo.className = 'center-guess-info success';
+    var hintsUsed = revealedHints.length;
+    var msg = '🎉 Found in ' + guessCount + ' guess' + (guessCount > 1 ? 'es' : '');
+    if (hintsUsed > 0) {
+      msg += ' with ' + hintsUsed + ' hint' + (hintsUsed > 1 ? 's' : '');
+    }
+    msg += '!';
+    guessInfo.textContent = msg;
+    panelList.appendChild(guessInfo);
+  }
   
   for (var theme in currentPuzzle.centerExplanations) {
     var meaning = currentPuzzle.centerExplanations[theme];
@@ -2576,9 +2285,10 @@ function showCenterPanelFailure() {
   var panelList = document.getElementById('center-panel-list');
   panelList.innerHTML = '';
   
-  // Add score display (gave up after 4 wrong guesses)
-  var scoreDisplay = createScoreDisplay(moves, revealedHints.length, true);
-  panelList.appendChild(scoreDisplay);
+  var guessInfo = document.createElement('div');
+  guessInfo.className = 'center-guess-info failure';
+  guessInfo.textContent = 'Revealed after ' + maxAttempts + ' attempts';
+  panelList.appendChild(guessInfo);
   
   for (var theme in currentPuzzle.centerExplanations) {
     var meaning = currentPuzzle.centerExplanations[theme];
@@ -2674,12 +2384,7 @@ function initWelcomeBoard() {
 localStorage.removeItem('associology-welcomed');
 
 // Check if user opted to skip welcome screen
-var skipWelcome = localStorage.getItem('associology-skip-welcome');
-
-// A returning player is someone who either skipped welcome OR has solved puzzles
-var isReturningPlayer = skipWelcome || getSolvedCount() > 0;
-
-if (isReturningPlayer) {
+if (localStorage.getItem('associology-skip-welcome')) {
   document.getElementById('welcome-overlay').classList.add('hidden');
 }
 
@@ -2689,10 +2394,7 @@ initWelcomeBoard();
 // Update puzzle count on welcome screen
 document.querySelector('.welcome-footer span:last-child').textContent = PUZZLES.length + ' puzzles';
 
-// For returning players, start at first unsolved puzzle
-// For new players, start at puzzle 1
-var startIdx = isReturningPlayer ? getFirstUnsolvedIdx() : 0;
-loadPuzzle(startIdx);
+loadPuzzle(0);
 </script>
 </body>
 </html>
