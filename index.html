@@ -226,6 +226,69 @@
     gap: 10px;
   }
   
+  .search-container {
+    position: relative;
+    margin-bottom: 12px;
+  }
+  
+  .search-input {
+    width: 100%;
+    padding: 10px 36px 10px 12px;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  
+  .search-input:focus {
+    border-color: var(--accent);
+  }
+  
+  .search-clear {
+    position: absolute;
+    right: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 24px;
+    height: 24px;
+    border: none;
+    background: #ddd;
+    border-radius: 50%;
+    font-size: 14px;
+    cursor: pointer;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    color: #666;
+  }
+  
+  .search-clear.show {
+    display: flex;
+  }
+  
+  .search-results-info {
+    font-size: 12px;
+    color: #666;
+    margin-bottom: 10px;
+    display: none;
+  }
+  
+  .search-results-info.show {
+    display: block;
+  }
+  
+  .gallery-item.hidden {
+    display: none;
+  }
+  
+  .search-match-info {
+    font-size: 9px;
+    color: #888;
+    margin-top: 4px;
+    font-style: italic;
+  }
+  
   .gallery-item {
     background: #f5f5f5;
     border: 2px solid #ddd;
@@ -1415,7 +1478,7 @@
         <input type="checkbox" id="skip-welcome-checkbox" />
         <span>Don't show this again</span>
       </label>
-      <span>41 puzzles</span>
+      <span>50 puzzles</span>
     </div>
   </div>
 </div>
@@ -1544,6 +1607,11 @@
       <button class="modal-close" onclick="closeGallery()">×</button>
     </div>
     <div class="modal-body">
+      <div class="search-container">
+        <input type="text" class="search-input" id="gallery-search" placeholder="Search by #, title, or any word..." autocomplete="off" oninput="filterGallery()">
+        <button class="search-clear" id="search-clear" onclick="clearSearch()">×</button>
+      </div>
+      <div class="search-results-info" id="search-results-info"></div>
       <div class="gallery-grid" id="gallery-grid"></div>
     </div>
   </div>
@@ -1591,7 +1659,20 @@ const PUZZLES = [
   { id: 38, title: "Rank and File", themes: ["SEQUENCE", "LEGAL", "ARCHITECTURE", "RELIGIOUS"], colors: ["#3B82F6", "#1F2937", "#78716C", "#8B5CF6"], solution: { 0: "DOCKET", 1: "GAG", 2: "COURT", 3: "CAPITAL", 4: "CLOISTER", 5: "HABIT", 6: "CHAPTER", 7: "SUCCESSION" }, bridges: { "DOCKET": ["Court calendar", "Agenda in sequence"], "COURT": ["Where judges preside", "Open courtyard"], "CLOISTER": ["Covered colonnade", "Monastic enclosure"], "CHAPTER": ["Division of religious order", "Book section"] }, anchors: { "GAG": "Silencing injunction", "CAPITAL": "Column crown", "HABIT": "Nun's garment", "SUCCESSION": "Line of inheritance" }, centerWord: "ORDER", centerHints: ["It's bigger than a family", "Alphabetize, e.g.", "Gavel pounder's demand", "Waiter's jotting"], centerExplanations: { "SEQUENCE": "In proper order", "LEGAL": "A court order", "ARCHITECTURE": "A classical order", "RELIGIOUS": "A religious order" } },
   { id: 39, title: "The Web We Weave", themes: ["TEXTILE", "NARRATIVE", "SOCIAL", "COMPUTING"], colors: ["#EC4899", "#F59E0B", "#3B82F6", "#10B981"], solution: { 0: "WEAVE", 1: "PLOT", 2: "POST", 3: "VIRAL", 4: "NETWORK", 5: "CRASH", 6: "LOOP", 7: "NEEDLE" }, bridges: { "WEAVE": ["Interlace fibers", "Weave a narrative"], "POST": ["Blog or article entry", "Share online"], "NETWORK": ["Online connections", "Connected computers"], "LOOP": ["Program iteration cycle", "Thread looped through fabric"] }, anchors: { "PLOT": "Story arc or scheme", "VIRAL": "Spreading rapidly", "CRASH": "System failure", "NEEDLE": "Sewing implement" }, centerWord: "THREAD", centerHints: ["Work one's way through, as a maze", "Sewer line?", "Series of online comments", "Filament"], centerExplanations: { "TEXTILE": "A thread of yarn", "NARRATIVE": "The thread of a story", "SOCIAL": "A Twitter/X thread", "COMPUTING": "A program thread" } },
   { id: 40, title: "Ready or Not", themes: ["THEATER", "TENNIS", "DINING", "GYM"], colors: ["#EC4899", "#22C55E", "#F97316", "#3B82F6"], solution: { 0: "BOX", 1: "MATCH", 2: "SERVE", 3: "TABLE", 4: "DIP", 5: "REP", 6: "ROUTINE", 7: "SCENE" }, bridges: { "BOX": ["Private seating area", "Target area for serve"], "SERVE": ["Start the point", "Deliver food"], "DIP": ["Appetizer sauce", "Tricep exercise"], "ROUTINE": ["Workout regimen", "Dance or comedy act"] }, anchors: { "MATCH": "Tennis competition", "TABLE": "Where diners sit", "REP": "Single repetition", "SCENE": "Dramatic segment" }, centerWord: "SET", centerHints: ["Something made just for show?", "Comic's batch of bits", "Wimbledon unit", "Sink, as the sun"], centerExplanations: { "THEATER": "A stage set", "TENNIS": "A tennis set", "DINING": "Set the table", "GYM": "Sets and reps" } },
-  { id: 41, title: "Access Granted", themes: ["ARCHITECTURE", "BASKETBALL", "TOOLS", "LOCKS"], colors: ["#64748B", "#F97316", "#78716C", "#F59E0B"], solution: { 0: "POST", 1: "PAINT", 2: "DRILL", 3: "WRENCH", 4: "PICK", 5: "TUMBLER", 6: "VAULT", 7: "ARCH" }, bridges: { "POST": ["Vertical structural support", "Position near the basket"], "DRILL": ["Practice exercise", "Boring tool"], "PICK": ["Sharp hand tool", "Tool to open locks"], "VAULT": ["Secure room for valuables", "Arched ceiling structure"] }, anchors: { "ARCH": "Curved architectural span", "PAINT": "Area under the basket", "WRENCH": "Torque tool", "TUMBLER": "Lock cylinder component" }, centerWord: "KEY", centerHints: ["What makes a tumbler spin", "Speck in the ocean", "G, e.g., but not H", "Lock opener"], centerExplanations: { "ARCHITECTURE": "Keystone - Central stone of an arch", "BASKETBALL": "The Key - Painted area under hoop", "TOOLS": "Allen Key - Hexagonal wrench", "LOCKS": "Key - Mechanism opener" } }
+  { id: 41, title: "Access Granted", themes: ["ARCHITECTURE", "BASKETBALL", "TOOLS", "LOCKS"], colors: ["#64748B", "#F97316", "#78716C", "#F59E0B"], solution: { 0: "POST", 1: "PAINT", 2: "DRILL", 3: "WRENCH", 4: "PICK", 5: "TUMBLER", 6: "VAULT", 7: "ARCH" }, bridges: { "POST": ["Vertical structural support", "Position near the basket"], "DRILL": ["Practice exercise", "Boring tool"], "PICK": ["Sharp hand tool", "Tool to open locks"], "VAULT": ["Secure room for valuables", "Arched ceiling structure"] }, anchors: { "ARCH": "Curved architectural span", "PAINT": "Area under the basket", "WRENCH": "Torque tool", "TUMBLER": "Lock cylinder component" }, centerWord: "KEY", centerHints: ["What makes a tumbler spin", "Speck in the ocean", "G, e.g., but not H", "Lock opener"], centerExplanations: { "ARCHITECTURE": "Keystone - Central stone of an arch", "BASKETBALL": "The Key - Painted area under hoop", "TOOLS": "Allen Key - Hexagonal wrench", "LOCKS": "Key - Mechanism opener" } },
+  { id: 42, title: "Striking Distance", themes: ["FIRE", "SOCCER", "TENNIS", "DATING"], colors: ["#EF4444", "#3B82F6", "#22C55E", "#EC4899"], solution: { 0: "STRIKER", 1: "KEEPER", 2: "NET", 3: "SEED", 4: "LOVE", 5: "PAIR", 6: "SPARK", 7: "FLINT" }, bridges: { "STRIKER": ["Friction strip on matchbox", "Attacking player"], "NET": ["Goal backing", "Court divider"], "LOVE": ["Zero score", "Romantic emotion"], "SPARK": ["Romantic chemistry", "Ignition particle"] }, anchors: { "KEEPER": "Goal defender", "SEED": "Tournament ranking", "PAIR": "Couple", "FLINT": "Spark-producing stone" }, centerWord: "MATCH", centerHints: ["Stick by a fireplace", "6-3, 2-6, 7-6, e.g.", "One of 20 in a book", "___.com (dating site)"], centerExplanations: { "FIRE": "Light a match", "SOCCER": "A soccer match", "TENNIS": "A tennis match", "DATING": "A perfect match" } },
+  { id: 43, title: "Signature Move", themes: ["CHESS", "RESTAURANT", "BANK", "HOCKEY"], colors: ["#1F2937", "#F59E0B", "#22C55E", "#06B6D4"], solution: { 0: "FORK", 1: "MENU", 2: "COUNTER", 3: "TELLER", 4: "DRAFT", 5: "PUCK", 6: "BOARDS", 7: "KING" }, bridges: { "FORK": ["Simultaneous chess attack", "Dinner utensil"], "COUNTER": ["Diner seating area", "Teller window"], "DRAFT": ["Bank payment instrument", "Player selection event"], "BOARDS": ["Rink perimeter wall", "Tournament chess tables"] }, anchors: { "MENU": "Food list", "TELLER": "Bank clerk", "PUCK": "Rubber disk", "KING": "Piece to protect" }, centerWord: "CHECK", centerHints: ["Danger for a king", "10-4!", "Chess player's warning", "One means of payment"], centerExplanations: { "CHESS": "Put the King in check", "RESTAURANT": "The check, please", "BANK": "A bank check", "HOCKEY": "A body check" } },
+  { id: 44, title: "Step Up", themes: ["GEOLOGY", "DINING", "BASEBALL", "DENTISTRY"], colors: ["#78716C", "#F97316", "#22C55E", "#3B82F6"], solution: { 0: "CRUST", 1: "NAPKIN", 2: "BATTER", 3: "DUGOUT", 4: "CAP", 5: "FLOSS", 6: "CAVITY", 7: "CORE" }, bridges: { "CRUST": ["Earth's outer shell", "Bread border"], "BATTER": ["Cake mixture", "Hitter at the plate"], "CAP": ["Team headwear", "Tooth covering"], "CAVITY": ["Tooth decay", "Underground chamber"] }, anchors: { "CORE": "Center of the planet", "NAPKIN": "Lap protector", "DUGOUT": "Player's bench area", "FLOSS": "Dental string" }, centerWord: "PLATE", centerHints: ["Continental drifter", "Umpire's dusting target", "Word with license, breast, or dinner", "Home ____"], centerExplanations: { "GEOLOGY": "Tectonic plate", "DINING": "Dinner plate", "BASEBALL": "Home plate", "DENTISTRY": "Dental plate" } },
+  { id: 45, title: "Head of State", themes: ["GEOGRAPHY", "FINANCE", "ARCHITECTURE", "WRITING"], colors: ["#22C55E", "#F59E0B", "#78716C", "#3B82F6"], solution: { 0: "BANK", 1: "DIVIDEND", 2: "COLUMN", 3: "STORY", 4: "SCROLL", 5: "VOWEL", 6: "PASSAGE", 7: "DEPRESSION" }, bridges: { "BANK": ["River edge", "Financial institution"], "COLUMN": ["Spreadsheet vertical", "Structural pillar"], "SCROLL": ["Spiral stone ornament", "Rolled parchment"], "PASSAGE": ["Section of text", "Narrow route or channel"] }, anchors: { "DIVIDEND": "Share of profits", "STORY": "Floor of a building", "VOWEL": "A, E, I, O, or U", "DEPRESSION": "Sunken landform" }, centerWord: "CAPITAL", centerHints: ["Column topper", "Seed money", "Kind of letter", "Albany or Austin"], centerExplanations: { "GEOGRAPHY": "State capital", "FINANCE": "Investment capital", "ARCHITECTURE": "Capital of a column", "WRITING": "Capital letter" } },
+  { id: 46, title: "Pump It Up", themes: ["LITERATURE", "HAIR", "AUDIO", "MATH"], colors: ["#78716C", "#F59E0B", "#6366F1", "#22C55E"], solution: { 0: "BODY", 1: "ROOTS", 2: "WAVE", 3: "MUTE", 4: "CONE", 5: "SOLID", 6: "PLOT", 7: "NOVEL" }, bridges: { "BODY": ["Main text of a work", "Thickness or fullness"], "WAVE": ["Crimped style", "Sound oscillation"], "CONE": ["Vibrating speaker part", "Tapered 3D shape"], "PLOT": ["Graph coordinates", "Storyline"] }, anchors: { "ROOTS": "Follicles under the scalp", "MUTE": "Silence button", "SOLID": "3D geometric object", "NOVEL": "Long fictional work" }, centerWord: "VOLUME", centerHints: ["Cubic capacity", "Encyclopedia unit", "Stereo knob", "Shampoo bottle promise"], centerExplanations: { "LITERATURE": "Volume of a book", "HAIR": "Hair volume", "AUDIO": "Sound volume", "MATH": "Spatial volume" } },
+  { id: 47, title: "Frame by Frame", themes: ["COMICS", "AVIATION", "CONSTRUCTION", "SEWING"], colors: ["#EC4899", "#3B82F6", "#F59E0B", "#8B5CF6"], solution: { 0: "STRIP", 1: "FLAP", 2: "PLANE", 3: "DRYWALL", 4: "TAPE", 5: "HEM", 6: "BORDER", 7: "BALLOON" }, bridges: { "STRIP": ["Newspaper feature", "Runway for landing"], "PLANE": ["Flying machine", "Woodworking tool"], "TAPE": ["Adhesive roll", "Flexible measuring strip"], "BORDER": ["Decorative edge", "Line around a drawing"] }, anchors: { "FLAP": "Wing section for lift", "DRYWALL": "Gypsum board", "HEM": "Folded fabric edge", "BALLOON": "Speech bubble" }, centerWord: "PANEL", centerHints: ["Group of experts", "Comic book unit", "Solar array component", "Instrument ____"], centerExplanations: { "COMICS": "Comic panel", "AVIATION": "Instrument panel", "CONSTRUCTION": "Solar/Drywall panel", "SEWING": "Fabric panel" } },
+  { id: 48, title: "Split Second", themes: ["PHOTOGRAPHY", "TATTOO", "NEWS", "MEMORY"], colors: ["#6B7280", "#6366F1", "#EF4444", "#22C55E"], solution: { 0: "INK", 1: "PARLOR", 2: "COVER", 3: "SCOOP", 4: "ARCHIVE", 5: "CHIP", 6: "CARD", 7: "LENS" }, bridges: { "INK": ["Liquid medium for printing photographs", "Pigment inserted into the skin"], "COVER": ["Cover-up tattoo", "Cover story"], "ARCHIVE": ["Collection of old news stories", "Stored data files"], "CARD": ["Memory card for data storage", "Flash card for camera"] }, anchors: { "LENS": "Camera glass that focuses light", "PARLOR": "Establishment where body art is applied", "SCOOP": "Exclusive news story", "CHIP": "Semiconductor for data storage" }, centerWord: "FLASH", centerHints: ["It precedes a pan, a card, or a mob.", "Gordon's nickname, or a superhero from Central City.", "A breaking news summary.", "Sudden burst of light from a camera."], centerExplanations: { "PHOTOGRAPHY": "Camera flash illuminates scenes", "TATTOO": "Flash refers to pre-drawn designs", "NEWS": "News flash is a breaking bulletin", "MEMORY": "Flash memory in drives and SSDs" } },
+  { id: 49, title: "Shake It Off", themes: ["POP MUSIC", "LITERATURE", "SPEED", "BIRDS"], colors: ["#EC4899", "#8B5CF6", "#F59E0B", "#3B82F6"], solution: { 0: "VERSE", 1: "GULLIVER", 2: "DASH", 3: "RACE", 4: "FLIGHT", 5: "CHIMNEY", 6: "SONG", 7: "ERAS" }, bridges: { "VERSE": ["Stanza in a pop song", "Unit of poetry"], "DASH": ["Punctuation mark in writing", "A quick sprint"], "FLIGHT": ["Birds in flight", "Fleeing at speed"], "SONG": ["Pop music track", "Birdsong from the trees"] }, anchors: { "ERAS": "Taylor's record-breaking concert tour", "GULLIVER": "Jonathan Swift's fictional traveler", "RACE": "A competition of speed", "CHIMNEY": "Type of swift that nests in flues" }, centerWord: "SWIFT", centerHints: ["Like hand motions during a shell game.", "Bird that can spend up to 10 months in the air without landing.", "Gulliver's creator.", "\"You Belong With Me\" singer."], centerExplanations: { "POP MUSIC": "Taylor Swift, pop superstar", "LITERATURE": "Jonathan Swift, satirist", "SPEED": "Swift means fast", "BIRDS": "A swift is a small fast-flying bird" } },
+  { id: 50, title: "Special Handling", themes: ["PARENTING", "MAIL", "BASEBALL", "COMEDY"], colors: ["#EC4899", "#3B82F6", "#22C55E", "#F59E0B"], solution: { 0: "CARRIER", 1: "PARCEL", 2: "BOX", 3: "WINDUP", 4: "SETUP", 5: "IMPROV", 6: "FORMULA", 7: "NURSERY" }, bridges: { "CARRIER": ["Baby _____", "Postal worker"], "BOX": ["Collection bin", "Batter's area"], "SETUP": ["Relief pitcher", "Joke's beginning"], "FORMULA": ["Formula comedy cliché", "Bottle contents"] }, anchors: { "NURSERY": "Baby's room", "PARCEL": "Wrapped package", "WINDUP": "Pitcher's motion", "IMPROV": "Unscripted act" }, centerWord: "DELIVERY", centerHints: ["Pizza promise.", "Comedian's skill.", "Pitcher's motion.", "Childbirth."], centerExplanations: { "PARENTING": "Labor and delivery", "MAIL": "Special delivery", "BASEBALL": "Pitcher's delivery", "COMEDY": "Joke delivery" } },
+  { id: 51, title: "About Face", themes: ["SOCIAL MEDIA", "JOURNALISM", "PORTRAITURE", "CRIMINOLOGY"], colors: ["#EC4899", "#3B82F6", "#8B5CF6", "#EF4444"], solution: { 0: "STORY", 1: "BYLINE", 2: "SKETCH", 3: "SILHOUETTE", 4: "COMPOSITE", 5: "MOTIVE", 6: "BLOCK", 7: "AVATAR" }, bridges: { "STORY": ["Instagram _____", "News article"], "SKETCH": ["Character _____", "Pencil drawing"], "COMPOSITE": ["Composite portrait", "Police _____"], "BLOCK": ["Prison section", "Ban a user"] }, anchors: { "BYLINE": "Author's credit", "SILHOUETTE": "Shadow outline portrait", "MOTIVE": "Reason for crime", "AVATAR": "User icon" }, centerWord: "PROFILE", centerHints: ["J. Barrymore trademark.", "Revealing character sketch.", "Short, vivid biography.", "Side view of a face."], centerExplanations: { "SOCIAL MEDIA": "User profile", "JOURNALISM": "A profile piece", "PORTRAITURE": "Profile portrait (side view)", "CRIMINOLOGY": "Criminal profile" } },
+  { id: 52, title: "Common Ground", themes: ["MEDICINE", "GEOLOGY", "PRINTING", "GARDENING"], colors: ["#EF4444", "#78716C", "#1F2937", "#22C55E"], solution: { 0: "VEIN", 1: "STRATUM", 2: "PLATE", 3: "FONT", 4: "LEAF", 5: "MULCH", 6: "NURSERY", 7: "CLINIC" }, bridges: { "VEIN": ["Blood vessel", "Mineral deposit"], "PLATE": ["Tectonic section", "Printing surface"], "LEAF": ["Book page", "Plant foliage"], "NURSERY": ["Newborn ward", "Plant grower"] }, anchors: { "STRATUM": "Rock layer", "FONT": "Typeface style", "MULCH": "Protective ground cover", "CLINIC": "Medical facility" }, centerWord: "BED", centerHints: ["Nap sack?", "River's bottom.", "One might be turned down.", "Breakfast's partner."], centerExplanations: { "MEDICINE": "Hospital bed", "GEOLOGY": "Bedrock", "PRINTING": "Flatbed scanner/printer", "GARDENING": "Flower bed" } },
+  { id: 53, title: "Setting the Standard", themes: ["GYMNASTICS", "DRINKING", "LEGAL", "MUSIC"], colors: ["#F97316", "#EC4899", "#78716C", "#3B82F6"], solution: { 0: "TUMBLER", 1: "COCKTAIL", 2: "PROOF", 3: "ATTORNEY", 4: "RECORD", 5: "CLEF", 6: "SCORE", 7: "POMMEL" }, bridges: { "TUMBLER": ["Floor gymnast", "Cocktail glass"], "PROOF": ["Alcohol percentage", "Legal evidence"], "RECORD": ["Criminal history", "Vinyl album"], "SCORE": ["Sheet music", "Judges' points"] }, anchors: { "COCKTAIL": "Mixed drink", "ATTORNEY": "Legal representative", "CLEF": "Pitch symbol", "POMMEL": "Horse handle" }, centerWord: "BAR", centerHints: ["Tender spot?", "Where drafts are produced.", "Cosmopolitan place.", "Setting for many a joke."], centerExplanations: { "GYMNASTICS": "Uneven/High bars", "DRINKING": "Cocktail bar", "LEGAL": "The Bar Association", "MUSIC": "Musical measure" } },
+  { id: 54, title: "Line of Work", themes: ["FISHING", "SOCIAL MEDIA", "FILM", "AUDIO"], colors: ["#3B82F6", "#EC4899", "#F59E0B", "#8B5CF6"], solution: { 0: "CATFISH", 1: "INFLUENCER", 2: "CLIP", 3: "POV", 4: "TRACK", 5: "VOLUME", 6: "BASS", 7: "HOOK" }, bridges: { "CATFISH": ["Bottom feeder", "Fake online persona"], "CLIP": ["Viral video", "Movie segment"], "TRACK": ["Camera movement", "Song recording"], "BASS": ["Low frequency", "Freshwater fish"] }, anchors: { "INFLUENCER": "Social media star", "POV": "Point of view shot", "VOLUME": "Sound level", "HOOK": "Angler's barb" }, centerWord: "REEL", centerHints: ["It holds the line.", "Wind on the water?", "Casting requirement?", "Highlight ___ (sports compilation)."], centerExplanations: { "FISHING": "Fishing reel", "SOCIAL MEDIA": "Instagram Reels", "FILM": "Film reel", "AUDIO": "Reel-to-reel" } }
 ];
 
 let currentPuzzleIdx = 0;
@@ -1691,12 +1772,18 @@ const labelsGroup = document.getElementById('labels');
 
 function openHelp() { document.getElementById('help-modal').classList.add('show'); }
 function closeHelp() { document.getElementById('help-modal').classList.remove('show'); }
-function openGallery() { renderGallery(); document.getElementById('gallery-modal').classList.add('show'); }
+function openGallery() { 
+  renderGallery(); 
+  document.getElementById('gallery-search').value = '';
+  document.getElementById('search-clear').classList.remove('show');
+  document.getElementById('search-results-info').classList.remove('show');
+  document.getElementById('gallery-modal').classList.add('show'); 
+}
 function closeGallery() { document.getElementById('gallery-modal').classList.remove('show'); }
 
 // Cultural puzzles have proper nouns as center word or in clues
 function isCultural(puzzleId) {
-  return [23, 29, 30, 31, 32, 33, 35].indexOf(puzzleId) !== -1;
+  return [23, 29, 30, 31, 32, 33, 35, 49].indexOf(puzzleId) !== -1;
 }
 
 function toggleBadgeTooltip() {
@@ -1737,13 +1824,103 @@ function renderGallery() {
   PUZZLES.forEach((p, idx) => {
     const item = document.createElement('div');
     item.className = 'gallery-item';
+    item.dataset.idx = idx;
     if (idx === currentPuzzleIdx) item.classList.add('current');
     if (solvedPuzzles[p.id]) item.classList.add('solved');
     var badge = isCultural(p.id) ? '🌍' : '📖';
-    item.innerHTML = '<div class="gallery-badge">' + badge + '</div><div class="gallery-title">#' + p.id + ' ' + (p.title || '') + '</div>' + (solvedPuzzles[p.id] ? '<div class="solved-check">✓</div>' : '');
+    item.innerHTML = '<div class="gallery-badge">' + badge + '</div><div class="gallery-title">#' + p.id + ' ' + (p.title || '') + '</div>' + (solvedPuzzles[p.id] ? '<div class="solved-check">✓</div>' : '') + '<div class="search-match-info"></div>';
     item.onclick = function() { loadPuzzle(idx); closeGallery(); };
     g.appendChild(item);
   });
+  // Re-apply search filter if there's a search term
+  const searchInput = document.getElementById('gallery-search');
+  if (searchInput && searchInput.value.trim()) {
+    filterGallery();
+  }
+}
+
+function getSearchableText(puzzle) {
+  // Compile all searchable content for a puzzle
+  const parts = [];
+  parts.push(puzzle.id.toString());
+  parts.push(puzzle.title || '');
+  parts.push(puzzle.centerWord || '');
+  parts.push(...(puzzle.themes || []));
+  // Add all solution words (anchors and bridges)
+  if (puzzle.solution) {
+    Object.values(puzzle.solution).forEach(word => parts.push(word));
+  }
+  return parts.join(' ').toUpperCase();
+}
+
+function findMatchType(puzzle, query) {
+  const q = query.toUpperCase();
+  if (puzzle.id.toString() === query) return 'Puzzle #' + query;
+  if ((puzzle.title || '').toUpperCase().includes(q)) return 'Title';
+  if ((puzzle.centerWord || '').toUpperCase().includes(q)) return 'Center: ' + puzzle.centerWord;
+  if ((puzzle.themes || []).some(t => t.toUpperCase().includes(q))) {
+    const match = puzzle.themes.find(t => t.toUpperCase().includes(q));
+    return 'Theme: ' + match;
+  }
+  if (puzzle.solution) {
+    const matchWord = Object.values(puzzle.solution).find(w => w.toUpperCase().includes(q));
+    if (matchWord) return 'Word: ' + matchWord;
+  }
+  return '';
+}
+
+function filterGallery() {
+  const searchInput = document.getElementById('gallery-search');
+  const clearBtn = document.getElementById('search-clear');
+  const resultsInfo = document.getElementById('search-results-info');
+  const query = searchInput.value.trim();
+  
+  // Show/hide clear button
+  if (query) {
+    clearBtn.classList.add('show');
+  } else {
+    clearBtn.classList.remove('show');
+  }
+  
+  const items = document.querySelectorAll('.gallery-item');
+  let visibleCount = 0;
+  
+  items.forEach(item => {
+    const idx = parseInt(item.dataset.idx);
+    const puzzle = PUZZLES[idx];
+    const matchInfo = item.querySelector('.search-match-info');
+    
+    if (!query) {
+      item.classList.remove('hidden');
+      matchInfo.textContent = '';
+      visibleCount++;
+    } else {
+      const searchable = getSearchableText(puzzle);
+      if (searchable.includes(query.toUpperCase())) {
+        item.classList.remove('hidden');
+        matchInfo.textContent = findMatchType(puzzle, query);
+        visibleCount++;
+      } else {
+        item.classList.add('hidden');
+        matchInfo.textContent = '';
+      }
+    }
+  });
+  
+  // Update results info
+  if (query) {
+    resultsInfo.classList.add('show');
+    resultsInfo.textContent = visibleCount + ' of ' + PUZZLES.length + ' puzzles match "' + query + '"';
+  } else {
+    resultsInfo.classList.remove('show');
+  }
+}
+
+function clearSearch() {
+  const searchInput = document.getElementById('gallery-search');
+  searchInput.value = '';
+  filterGallery();
+  searchInput.focus();
 }
 
 function loadPuzzle(idx) {
