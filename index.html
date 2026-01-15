@@ -169,6 +169,11 @@
     cursor: not-allowed;
   }
   
+  .next-unsolved-btn.current-solved {
+    background: var(--success);
+    opacity: 1;
+  }
+  
   .modal-overlay {
     display: none;
     position: fixed;
@@ -1478,7 +1483,7 @@
         <input type="checkbox" id="skip-welcome-checkbox" />
         <span>Don't show this again</span>
       </label>
-      <span>50 puzzles</span>
+      <span>60 puzzles</span>
     </div>
   </div>
 </div>
@@ -1672,7 +1677,13 @@ const PUZZLES = [
   { id: 51, title: "About Face", themes: ["SOCIAL MEDIA", "JOURNALISM", "PORTRAITURE", "CRIMINOLOGY"], colors: ["#EC4899", "#3B82F6", "#8B5CF6", "#EF4444"], solution: { 0: "STORY", 1: "BYLINE", 2: "SKETCH", 3: "SILHOUETTE", 4: "COMPOSITE", 5: "MOTIVE", 6: "BLOCK", 7: "AVATAR" }, bridges: { "STORY": ["Instagram _____", "News article"], "SKETCH": ["Character _____", "Pencil drawing"], "COMPOSITE": ["Composite portrait", "Police _____"], "BLOCK": ["Prison section", "Ban a user"] }, anchors: { "BYLINE": "Author's credit", "SILHOUETTE": "Shadow outline portrait", "MOTIVE": "Reason for crime", "AVATAR": "User icon" }, centerWord: "PROFILE", centerHints: ["J. Barrymore trademark.", "Revealing character sketch.", "Short, vivid biography.", "Side view of a face."], centerExplanations: { "SOCIAL MEDIA": "User profile", "JOURNALISM": "A profile piece", "PORTRAITURE": "Profile portrait (side view)", "CRIMINOLOGY": "Criminal profile" } },
   { id: 52, title: "Common Ground", themes: ["MEDICINE", "GEOLOGY", "PRINTING", "GARDENING"], colors: ["#EF4444", "#78716C", "#1F2937", "#22C55E"], solution: { 0: "VEIN", 1: "STRATUM", 2: "PLATE", 3: "FONT", 4: "LEAF", 5: "MULCH", 6: "NURSERY", 7: "CLINIC" }, bridges: { "VEIN": ["Blood vessel", "Mineral deposit"], "PLATE": ["Tectonic section", "Printing surface"], "LEAF": ["Book page", "Plant foliage"], "NURSERY": ["Newborn ward", "Plant grower"] }, anchors: { "STRATUM": "Rock layer", "FONT": "Typeface style", "MULCH": "Protective ground cover", "CLINIC": "Medical facility" }, centerWord: "BED", centerHints: ["Nap sack?", "River's bottom.", "One might be turned down.", "Breakfast's partner."], centerExplanations: { "MEDICINE": "Hospital bed", "GEOLOGY": "Bedrock", "PRINTING": "Flatbed scanner/printer", "GARDENING": "Flower bed" } },
   { id: 53, title: "Setting the Standard", themes: ["GYMNASTICS", "DRINKING", "LEGAL", "MUSIC"], colors: ["#F97316", "#EC4899", "#78716C", "#3B82F6"], solution: { 0: "TUMBLER", 1: "COCKTAIL", 2: "PROOF", 3: "ATTORNEY", 4: "RECORD", 5: "CLEF", 6: "SCORE", 7: "POMMEL" }, bridges: { "TUMBLER": ["Floor gymnast", "Cocktail glass"], "PROOF": ["Alcohol percentage", "Legal evidence"], "RECORD": ["Criminal history", "Vinyl album"], "SCORE": ["Sheet music", "Judges' points"] }, anchors: { "COCKTAIL": "Mixed drink", "ATTORNEY": "Legal representative", "CLEF": "Pitch symbol", "POMMEL": "Horse handle" }, centerWord: "BAR", centerHints: ["Tender spot?", "Where drafts are produced.", "Cosmopolitan place.", "Setting for many a joke."], centerExplanations: { "GYMNASTICS": "Uneven/High bars", "DRINKING": "Cocktail bar", "LEGAL": "The Bar Association", "MUSIC": "Musical measure" } },
-  { id: 54, title: "Line of Work", themes: ["FISHING", "SOCIAL MEDIA", "FILM", "AUDIO"], colors: ["#3B82F6", "#EC4899", "#F59E0B", "#8B5CF6"], solution: { 0: "CATFISH", 1: "INFLUENCER", 2: "CLIP", 3: "POV", 4: "TRACK", 5: "VOLUME", 6: "BASS", 7: "HOOK" }, bridges: { "CATFISH": ["Bottom feeder", "Fake online persona"], "CLIP": ["Viral video", "Movie segment"], "TRACK": ["Camera movement", "Song recording"], "BASS": ["Low frequency", "Freshwater fish"] }, anchors: { "INFLUENCER": "Social media star", "POV": "Point of view shot", "VOLUME": "Sound level", "HOOK": "Angler's barb" }, centerWord: "REEL", centerHints: ["It holds the line.", "Wind on the water?", "Casting requirement?", "Highlight ___ (sports compilation)."], centerExplanations: { "FISHING": "Fishing reel", "SOCIAL MEDIA": "Instagram Reels", "FILM": "Film reel", "AUDIO": "Reel-to-reel" } }
+  { id: 54, title: "Line of Work", themes: ["FISHING", "SOCIAL MEDIA", "FILM", "AUDIO"], colors: ["#3B82F6", "#EC4899", "#F59E0B", "#8B5CF6"], solution: { 0: "CATFISH", 1: "INFLUENCER", 2: "CLIP", 3: "POV", 4: "TRACK", 5: "VOLUME", 6: "BASS", 7: "HOOK" }, bridges: { "CATFISH": ["Bottom feeder", "Fake online persona"], "CLIP": ["Viral video", "Movie segment"], "TRACK": ["Camera movement", "Song recording"], "BASS": ["Low frequency", "Freshwater fish"] }, anchors: { "INFLUENCER": "Social media star", "POV": "Point of view shot", "VOLUME": "Sound level", "HOOK": "Angler's barb" }, centerWord: "REEL", centerHints: ["It holds the line.", "Wind on the water?", "Casting requirement?", "Highlight ___ (sports compilation)."], centerExplanations: { "FISHING": "Fishing reel", "SOCIAL MEDIA": "Instagram Reels", "FILM": "Film reel", "AUDIO": "Reel-to-reel" } },
+  { id: 55, title: "The Good Stuff", themes: ["ANATOMY", "WOODWORKING", "CANNABIS", "CULINARY"], colors: ["#EC4899", "#78716C", "#22C55E", "#F59E0B"], solution: { 0: "KNUCKLE", 1: "DOVETAIL", 2: "WAX", 3: "SATIVA", 4: "BOWL", 5: "BRISKET", 6: "BONE", 7: "CARTILAGE" }, bridges: { "KNUCKLE": ["Finger hinge", "Cabinet hinge"], "WAX": ["Wood finish", "Cannabis concentrate"], "BOWL": ["Pipe part", "Serving dish"], "BONE": ["Meat cut (Bone-in)", "Skeleton part"] }, anchors: { "CARTILAGE": "Connective tissue", "DOVETAIL": "Interlocking joinery", "SATIVA": "Energizing strain", "BRISKET": "Beef cut" }, centerWord: "JOINT", centerHints: ["Dive.", "Nexus.", "Ball-and-socket, for one.", "Butcher's cut of meat."], centerExplanations: { "ANATOMY": "Knee/Elbow joint", "WOODWORKING": "Dovetail/Butt joint", "CANNABIS": "Roll a joint", "CULINARY": "Joint of beef" } },
+  { id: 56, title: "Four of a Kind", themes: ["ELVIS", "MARTIN", "SKULL ISLAND", "HORROR"], colors: ["#EC4899", "#1F2937", "#F59E0B", "#8B5CF6"], solution: { 0: "MEMPHIS", 1: "DREAM", 2: "GIANT", 3: "RKO", 4: "MONSTER", 5: "PENNYWISE", 6: "HOTEL", 7: "GRACELAND" }, bridges: { "MEMPHIS": ["Home of Graceland", "Site of assassination"], "GIANT": ["Civil rights titan", "Large ape"], "MONSTER": ["The beast itself", "Horror genre subject"], "HOTEL": ["The Overlook (The Shining)", "Heartbreak Hotel"] }, anchors: { "DREAM": "Famous speech topic", "RKO": "Studio that made the 1933 film", "PENNYWISE": "Scary clown character", "GRACELAND": "Famous mansion" }, centerWord: "KING", centerHints: ["Rock and Roll ruler", "Civil Rights leader", "Skull Island ruler", "Horror author"], centerExplanations: { "ELVIS": "The King of Rock", "MARTIN": "Martin Luther King Jr.", "SKULL ISLAND": "King Kong", "HORROR": "Stephen King" } },
+  { id: 57, title: "Mal Voyage", themes: ["TITANIC", "AUDIO", "WHISKEY", "CARDS"], colors: ["#3B82F6", "#6B7280", "#F59E0B", "#EF4444"], solution: { 0: "BRIDGE", 1: "PLUG", 2: "MIXER", 3: "BARREL", 4: "STRAIGHT", 5: "SUIT", 6: "DECK", 7: "ROSE" }, bridges: { "BRIDGE": ["Ship's command center", "Song section"], "MIXER": ["Sound board", "Drink ingredient"], "STRAIGHT": ["Served neat", "Poker hand"], "DECK": ["Pack of cards", "Ship's floor"] }, anchors: { "PLUG": "Connector (male)", "BARREL": "Aging vessel", "SUIT": "Hearts or Spades", "ROSE": "Dawson's love" }, centerWord: "JACK", centerHints: ["Diddly-squat", "Plug receptacle", "Tennessee distiller", "Low face?"], centerExplanations: { "TITANIC": "Jack Dawson", "AUDIO": "Audio jack", "WHISKEY": "Jack Daniel's", "CARDS": "Jack (face card)" } },
+  { id: 58, title: "Under Pressure", themes: ["JOURNALISM", "PRINTING", "WINE", "WEIGHTLIFTING"], colors: ["#3B82F6", "#1F2937", "#7C3AED", "#EF4444"], solution: { 0: "COPY", 1: "GALLEY", 2: "LABEL", 3: "GRAPE", 4: "RACK", 5: "SNATCH", 6: "REP", 7: "EDITOR" }, bridges: { "COPY": ["Journalist's text", "Printed duplicate"], "LABEL": ["Printed tag", "Wine bottle identifier"], "RACK": ["Wine storage frame", "Weight holder"], "REP": ["Exercise repetition", "Reporter"] }, anchors: { "EDITOR": "Publication overseer", "GALLEY": "Proof sheet", "GRAPE": "Wine fruit", "SNATCH": "Olympic lift" }, centerWord: "PRESS", centerHints: ["Urgent deadline?", "Where stories get squeezed.", "Iron's partner.", "Fourth estate."], centerExplanations: { "JOURNALISM": "The free press", "PRINTING": "A printing press", "WINE": "A wine press", "WEIGHTLIFTING": "A bench press" } },
+  { id: 59, title: "Well Aged", themes: ["WINE", "YOGA", "POTTERY", "KNITTING"], colors: ["#7C3AED", "#EC4899", "#92400E", "#F59E0B"], solution: { 0: "BALANCE", 1: "CHAKRA", 2: "CENTER", 3: "KILN", 4: "THROW", 5: "SKEIN", 6: "BLEND", 7: "VINTAGE" }, bridges: { "BALANCE": ["Flavor harmony", "Physical stability"], "CENTER": ["Find inner peace", "Align clay on wheel"], "THROW": ["Shape clay on wheel", "Small knitted blanket"], "BLEND": ["Yarn mixture", "Grape variety mix"] }, anchors: { "VINTAGE": "Harvest year", "CHAKRA": "Energy center", "KILN": "Firing oven", "SKEIN": "Yarn bundle" }, centerWord: "BODY", centerHints: ["Soul mate?", "Corpus.", "Main section of a letter.", "Part of a shampoo promise."], centerExplanations: { "WINE": "Full/Light body", "YOGA": "The physical body", "POTTERY": "Clay body", "KNITTING": "Body of a garment" } },
+  { id: 60, title: "Strings Attached", themes: ["FASHION", "ARCHERY", "VIOLIN", "NAUTICAL"], colors: ["#EC4899", "#EF4444", "#8B5CF6", "#3B82F6"], solution: { 0: "SHOOT", 1: "QUIVER", 2: "STRING", 3: "ROSIN", 4: "BRIDGE", 5: "STERN", 6: "STRIPE", 7: "RUNWAY" }, bridges: { "SHOOT": ["Photo session", "Archery competition"], "STRING": ["Bowstring", "Violin string"], "BRIDGE": ["String support on violin", "Ship's command center"], "STRIPE": ["Naval rank insignia", "Fashion pattern"] }, anchors: { "QUIVER": "Arrow container", "ROSIN": "Bow hair resin", "STERN": "Ship's rear", "RUNWAY": "Model's platform" }, centerWord: "BOW", centerHints: ["Arc.", "Fiddle stick.", "Opposite of stern.", "Gift wrapper's final touch."], centerExplanations: { "FASHION": "A decorative bow", "ARCHERY": "A bow and arrow", "VIOLIN": "A violin bow", "NAUTICAL": "The bow of the ship" } }
 ];
 
 let currentPuzzleIdx = 0;
@@ -1726,8 +1737,17 @@ function updateProgressIndicator() {
   // Update Next Unsolved button state
   var btn = document.getElementById('next-unsolved-btn');
   var nextIdx = getFirstUnsolvedIdx();
-  // Disable if all solved OR if current puzzle is the only unsolved one
+  // Disable if all solved
   btn.disabled = (count === total);
+  
+  // Update button text/style based on whether CURRENT puzzle is solved
+  if (solvedPuzzles[currentPuzzle.id]) {
+    btn.textContent = '✓ Solved';
+    btn.classList.add('current-solved');
+  } else {
+    btn.textContent = '▶ Unsolved';
+    btn.classList.remove('current-solved');
+  }
 }
 
 // Navigate to next unsolved puzzle
@@ -1783,7 +1803,7 @@ function closeGallery() { document.getElementById('gallery-modal').classList.rem
 
 // Cultural puzzles have proper nouns as center word or in clues
 function isCultural(puzzleId) {
-  return [23, 29, 30, 31, 32, 33, 35, 49].indexOf(puzzleId) !== -1;
+  return [23, 29, 30, 31, 32, 33, 35, 49, 56, 57].indexOf(puzzleId) !== -1;
 }
 
 function toggleBadgeTooltip() {
