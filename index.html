@@ -119,61 +119,111 @@
     width: 100%;
     max-width: 440px;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
     margin-bottom: 8px;
     color: white;
   }
-  
+
+  .nav-group {
+    display: flex;
+    align-items: center;
+    background: rgba(255,255,255,0.12);
+    border-radius: 24px;
+    padding: 6px 8px;
+    gap: 4px;
+  }
+
   .nav-btn {
-    padding: 8px 14px;
-    border-radius: 16px;
+    padding: 10px 14px;
+    border-radius: 18px;
+    background: rgba(255,255,255,0.1);
+    border: none;
+    color: white;
+    font-weight: 600;
+    font-size: 18px;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+  }
+
+  .nav-btn:hover:not(:disabled) {
+    background: rgba(255,255,255,0.25);
+    transform: scale(1.05);
+  }
+
+  .nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+  .nav-divider {
+    width: 1px;
+    height: 28px;
+    background: rgba(255,255,255,0.25);
+    margin: 0 8px;
+  }
+
+  .nav-jump {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 4px;
+  }
+
+  .nav-jump label {
+    font-size: 14px;
+    color: rgba(255,255,255,0.9);
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  .nav-jump input {
+    width: 60px;
+    padding: 8px 10px;
+    border-radius: 14px;
+    border: 2px solid rgba(255,255,255,0.3);
     background: rgba(255,255,255,0.15);
+    color: white;
+    font-size: 15px;
+    font-weight: 600;
+    text-align: center;
+  }
+
+  .nav-jump input::placeholder {
+    color: rgba(255,255,255,0.5);
+    font-size: 13px;
+  }
+
+  .nav-jump input:focus {
+    outline: none;
+    border-color: var(--accent);
+    background: rgba(255,255,255,0.25);
+  }
+
+  /* Hide spinner buttons on number input */
+  .nav-jump input::-webkit-outer-spin-button,
+  .nav-jump input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  .nav-jump input[type=number] {
+    -moz-appearance: textfield;
+  }
+
+  .nav-jump-btn {
+    padding: 8px 12px;
+    border-radius: 14px;
+    background: var(--accent);
     border: none;
     color: white;
     font-weight: 600;
     font-size: 13px;
     cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
   }
-  
-  .nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
-  
-  .puzzle-counter { font-size: 13px; opacity: 0.8; }
-  
-  .progress-indicator {
-    font-size: 11px;
-    opacity: 0.7;
-    margin-top: 2px;
+
+  .nav-jump-btn:hover {
+    background: #5a9fd4;
+    transform: scale(1.05);
   }
-  
-  .nav-center {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  .next-unsolved-btn {
-    padding: 6px 10px;
-    border-radius: 12px;
-    background: var(--success);
-    border: none;
-    color: white;
-    font-weight: 600;
-    font-size: 11px;
-    cursor: pointer;
-    margin-left: 6px;
-  }
-  
-  .next-unsolved-btn:disabled {
-    opacity: 0.3;
-    cursor: not-allowed;
-  }
-  
-  .next-unsolved-btn.current-solved {
-    background: var(--success);
-    opacity: 1;
-  }
-  
+
   .modal-overlay {
     display: none;
     position: fixed;
@@ -1505,14 +1555,16 @@
 </div>
 
 <nav class="puzzle-nav">
-  <button class="nav-btn" id="prev-btn" onclick="prevPuzzle()">← Prev</button>
-  <div class="nav-center">
-    <span class="puzzle-counter"><span id="current-num">1</span> / <span id="total-num">25</span></span>
-    <span class="progress-indicator" id="progress-indicator">0 solved</span>
-  </div>
-  <div style="display: flex; align-items: center;">
-    <button class="nav-btn" id="next-btn" onclick="nextPuzzle()">Next →</button>
-    <button class="next-unsolved-btn" id="next-unsolved-btn" onclick="nextUnsolved()">▶ Unsolved</button>
+  <div class="nav-group">
+    <button class="nav-btn" id="prev-btn" onclick="prevPuzzle()">←</button>
+    <button class="nav-btn" id="next-btn" onclick="nextPuzzle()">→</button>
+    <div class="nav-divider"></div>
+    <div class="nav-jump">
+      <label for="jump-input">Go to puzzle</label>
+      <input type="number" id="jump-input" min="1" placeholder="1" onkeydown="if(event.key==='Enter')jumpToPuzzle()">
+      <button class="nav-jump-btn" onclick="jumpToPuzzle()">Go</button>
+      <button class="nav-jump-btn" onclick="seeInGallery()">See in Gallery</button>
+    </div>
   </div>
 </nav>
 
@@ -1713,7 +1765,7 @@ const PUZZLES = [
   { id: 88, title: "Airborne", themes: ["TIGHTROPE", "TRAPEZE", "ACROBATICS", "JUGGLING"], colors: ["#9CA3AF", "#DC2626", "#3B82F6", "#EAB308"], solution: { 0: "NET", 1: "CATCHER", 2: "SOMERSAULT", 3: "TUMBLE", 4: "RHYTHM", 5: "CLUBS", 6: "ROUTINE", 7: "WIRE" }, bridges: { "NET": ["Safety below", "Catcher backup"], "SOMERSAULT": ["Mid-air rotation", "Tumbling rotation"], "RHYTHM": ["Movement tempo", "Toss tempo"], "ROUTINE": ["Practiced act", "Practiced act"] }, anchors: { "CATCHER": "Partner who receives", "TUMBLE": "Rolling movement", "CLUBS": "Weighted pins", "WIRE": "Walking cable" }, centerWord: "BALANCE", centerHints: ["Bank statement figure.", "Scale feature.", "What a gymnast needs.", "Equilibrium."], centerExplanations: { "TIGHTROPE": "Walker equilibrium", "TRAPEZE": "Aerial poise", "ACROBATICS": "Body control", "JUGGLING": "Postural stability while tossing" } },
   { id: 89, title: "Quality Control", themes: ["BRANDING", "GRADING", "TARGETS", "STAINS"], colors: ["#2563EB", "#DC2626", "#F97316", "#92400E"], solution: { 0: "STANDARD", 1: "RUBRIC", 2: "POINT", 3: "BULLSEYE", 4: "RINGS", 5: "BLOT", 6: "SPOT", 7: "LOGO" }, bridges: { "STANDARD": ["Brand benchmark", "Grading criterion"], "POINT": ["Grade point", "Aim (you point at the target)"], "RINGS": ["Concentric circles", "Coffee cup marks"], "SPOT": ["Blemish", "Ad spot"] }, anchors: { "RUBRIC": "Scoring guide", "BULLSEYE": "Center ring", "BLOT": "Ink mark", "LOGO": "Brand symbol" }, centerWord: "MARK", centerHints: ["Twain's first.", "Gospel writer.", "DM part.", "Blemish."], centerExplanations: { "BRANDING": "Brand symbol", "GRADING": "Score notation", "TARGETS": "Aim point", "STAINS": "Visible blemish" } },
   { id: 90, title: "High Standards", themes: ["MOUNTAINEERING", "PERFORMANCE", "GRAPHS", "ROOFING"], colors: ["#64748B", "#DC2626", "#3B82F6", "#78350F"], solution: { 0: "STAGE", 1: "ENCORE", 2: "CHARTS", 3: "AXIS", 4: "SLOPE", 5: "SHINGLE", 6: "RIDGE", 7: "CRAMPON" }, bridges: { "STAGE": ["Leg of the climb", "Platform for performers"], "CHARTS": ["Number one on the charts", "Data display"], "SLOPE": ["Graph incline", "Roof angle"], "RIDGE": ["Roof apex line", "Mountain crest"] }, anchors: { "ENCORE": "Repeat showing", "AXIS": "Reference line", "SHINGLE": "Roof tile", "CRAMPON": "Climbing spike" }, centerWord: "PEAK", centerHints: ["Trough's opposite.", "Time of maximum output.", "Point on a graph.", "Summit."], centerExplanations: { "MOUNTAINEERING": "Mountain summit", "PERFORMANCE": "Optimal level", "GRAPHS": "Highest point", "ROOFING": "Roof apex" } },
-  { id: 91, title: "Fine Tuning", themes: ["SHOES", "FLOORING", "SILVERSMITHING", "MANICURE"], colors: ["#92400E", "#D97706", "#9CA3AF", "#EC4899"], solution: { 0: "WAX", 1: "PARQUET", 2: "BUFF", 3: "TARNISH", 4: "FILE", 5: "CUTICLE", 6: "SHINE", 7: "COBBLER" }, bridges: { "WAX": ["Shoe coating", "Floor coating"], "BUFF": ["Floor buffing", "Silver buffing"], "FILE": ["Metal shaping tool", "Nail shaping tool"], "SHINE": ["Nail glossiness", "Shoe glossiness"] }, anchors: { "PARQUET": "Wood floor pattern", "TARNISH": "Silver oxidation", "CUTICLE": "Nail skin", "COBBLER": "Shoe repairer" }, centerWord: "POLISH", centerHints: ["Refinement process.", "Buffing goal.", "Silver need.", "Shine."], centerExplanations: { "SHOES": "Shoe sheen", "FLOORING": "Floor gloss", "SILVERSMITHING": "Metal luster", "MANICURE": "Nail finish" } },
+  { id: 91, title: "Fine Tuning", themes: ["SHOES", "WRITING", "SILVERSMITHING", "MANICURE"], colors: ["#92400E", "#6366F1", "#9CA3AF", "#EC4899"], solution: { 0: "STYLE", 1: "DRAFT", 2: "BURNISH", 3: "HALLMARK", 4: "FILE", 5: "CUTICLE", 6: "SHINE", 7: "COBBLER" }, bridges: { "STYLE": ["Design or fashion type", "Prose voice or manner"], "BURNISH": ["Refine prose", "Buff metal"], "FILE": ["Metal shaping tool", "Nail shaping tool"], "SHINE": ["Nail glossiness", "Shoe glossiness"] }, anchors: { "DRAFT": "Rough version", "HALLMARK": "Quality stamp", "CUTICLE": "Nail skin", "COBBLER": "Shoe repairer" }, centerWord: "POLISH", centerHints: ["Refine a draft.", "Shoe care product.", "Silversmith's task.", "Manicure finish."], centerExplanations: { "SHOES": "Shoe shine product", "WRITING": "To refine and perfect prose", "SILVERSMITHING": "To buff metal to a shine", "MANICURE": "Nail lacquer" } },
   { id: 92, title: "The Long Game", themes: ["VAMPIRES", "CAMPING", "INVESTING", "CASINOS"], colors: ["#DC2626", "#16A34A", "#1E40AF", "#EAB308"], solution: { 0: "BITES", 1: "LANTERN", 2: "PITCH", 3: "DIVIDEND", 4: "CHIP", 5: "ROULETTE", 6: "COUNT", 7: "FANG" }, bridges: { "BITES": ["Dracula's attack", "Mosquito nuisance"], "PITCH": ["Set up tent", "Investor presentation"], "CHIP": ["Semiconductor chip (major market sector)", "Casino token"], "COUNT": ["Count cards (blackjack tactic)", "Noble title (Count Dracula)"] }, anchors: { "LANTERN": "Portable light", "DIVIDEND": "Shareholder payout", "ROULETTE": "Wheel game", "FANG": "Pointed tooth" }, centerWord: "STAKE", centerHints: ["What's driven through the heart.", "Claim marker.", "It can be high.", "Company ownership share."], centerExplanations: { "VAMPIRES": "Wooden weapon", "CAMPING": "Tent anchor", "INVESTING": "Ownership share", "CASINOS": "Gambling wager" } },
   { id: 93, title: "Getting to the Core", themes: ["GEOMETRY", "WEAPONS", "NAVIGATION", "DEBATE"], colors: ["#8B5CF6", "#6B7280", "#3B82F6", "#EF4444"], solution: { 0: "TIP", 1: "DAGGER", 2: "TARGET", 3: "SEXTANT", 4: "BEARING", 5: "REBUTTAL", 6: "ANGLE", 7: "VERTEX" }, bridges: { "TIP": ["Triangle apex", "Blade end"], "TARGET": ["Weapon aim", "Navigation destination"], "BEARING": ["Compass direction", "Relevance to argument"], "ANGLE": ["Argument approach", "Geometric measure"] }, anchors: { "DAGGER": "Short stabbing blade", "SEXTANT": "Celestial navigation instrument", "REBUTTAL": "Counter-argument", "VERTEX": "Polygon corner" }, centerWord: "POINT", centerHints: ["One of 32 on a compass", "At sword's ___", "What debaters try to make", "Dot"], centerExplanations: { "GEOMETRY": "A point in space", "WEAPONS": "Point of a sword", "NAVIGATION": "Compass point", "DEBATE": "Make a point" } },
   { id: 94, title: "Catching Air", themes: ["CANDLES", "COSMETICS", "SURFING", "SKIING"], colors: ["#F59E0B", "#EC4899", "#06B6D4", "#94A3B8"], solution: { 0: "GLOW", 1: "MASCARA", 2: "BRONZE", 3: "BARREL", 4: "CARVE", 5: "MOGUL", 6: "MELT", 7: "WICK" }, bridges: { "GLOW": ["Candlelight ambiance", "Healthy skin radiance"], "BRONZE": ["Sun-kissed makeup", "Surfer's tan"], "CARVE": ["Cut through waves", "Slice down slopes"], "MELT": ["Snow season's end", "Candle's fate"] }, anchors: { "MASCARA": "Eyelash enhancer", "BARREL": "Tube wave", "MOGUL": "Snow bump", "WICK": "Flame holder" }, centerWord: "WAX", centerHints: ["Painful salon service", "Surf shop essential", "Candle makeup", "Ski bottom coating"], centerExplanations: { "CANDLES": "Candle wax", "COSMETICS": "Waxing treatment", "SURFING": "Surfboard wax", "SKIING": "Ski wax" } },
@@ -1726,7 +1778,25 @@ const PUZZLES = [
   { id: 101, title: "Standing Orders", themes: ["SUBSTACK", "MILITARY", "TRADING", "RANCHING"], colors: ["#F97316", "#6B7280", "#22C55E", "#92400E"], solution: { 0: "DISPATCH", 1: "BARRACKS", 2: "COMMISSION", 3: "BARTER", 4: "STOCK", 5: "CORRAL", 6: "BRAND", 7: "NEWSLETTER" }, bridges: { "DISPATCH": ["Breaking news release", "Orders sent to troops"], "COMMISSION": ["An officer's rank or authority", "A broker's fee for a transaction"], "STOCK": ["Market investments", "Livestock animals"], "BRAND": ["Cattle marking", "Writer's identity"] }, anchors: { "BARRACKS": "Soldiers' housing", "BARTER": "Trade without currency", "CORRAL": "Livestock enclosure", "NEWSLETTER": "Subscription email" }, centerWord: "POST", centerHints: ["Where pioneers bartered pelts", "Soldier's assignment", "Mail verb", "Substack publication"], centerExplanations: { "SUBSTACK": "Blog post", "MILITARY": "Military post (duty station)", "TRADING": "Trading post", "RANCHING": "Fence post" } },
   { id: 102, title: "Cold Comfort", themes: ["GREENLAND", "BEDDING", "MUSIC", "FINANCE"], colors: ["#3B82F6", "#8B5CF6", "#F97316", "#22C55E"], solution: { 0: "BLANKET", 1: "LINEN", 2: "REST", 3: "TEMPO", 4: "NOTE", 5: "AUDIT", 6: "FREEZE", 7: "GLACIER" }, bridges: { "BLANKET": ["Thick layer of snow or ice", "Warm wool covering"], "REST": ["Bed rest for recovery", "Silent pause in notation"], "NOTE": ["Musical note", "Bank note"], "FREEZE": ["Asset freeze", "Deep freeze"] }, anchors: { "LINEN": "Fine bed fabric", "TEMPO": "Musical speed", "AUDIT": "Financial examination", "GLACIER": "Massive ice formation" }, centerWord: "SHEET", centerHints: ["Accountant's summary", "Greenland's frozen expanse", "Conductor's reading material", "Bed covering"], centerExplanations: { "GREENLAND": "Ice sheet", "BEDDING": "Bed sheet", "MUSIC": "Sheet music", "FINANCE": "Balance sheet" } },
   { id: 103, title: "Going with the Flow", themes: ["ELECTRICITY", "OCEAN", "NEWS", "WEATHER"], colors: ["#EAB308", "#3B82F6", "#EF4444", "#64748B"], solution: { 0: "BREAKER", 1: "TIDE", 2: "ANCHOR", 3: "SCOOP", 4: "COVERAGE", 5: "FORECAST", 6: "STORM", 7: "VOLTAGE" }, bridges: { "BREAKER": ["Safety switch (Circuit ___)", "Crashing wave on the shore"], "ANCHOR": ["Ship anchor", "News anchor"], "COVERAGE": ["Reporting on an event", "Extent of clouds or rain"], "STORM": ["Thunder and lightning", "Severe weather event"] }, anchors: { "TIDE": "Ocean rise and fall", "SCOOP": "Exclusive news story", "FORECAST": "Weather prediction", "VOLTAGE": "Electrical potential" }, centerWord: "CURRENT", centerHints: ["It flows through a resistor", "Jet stream component", "Ocean drift", "Up to date"], centerExplanations: { "ELECTRICITY": "Electric current", "OCEAN": "Ocean current", "NEWS": "Current events", "WEATHER": "Air current" } },
-  { id: 104, title: "Sound Judgment", themes: ["COURTS", "TALMUD", "HYGIENE", "MEDICATION"], colors: ["#6B7280", "#8B5CF6", "#22C55E", "#EF4444"], solution: { 0: "TRADITION", 1: "RABBI", 2: "BATH", 3: "FLOSS", 4: "RINSE", 5: "CAPSULE", 6: "TRIAL", 7: "VERDICT" }, bridges: { "TRADITION": ["Legal tradition", "Religious tradition"], "BATH": ["Mikveh immersion (Ritual ___)", "Tub soak or sponge ___"], "RINSE": ["Mouth rinse", "Medicated rinse"], "TRIAL": ["Clinical trial", "Court trial"] }, anchors: { "RABBI": "Jewish religious teacher", "FLOSS": "Dental string", "CAPSULE": "Pill casing", "VERDICT": "Jury decision" }, centerWord: "ORAL", centerHints: ["Type of Torah", "Supreme Court argument style", "How some pills are taken", "Hygiene category"], centerExplanations: { "COURTS": "Oral arguments", "TALMUD": "Oral Torah", "HYGIENE": "Oral hygiene", "MEDICATION": "Oral medication" } }
+  { id: 104, title: "Sound Judgment", themes: ["COURTS", "TALMUD", "HYGIENE", "MEDICATION"], colors: ["#6B7280", "#8B5CF6", "#22C55E", "#EF4444"], solution: { 0: "TRADITION", 1: "RABBI", 2: "BATH", 3: "FLOSS", 4: "RINSE", 5: "CAPSULE", 6: "TRIAL", 7: "VERDICT" }, bridges: { "TRADITION": ["Legal tradition", "Religious tradition"], "BATH": ["Mikveh immersion (Ritual ___)", "Tub soak or sponge ___"], "RINSE": ["Mouth rinse", "Medicated rinse"], "TRIAL": ["Clinical trial", "Court trial"] }, anchors: { "RABBI": "Jewish religious teacher", "FLOSS": "Dental string", "CAPSULE": "Pill casing", "VERDICT": "Jury decision" }, centerWord: "ORAL", centerHints: ["Type of Torah", "Supreme Court argument style", "How some pills are taken", "Hygiene category"], centerExplanations: { "COURTS": "Oral arguments", "TALMUD": "Oral Torah", "HYGIENE": "Oral hygiene", "MEDICATION": "Oral medication" } },
+  { id: 105, title: "Mind Games", themes: ["POLITICS", "NUTRITION", "PUZZLES", "INNOVATION"], colors: ["#6366F1", "#10B981", "#F59E0B", "#EC4899"], solution: { 0: "PORK", 1: "VITAMIN", 2: "DIGEST", 3: "RIDDLE", 4: "AHA", 5: "PATENT", 6: "PLATFORM", 7: "CAUCUS" }, bridges: { "PORK": ["Earmarked spending (___ barrel)", "The other white meat"], "DIGEST": ["Break down food", "Absorb information"], "AHA": ["Solver's shout of success", "The moment of discovery (The ___! moment)"], "PLATFORM": ["Operating system base", "Party principles declaration"] }, anchors: { "VITAMIN": "Nutritional supplement", "RIDDLE": "Word puzzle to solve", "PATENT": "Invention protection", "CAUCUS": "Party strategy meeting" }, centerWord: "BRAIN", centerHints: ["Advisory group for a leader", "Fish and nuts are this for the mind", "A teaser for the mind", "An inventor's original creation"], centerExplanations: { "POLITICS": "Brain trust", "NUTRITION": "Brain food", "PUZZLES": "Brain teaser", "INNOVATION": "Brainchild" } },
+  { id: 106, title: "Taking a Break", themes: ["DANCE", "NEWS", "BILLIARDS", "COFFEE"], colors: ["#EC4899", "#EF4444", "#22C55E", "#92400E"], solution: { 0: "BEAT", 1: "HEADLINE", 2: "ANGLE", 3: "CUE", 4: "TABLE", 5: "ESPRESSO", 6: "GRIND", 7: "TANGO" }, bridges: { "BEAT": ["Rhythm or tempo", "Reporter's assigned area"], "ANGLE": ["Story slant", "Shot trajectory"], "TABLE": ["Pool table", "Coffee table"], "GRIND": ["Coffee preparation", "Hip-hop floor move"] }, anchors: { "HEADLINE": "Front page title", "CUE": "Pool stick", "ESPRESSO": "Strong Italian coffee", "TANGO": "Argentine partner dance" }, centerWord: "BREAK", centerHints: ["Type of dancing", "Urgent bulletin (___ing news)", "Opening pool shot", "Midday work pause"], centerExplanations: { "DANCE": "Breakdance", "NEWS": "Breaking news", "BILLIARDS": "Break shot", "COFFEE": "Coffee break" } },
+  { id: 107, title: "Hall of Fame", themes: ["ASTRONOMY", "SCULPTURE", "TENNIS", "BOTANY"], colors: ["#3B82F6", "#9CA3AF", "#FACC15", "#22C55E"], solution: { 0: "BODY", 1: "BUST", 2: "CLAY", 3: "ACE", 4: "SEED", 5: "PETAL", 6: "EARTH", 7: "ORBIT" }, bridges: { "BODY": ["Object in space (Celestial ___)", "The artist's subject (Human ___)"], "CLAY": ["Modeling material", "Roland Garros surface"], "SEED": ["Tournament ranking", "Plant starter"], "EARTH": ["Potting soil", "The Blue Planet"] }, anchors: { "BUST": "Head and shoulders sculpture", "ACE": "Unreturnable serve", "PETAL": "Flower part", "ORBIT": "Celestial path" }, centerWord: "VENUS", centerHints: ["Second planet from the Sun", "Armless Louvre masterpiece (___ de Milo)", "Serena's sister", "Carnivorous ___ flytrap"], centerExplanations: { "ASTRONOMY": "Venus (planet)", "SCULPTURE": "Venus de Milo", "TENNIS": "Venus Williams", "BOTANY": "Venus flytrap" } },
+  { id: 109, title: "Four Corners", themes: ["SALADS", "VACATIONS", "COWBOYS", "HOMES"], colors: ["#22C55E", "#38BDF8", "#B45309", "#A855F7"], solution: { 0: "GREEK", 1: "GETAWAY", 2: "DUDE", 3: "LASSO", 4: "RANGE", 5: "ATTIC", 6: "BAR", 7: "CROUTON" }, bridges: { "GREEK": ["Mediterranean salad variety", "Popular European vacation destination"], "DUDE": ["Guest at a Western tourist ranch", "Cowboy-culture term for city slicker"], "RANGE": ["Open land for cattle grazing", "Kitchen cooking appliance"], "BAR": ["Self-serve salad station", "Home entertainment space"] }, anchors: { "GETAWAY": "Vacation escape", "LASSO": "Cowboy's rope loop", "ATTIC": "Home's top-floor storage space", "CROUTON": "Crunchy salad topping" }, centerWord: "RANCH", centerHints: ["Big spread out West", "Dude ___", "Creamy salad dressing", "One-story home style"], centerExplanations: { "SALADS": "Ranch dressing", "VACATIONS": "Dude ranch vacation", "COWBOYS": "Cattle ranch", "HOMES": "Ranch-style house" } },
+  { id: 108, title: "Common Ground", themes: ["ATTITUDE", "SKATEBOARDING", "REAL ESTATE", "BREAKFAST"], colors: ["#FF6B6B", "#4ECDC4", "#45B7D1", "#FFA07A"], solution: { 0: "LIP", 1: "SASSY", 2: "DECK", 3: "ESCROW", 4: "COUNTER", 5: "WAFFLES", 6: "SALTY", 7: "CHEEKY" }, bridges: { "LIP": ["Insolent talk", "Edge of a skate bowl"], "DECK": ["Skateboard platform", "Outdoor patio"], "COUNTER": ["Kitchen surface", "Retaliatory offer"], "SALTY": ["Bitter or upset", "Like bacon or sausage"] }, anchors: { "SASSY": "Lively and bold", "ESCROW": "Third-party bond", "WAFFLES": "Gridded cakes", "CHEEKY": "Irreverent" }, centerWord: "FLIP", centerHints: ["A coin toss action", "To turn over quickly", "Disrespectful or glib", "Gymnastic move"], centerExplanations: { "ATTITUDE": "To be 'flip' is to be glib or disrespectful", "SKATEBOARDING": "Kickflip or Heelflip tricks", "REAL ESTATE": "To buy and sell a house quickly", "BREAKFAST": "Action for pancakes or eggs" } },
+  { id: 110, title: "Great White North", themes: ["CANADA", "PAPER", "TEA", "GOLD"], colors: ["#DC143C", "#F5F5DC", "#228B22", "#FFD700"], solution: { 0: "PULP", 1: "REAM", 2: "BAG", 3: "STEEP", 4: "POT", 5: "KARAT", 6: "MINE", 7: "MOUNTIE" }, bridges: { "PULP": ["Major Canadian forestry export", "Raw material for making paper"], "BAG": ["Paper sack or container", "Holds tea for steeping"], "POT": ["Vessel for brewing tea", "Leprechaun's treasure container"], "MINE": ["Gold excavation site", "Major Canadian natural resource industry"] }, anchors: { "REAM": "500 sheets of paper", "STEEP": "To brew tea in hot water", "KARAT": "Gold purity measurement", "MOUNTIE": "Royal Canadian Mounted Police officer" }, centerWord: "LEAF", centerHints: ["Two Toronto athletes, familiarly", "One part of some tables", "Flip through", "Book part"], centerExplanations: { "CANADA": "The maple leaf is Canada's national symbol", "PAPER": "A leaf is a single sheet of paper", "TEA": "Tea leaves are steeped to make the beverage", "GOLD": "Gold leaf is thin sheets used for gilding" } },
+  { id: 111, title: "Tight Connection", themes: ["BRAZIL", "INSANITY", "FASTENERS", "FANDOM"], colors: ["#009739", "#9B59B6", "#7F8C8D", "#E74C3C"], solution: { 0: "WILD", 1: "ASYLUM", 2: "SCREW", 3: "TOGGLE", 4: "RIVET", 5: "STAN", 6: "PASSION", 7: "SAMBA" }, bridges: { "WILD": ["Untamed Brazilian rainforest", "Crazy or out of control"], "SCREW": ["Having one loose means you're crazy", "Type of fastener"], "RIVET": ["Metal fastener", "To be completely captivated"], "PASSION": ["Devoted fan's intensity", "Brazilian cultural spirit"] }, anchors: { "ASYLUM": "Institution for the mentally ill", "TOGGLE": "Type of fastener or switch", "STAN": "Obsessive fan (modern slang)", "SAMBA": "Brazilian dance" }, centerWord: "NUT", centerHints: ["Devoted fan, informally", "Bolt's partner", "Completely crackers", "Brazil ___"], centerExplanations: { "BRAZIL": "Brazil nut is a famous export", "INSANITY": "To be 'nuts' means to be crazy", "FASTENERS": "A nut secures a bolt", "FANDOM": "A devoted fan is often called a 'nut'" } },
+  { id: 112, title: "Larger Than Life", themes: ["SPORTS TEAMS", "FOLKLORE", "ASTRONOMY", "CINEMA"], colors: ["#1E90FF", "#8B4513", "#4B0082", "#DC143C"], solution: { 0: "LEGEND", 1: "OGRE", 2: "DWARF", 3: "NEBULA", 4: "STAR", 5: "PREMIERE", 6: "SCORE", 7: "ROSTER" }, bridges: { "LEGEND": ["Iconic sports figure", "Mythical folklore tale"], "DWARF": ["Snow White's companions", "White ___ (dense stellar remnant)"], "STAR": ["Celestial body like a red giant", "Famous cinema actor"], "SCORE": ["Film soundtrack", "Game tally"] }, anchors: { "OGRE": "Fearsome folklore creature", "NEBULA": "Interstellar cloud of gas", "PREMIERE": "Film's debut screening", "ROSTER": "Team player list" }, centerWord: "GIANT", centerHints: ["Stellar phase for an aging star", "Jack's beanstalk adversary", "San Francisco MLB team", "James Dean's last film"], centerExplanations: { "SPORTS TEAMS": "NY Giants (NFL) and SF Giants (MLB)", "FOLKLORE": "Giants appear in fairy tales like Jack and the Beanstalk", "ASTRONOMY": "Red giant and gas giant are stellar classifications", "CINEMA": "The Iron Giant (1999) and Giant (1956) starring James Dean" } },
+  { id: 113, title: "Going Under", themes: ["FOOTBALL", "SLEEP", "OCEAN", "VOICE"], colors: ["#228B22", "#1E3A5F", "#006994", "#E67E22"], solution: { 0: "SACK", 1: "REM", 2: "WAVE", 3: "ABYSS", 4: "SOUND", 5: "BARITONE", 6: "AUDIBLE", 7: "HUDDLE" }, bridges: { "SACK": ["Quarterback tackle", "Hit the ___ (go to bed)"], "WAVE": ["Brain ___ during sleep", "Ocean swell"], "SOUND": ["Body of water (Puget ___)", "Auditory perception"], "AUDIBLE": ["Loud enough to hear", "QB's play change at the line"] }, anchors: { "REM": "Rapid Eye Movement sleep phase", "ABYSS": "Bottomless ocean depth", "BARITONE": "Male singing voice range", "HUDDLE": "Football team formation" }, centerWord: "DEEP", centerHints: ["Basso profundo quality", "Mariana Trench descriptor", "REM stage quality", "Like a QB's long throw"], centerExplanations: { "FOOTBALL": "A deep pass travels far downfield", "SLEEP": "Deep sleep is the most restorative REM phase", "OCEAN": "The deep ocean includes the abyss zone", "VOICE": "A deep voice has low bass tones" } },
+  { id: 114, title: "Against the Odds", themes: ["RACING", "PING PONG", "POLITICS", "RECOVERY"], colors: ["#E74C3C", "#2ECC71", "#3498DB", "#9B59B6"], solution: { 0: "SPIN", 1: "PADDLE", 2: "TABLE", 3: "CAUCUS", 4: "SWING", 5: "REHAB", 6: "CRASH", 7: "LAP" }, bridges: { "SPIN": ["Car spin-out", "Topspin or backspin"], "TABLE": ["Ping pong equipment", "To postpone a motion"], "SWING": ["Shift in voter support", "Mood shift"], "CRASH": ["Relapse or collapse", "Auto accident"] }, anchors: { "PADDLE": "Table tennis racket", "CAUCUS": "Political gathering", "REHAB": "Recovery program", "LAP": "Track circuit" }, centerWord: "RALLY", centerHints: ["A sustained recovery of strength", "WRC motorsport event", "Political mass gathering", "Long point in ping pong"], centerExplanations: { "RACING": "A rally is a stage-based motorsport race", "PING PONG": "A rally is a back-and-forth exchange of shots", "POLITICS": "A rally is a gathering to support a cause", "RECOVERY": "To rally is to recover health or spirits" } },
+  { id: 115, title: "Group Dynamics", themes: ["CELEBRATION", "POLITICS", "LAW", "ADVENTURE"], colors: ["#F97316", "#2563EB", "#6B7280", "#16A34A"], solution: { 0: "BANNER", 1: "BALLOT", 2: "APPEAL", 3: "VERDICT", 4: "SEARCH", 5: "RESCUE", 6: "BONFIRE", 7: "HOST" }, bridges: { "BANNER": ["Party decoration", "Campaign sign"], "APPEAL": ["Voter attractiveness", "Court review request"], "SEARCH": ["Warranted inspection", "Hunt for someone"], "BONFIRE": ["Festive outdoor fire", "Campfire blaze"] }, anchors: { "HOST": "Event organizer", "BALLOT": "Voting paper", "VERDICT": "Jury decision", "RESCUE": "Save mission" }, centerWord: "PARTY", centerHints: ["Suit participant", "Faction in government", "Group on an expedition", "Birthday gathering"], centerExplanations: { "CELEBRATION": "A party is a social gathering", "POLITICS": "A party is a political faction", "LAW": "A party is a legal participant", "ADVENTURE": "A party is an expedition group" } },
+  { id: 116, title: "Beyond Doubt", themes: ["DISTILLING", "EDITING", "BAKING", "LOGIC"], colors: ["#B45309", "#6366F1", "#F59E0B", "#1F2937"], solution: { 0: "DRAFT", 1: "TYPO", 2: "CUT", 3: "LOAF", 4: "FORMULA", 5: "PREMISE", 6: "CLEAR", 7: "BARREL" }, bridges: { "DRAFT": ["Beer on tap", "Rough version"], "CUT": ["Remove text", "Scoring the loaf"], "FORMULA": ["Recipe ratios", "Symbolic expression"], "CLEAR": ["Transparent spirits", "Unambiguous reasoning"] }, anchors: { "TYPO": "Typographical error", "LOAF": "Shaped bread", "PREMISE": "Starting assumption", "BARREL": "Aging vessel" }, centerWord: "PROOF", centerHints: ["QED ender.", "86 or 100, for whiskey.", "Baker's patience test.", "Galley ___."], centerExplanations: { "DISTILLING": "Alcohol strength measurement", "EDITING": "Pre-publication test print", "BAKING": "Letting yeast activate and dough rise", "LOGIC": "Formal demonstration of truth" } },
+  { id: 117, title: "The Long Game", themes: ["BILLIARDS", "HUNTING", "MEDIEVAL", "WINE"], colors: ["#059669", "#78350F", "#6B7280", "#7C3AED"], solution: { 0: "GAME", 1: "DECOY", 2: "QUARRY", 3: "MOAT", 4: "VAULT", 5: "CORK", 6: "ENGLISH", 7: "FELT" }, bridges: { "GAME": ["Pool game", "Wild game"], "QUARRY": ["Hunted prey", "Cathedral stone source"], "VAULT": ["Castle strongroom", "Wine storage cellar"], "ENGLISH": ["Wine from England", "Spin on cue ball"] }, anchors: { "DECOY": "Fake animal lure", "MOAT": "Castle water barrier", "CORK": "Bottle stopper", "FELT": "Table cloth surface" }, centerWord: "RACK", centerHints: ["Antler array.", "Torture device.", "Triangle of balls.", "Bottle holder."], centerExplanations: { "BILLIARDS": "Frame for arranging balls", "HUNTING": "Buck's antlers", "MEDIEVAL": "Stretching torture device", "WINE": "Bottle storage frame" } },
+  { id: 118, title: "Board Meeting", themes: ["POLITICS", "ORNITHOLOGY", "SALES", "SKATEBOARDING"], colors: ["#EF4444", "#22C55E", "#F59E0B", "#8B5CF6"], solution: { 0: "WING", 1: "RAPTOR", 2: "BILL", 3: "QUOTA", 4: "DECK", 5: "HALFPIPE", 6: "SPIN", 7: "SENATE" }, bridges: { "WING": ["Political faction", "Bird flight limb"], "BILL": ["Bird beak", "Invoice for payment"], "DECK": ["Sales presentation slides", "Skateboard platform"], "SPIN": ["360-degree rotation", "Media manipulation"] }, anchors: { "SENATE": "Legislative body", "RAPTOR": "Carnivorous bird", "QUOTA": "Sales target", "HALFPIPE": "U-shaped skate ramp" }, centerWord: "HAWK", centerHints: ["One advocating for war", "Raptor with sharp vision", "To peddle goods aggressively", "Tony's last name"], centerExplanations: { "POLITICS": "A War Hawk", "ORNITHOLOGY": "A bird of prey", "SALES": "To hawk your wares", "SKATEBOARDING": "Tony Hawk" } },
+  { id: 119, title: "Vintage Accuracy", themes: ["TASTING", "STAIRWAYS", "ARCHERY", "DARTS"], colors: ["#722F37", "#708090", "#228B22", "#FFBF00"], solution: { 0: "FINISH", 1: "BANISTER", 2: "LANDING", 3: "QUIVER", 4: "BULL", 5: "TREBLE", 6: "ROUND", 7: "DECANT" }, bridges: { "FINISH": ["Aftertaste that lingers after swallowing wine", "Surface coating or treatment on wooden stairs"], "LANDING": ["Platform between flights of stairs", "Where an arrow comes to rest after being shot"], "BULL": ["Center of an archery target", "Center of a dartboard, worth 50 points"], "ROUND": ["Sequence of throws by each player", "Selection of drinks or samples served together"] }, anchors: { "DECANT": "Pour wine into a vessel to separate sediment", "BANISTER": "Handrail along a staircase", "QUIVER": "Container for holding arrows", "TREBLE": "Thin inner ring on dartboard worth triple points" }, centerWord: "FLIGHT", centerHints: ["Feathered stabilizers for aerodynamic stability", "Winerys sampling selection", "Continuous run of stairs", "Fight or ___"], centerExplanations: { "TASTING": "A flight is a selection of wines, beers, or spirits served together for comparative tasting", "STAIRWAYS": "A flight is a continuous series of steps between floors or landings", "ARCHERY": "Flights are the feathers or vanes on an arrow that provide stability during travel", "DARTS": "Flights are the fins at the back of a dart that stabilize its trajectory through the air" } },
+  { id: 120, title: "Grand Gestures", themes: ["NEW YORK CITY", "CEREMONY", "EMOTIONS", "SPEAKING"], colors: ["#1C2951", "#7851A9", "#FF6B35", "#008B8B"], solution: { 0: "PARADE", 1: "POMP", 2: "SOLEMN", 3: "ANGST", 4: "TONE", 5: "DICTION", 6: "ACCENT", 7: "BOROUGH" }, bridges: { "PARADE": ["NYC hosts famous parades like the Macys Thanksgiving Day Parade", "A formal procession as part of ceremonial occasions"], "SOLEMN": ["Marked by gravity and formality in ceremonies", "A serious, somber emotional feeling"], "TONE": ["The emotional quality or mood of a situation", "The quality of voice when speaking"], "ACCENT": ["The distinctive way of speaking in a region", "The iconic New York way of pronouncing words"] }, anchors: { "BOROUGH": "One of NYCs five divisions like Manhattan or Brooklyn", "POMP": "Splendid display and pageantry at formal occasions", "ANGST": "A feeling of deep anxiety or existential dread", "DICTION": "The choice and use of words in speech" }, centerWord: "STATE", centerHints: ["Formality level for a dinner with heads of government", "Your mental or emotional condition", "Home to the Empire Building", "To formally declare or express"], centerExplanations: { "NEW YORK CITY": "New York is known as the Empire State, and the Empire State Building is an iconic NYC landmark", "CEREMONY": "A state occasion or state dinner refers to formal official events with pomp and protocol", "EMOTIONS": "Your state of mind refers to your emotional or psychological condition", "SPEAKING": "To state something means to formally declare or express it verbally" } },
+  { id: 121, title: "Timeless Treasures", themes: ["HOLLYWOOD", "MILESTONES", "PRECIOUS METALS", "TABLEWARE"], colors: ["#CC0000", "#4169E1", "#FFD700", "#FFFFF0"], solution: { 0: "GOLDEN", 1: "CENTENNIAL", 2: "STAMP", 3: "BULLION", 4: "PLATE", 5: "FLATWARE", 6: "SETTING", 7: "MOGUL" }, bridges: { "GOLDEN": ["Classic cinema era", "50-year anniversary"], "STAMP": ["Commemorative postal issue", "Purity hallmark"], "PLATE": ["Metal coating layer", "Flat serving dish"], "SETTING": ["Table arrangement", "Story location"] }, anchors: { "MOGUL": "Powerful studio executive", "CENTENNIAL": "100-year anniversary", "BULLION": "Gold or silver bars", "FLATWARE": "Forks, knives, spoons" }, centerWord: "SILVER", centerHints: ["Element Ag between palladium and cadmium", "Adjective for the classic Hollywood screen", "Type of anniversary after a quarter century", "Common material of formal dining utensils"], centerExplanations: { "HOLLYWOOD": "The silver screen refers to movie theaters and cinema named for early metallic projection screens", "MILESTONES": "A silver anniversary or silver jubilee marks 25 years of marriage or reign", "PRECIOUS METALS": "Silver is a lustrous precious metal used in jewelry coins and bullion", "TABLEWARE": "Silverware refers to eating utensils historically made from or plated with silver" } },
+  { id: 122, title: "Digital Frontiers", themes: ["PODCASTING", "CRYPTOCURRENCY", "ESCAPE ROOMS", "ACHIEVEMENTS"], colors: ["#8B5CF6", "#F7931A", "#059669", "#EAB308"], solution: { 0: "PLATFORM", 1: "WALLET", 2: "LOCK", 3: "CLUE", 4: "TIME", 5: "TROPHY", 6: "MILESTONE", 7: "EPISODE" }, bridges: { "PLATFORM": ["Hosting service", "Trading exchange"], "LOCK": ["Time-locked tokens", "Mechanism to open"], "TIME": ["Running out of time", "Personal best time"], "MILESTONE": ["Notable accomplishment", "Episode marker"] }, anchors: { "EPISODE": "Single installment of a show", "WALLET": "Digital asset storage", "CLUE": "Hint to solve a puzzle", "TROPHY": "Victory memento" }, centerWord: "RECORD", centerHints: ["Immutable blockchain entry", "Fastest escape time", "Studio session output", "Guinness Book entry"], centerExplanations: { "PODCASTING": "To record is to capture audio for a podcast episode", "CRYPTOCURRENCY": "A record is an immutable entry on the blockchain ledger", "ESCAPE ROOMS": "The record is the fastest time to complete a room", "ACHIEVEMENTS": "A record is a documented best performance" } }
 ];
 
 let currentPuzzleIdx = 0;
@@ -1770,33 +1840,10 @@ function getFirstUnsolvedIdx() {
   return 0; // All solved, return to beginning
 }
 
-// Update progress indicator
+// Update progress indicator (simplified - elements removed from UI)
 function updateProgressIndicator() {
-  var count = getSolvedCount();
-  var total = PUZZLES.length;
-  var indicator = document.getElementById('progress-indicator');
-  indicator.textContent = count + '/' + total + ' solved';
-  
-  // Update Next Unsolved button state
-  var btn = document.getElementById('next-unsolved-btn');
-  var nextIdx = getFirstUnsolvedIdx();
-  // Disable if all solved
-  btn.disabled = (count === total);
-  
-  // Update button text/style based on whether CURRENT puzzle is solved
-  if (solvedPuzzles[currentPuzzle.id]) {
-    btn.textContent = '✓ Solved';
-    btn.classList.add('current-solved');
-  } else {
-    btn.textContent = '▶ Unsolved';
-    btn.classList.remove('current-solved');
-  }
-}
-
-// Navigate to next unsolved puzzle
-function nextUnsolved() {
-  var idx = getFirstUnsolvedIdx();
-  loadPuzzle(idx);
+  // Progress tracking still works via localStorage, just no visible indicator
+  // This function is kept for compatibility with existing calls
 }
 
 // Reset all progress
@@ -1843,6 +1890,17 @@ function openGallery() {
   document.getElementById('gallery-modal').classList.add('show'); 
 }
 function closeGallery() { document.getElementById('gallery-modal').classList.remove('show'); }
+
+function seeInGallery() {
+  openGallery();
+  // Scroll to current puzzle after gallery renders
+  setTimeout(function() {
+    var currentItem = document.querySelector('.gallery-item.current');
+    if (currentItem) {
+      currentItem.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }, 100);
+}
 
 // Cultural puzzles have proper nouns as center word or in clues
 function isCultural(puzzleId) {
@@ -1990,11 +2048,12 @@ function loadPuzzle(idx) {
   currentPuzzleIdx = idx;
   currentPuzzle = PUZZLES[idx];
   document.getElementById('puzzle-title').textContent = '#' + currentPuzzle.id + ' ' + (currentPuzzle.title || '');
-  document.getElementById('current-num').textContent = idx + 1;
-  document.getElementById('total-num').textContent = PUZZLES.length;
   document.getElementById('prev-btn').disabled = idx === 0;
   document.getElementById('next-btn').disabled = idx === PUZZLES.length - 1;
-  
+
+  // Update URL to reflect current puzzle
+  updateURL(currentPuzzle.id);
+
   // Update progress indicator
   updateProgressIndicator();
   
@@ -2138,6 +2197,40 @@ function playAgain() {
 
 function prevPuzzle() { if (currentPuzzleIdx > 0) loadPuzzle(currentPuzzleIdx - 1); }
 function nextPuzzle() { if (currentPuzzleIdx < PUZZLES.length - 1) loadPuzzle(currentPuzzleIdx + 1); }
+
+function jumpToPuzzle() {
+  var input = document.getElementById('jump-input');
+  var puzzleNum = parseInt(input.value);
+  if (isNaN(puzzleNum) || puzzleNum < 1 || puzzleNum > PUZZLES.length) {
+    input.value = '';
+    input.placeholder = '1-' + PUZZLES.length;
+    input.focus();
+    return;
+  }
+  input.value = '';
+  input.blur();
+  loadPuzzle(puzzleNum - 1);
+}
+
+function updateURL(puzzleId) {
+  var newURL = window.location.pathname + '?puzzle=' + puzzleId;
+  window.history.replaceState({puzzle: puzzleId}, '', newURL);
+}
+
+function getPuzzleFromURL() {
+  var params = new URLSearchParams(window.location.search);
+  var puzzleParam = params.get('puzzle');
+  if (puzzleParam) {
+    var puzzleId = parseInt(puzzleParam);
+    // Find the index of this puzzle ID
+    for (var i = 0; i < PUZZLES.length; i++) {
+      if (PUZZLES[i].id === puzzleId) {
+        return i;
+      }
+    }
+  }
+  return null;
+}
 
 function getBoardSize() { return board.getBoundingClientRect().width; }
 
@@ -2960,9 +3053,23 @@ initWelcomeBoard();
 // Update puzzle count on welcome screen
 document.querySelector('.welcome-footer span:last-child').textContent = PUZZLES.length + ' puzzles';
 
-// For returning players, start at first unsolved puzzle
-// For new players, start at puzzle 1
-var startIdx = isReturningPlayer ? getFirstUnsolvedIdx() : 0;
+// Update jump input max attribute with puzzle count
+document.getElementById('jump-input').max = PUZZLES.length;
+
+// Check URL for specific puzzle first
+var urlPuzzleIdx = getPuzzleFromURL();
+
+// Priority: URL parameter > returning player progress > puzzle 1
+var startIdx;
+if (urlPuzzleIdx !== null) {
+  startIdx = urlPuzzleIdx;
+  // If coming from URL, skip welcome screen
+  document.getElementById('welcome-overlay').classList.add('hidden');
+} else if (isReturningPlayer) {
+  startIdx = getFirstUnsolvedIdx();
+} else {
+  startIdx = 0;
+}
 loadPuzzle(startIdx);
 </script>
 </body>
